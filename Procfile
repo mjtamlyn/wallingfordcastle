@@ -1,1 +1,1 @@
-web: gunicorn officeadmin.wsgi
+web: gunicorn wallingford_castle.wsgi
