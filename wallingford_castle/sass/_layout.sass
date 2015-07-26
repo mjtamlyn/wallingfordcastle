@@ -1,0 +1,100 @@
+$max-page-width: 1200px
+$margin-width: 15px
+
+*
+  box-sizing: border-box
+
+body
+  margin: 0
+
+header,
+footer
+  color: $pink
+  margin: 0 auto
+  h1
+    display: inline
+    margin: 0
+    a
+      color: $pink
+      &:hover
+        color: $pink
+
+footer
+  nav
+    ul
+      margin: 0
+
+header
+  margin-bottom: $margin-width
+  padding: 20px 0
+
+footer
+  margin-top: $margin-width
+  padding: $margin-width 0
+  background-color: #eee
+
+.container
+  width: $max-page-width - 2 * $margin-width
+  margin: 0 auto
+  padding: 0 $margin-width
+
+.row-wrapper
+  margin: 0 -15px
+  padding: 0 15px
+
+.row
+  @include clearfix
+  margin-left: -$margin-width
+  margin-right: -$margin-width
+  margin-bottom: 10px
+
+.col1, .col2, .col3, .col4, .col5, .col6
+  float: left
+  padding: 0 $margin-width
+
+.col6
+  width: 100%
+
+.col5
+  width: 83.3333333333%
+
+.col4
+  width: 66.6666666666%
+
+.col3
+  width: 50%
+
+.col2
+  width: 33.3333333333%
+
+.col1
+  width: 16.6666666666%
+
+.offset1
+  margin-left: 16.6666666666%
+
+.offset2
+  margin-left: 33.3333333333%
+
+.offset3
+  margin-left: 50%
+
+.offset4
+  margin-left: 66.6666666666%
+
+.offset5
+  margin-left: 83.3333333333%
+
+@media (max-width: 1200px)
+  .container
+    width: 940px - 2 * $margin-width
+
+@media (max-width: 950px)
+  .container
+    width: 100%
+  
+  .col1, .col2, .col3, .col4, .col5
+    width: 100%
+
+  .offset1, .offset2, .offset3, .offset4, .offset5
+    margin-left: 0
