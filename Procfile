@@ -1,1 +1,1 @@
-web: run-program gunicorn officeadmin.wsgi
+web: gunicorn officeadmin.wsgi
