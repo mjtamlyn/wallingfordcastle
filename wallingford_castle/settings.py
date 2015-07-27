@@ -8,7 +8,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 SECRET_KEY = os.environ.get('SECRET_KEY', 'not-a-secret')
 
 DEBUG = not (os.environ.get('DEBUG', '') == 'False')
-TEMPLATE_DEBUG = DEBUG
 
 ALLOWED_HOSTS = [
     'wallingfordcastle.herokuapp.com',
@@ -49,3 +48,23 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
+
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'APP_DIRS': True,
+    'OPTIONS': {
+        'debug': DEBUG,
+        'context_processors': (
+            'django.contrib.auth.context_processors.auth',
+            'django.template.context_processors.debug',
+            'django.template.context_processors.i18n',
+            'django.template.context_processors.media',
+            'django.template.context_processors.static',
+            'django.template.context_processors.tz',
+            'django.contrib.messages.context_processors.messages',
+            'wallingford_castle.context_processors.ga',
+        )
+    }
+}]
+
+GA_TRACKING = os.environ.get('GA_TRACKING', '')
