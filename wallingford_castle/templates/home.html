@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load floppyforms %}
+
 {% block content %}
 <div class="flex-sections">
     <section>
@@ -80,6 +82,12 @@
             Membership is due monthly. You must already be a member of
             Archery GB or another World Archery affiliated body.
         </p>
+        <h3>Register interest</h3>
+        <form class="form" method="POST" action="{% url 'membership-interest' %}">
+            {% csrf_token %}
+            {% form membership_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit">
+        </form>
     </section>
     <section>
         <h2>Beginners</h2>

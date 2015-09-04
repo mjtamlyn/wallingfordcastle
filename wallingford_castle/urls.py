@@ -6,6 +6,7 @@ from . import views
 
 urlpatterns = patterns('',
     url(r'^$', views.HomeView.as_view(), name='home'),
+    url(r'^membership-interest/$', views.MembershipInterestView.as_view(), name='membership-interest'),
 
     url(r'^admin/', include(admin.site.urls)),
 )
