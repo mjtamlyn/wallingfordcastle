@@ -22,3 +22,15 @@ class MembershipInterest(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class BeginnersCourseInterest(models.Model):
+    name = models.CharField(max_length=200)
+    contact_email = models.EmailField()
+    age = models.CharField(max_length=20, choices=AGE_CHOICES)
+    date_of_birth = models.DateField(blank=True, null=True)
+    experience = models.TextField(blank=True, default='')
+    notes = models.TextField(blank=True, default='')
+
+    def __str__(self):
+        return self.name

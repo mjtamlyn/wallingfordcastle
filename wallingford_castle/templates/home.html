@@ -117,6 +117,12 @@
             11.30am for seniors, 11.30am to 1pm for juniors.
             </li>
         </ul>
+        <h3>Register interest</h3>
+        <form class="form" method="POST" action="{% url 'beginners-course' %}">
+            {% csrf_token %}
+            {% form beginners_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit">
+        </form>
     </section>
 </div>
 {% endblock %}
