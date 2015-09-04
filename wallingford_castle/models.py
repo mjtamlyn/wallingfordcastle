@@ -8,6 +8,7 @@ AGE_CHOICES = (
 
 MEMBERSHIP_CHOICES = (
     ('full', 'Full member'),
+    ('student', 'Student member'),
     ('associate', 'Associate member'),
 )
 
