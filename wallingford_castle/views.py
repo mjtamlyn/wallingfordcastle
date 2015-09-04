@@ -1,7 +1,11 @@
+import json
+
+from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.views.generic import TemplateView, CreateView
 
 from braces.views import MessageMixin
+import requests
 
 from .forms import MembershipInterestForm
 
@@ -22,4 +26,13 @@ class MembershipInterestView(MessageMixin, CreateView):
 
     def form_valid(self, form):
         self.messages.success('Thanks for your interest! We will be in touch soon.')
+        if settings.SLACK_MEMBERSHIP_HREF:
+            data = json.dumps({
+                'icon_emoji': ':wave:',
+                'text': 'New membership interest received for %s!' % form.cleaned_data['name'],
+            })
+            try:
+                requests.post(settings.SLACK_MEMBERSHIP_HREF, data=data)
+            except Exception:
+                pass
         return super().form_valid(form)
