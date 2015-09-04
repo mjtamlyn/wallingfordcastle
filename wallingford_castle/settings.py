@@ -71,9 +71,12 @@ TEMPLATES = [{
             'django.template.context_processors.tz',
             'django.contrib.messages.context_processors.messages',
             'wallingford_castle.context_processors.ga',
+            'wallingford_castle.context_processors.source_version',
         )
     }
 }]
+
+SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')
 
 GA_TRACKING = os.environ.get('GA_TRACKING', '')
 

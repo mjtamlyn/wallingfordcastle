@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+source $BIN_DIR/utils
+
+echo "export SOURCE_VERSION=$SOURCE_VERSION" > $BUILD_DIR/.profile.d/source_version.sh
+
+puts-step "Migrating"
+./manage.py migrate --noinput
