@@ -55,6 +55,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
     X_FRAME_OPTIONS = 'DENY'
+    SECURE_HSTS_SECONDS = 31536000
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
