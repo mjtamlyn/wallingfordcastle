@@ -66,85 +66,114 @@ footer {
 /* line 14, ../../sass/_layout.sass */
 header h1,
 footer h1 {
+  position: relative;
   display: inline;
   margin: 0;
+  padding-left: 80px;
 }
-/* line 17, ../../sass/_layout.sass */
+@media (max-width: 750px) {
+  /* line 14, ../../sass/_layout.sass */
+  header h1,
+  footer h1 {
+    padding-left: 70px;
+  }
+}
+/* line 21, ../../sass/_layout.sass */
+header h1:before,
+footer h1:before {
+  content: "";
+  position: absolute;
+  display: block;
+  height: 70px;
+  width: 70px;
+  background-image: url("../svg/logo.svg");
+  background-size: 100%;
+  top: -15px;
+}
+@media (max-width: 750px) {
+  /* line 21, ../../sass/_layout.sass */
+  header h1:before,
+  footer h1:before {
+    height: 60px;
+    width: 60px;
+  }
+}
+/* line 33, ../../sass/_layout.sass */
 header h1 a,
 footer h1 a {
   color: #CA4984;
 }
-/* line 19, ../../sass/_layout.sass */
+/* line 35, ../../sass/_layout.sass */
 header h1 a:hover,
 footer h1 a:hover {
   color: #CA4984;
 }
 
-/* line 24, ../../sass/_layout.sass */
+/* line 40, ../../sass/_layout.sass */
 footer nav ul {
   margin: 0;
 }
 
-/* line 27, ../../sass/_layout.sass */
+/* line 43, ../../sass/_layout.sass */
 header {
   padding: 20px 0;
 }
 
-/* line 30, ../../sass/_layout.sass */
+/* line 46, ../../sass/_layout.sass */
 article {
   margin-bottom: 15px;
 }
 
-/* line 33, ../../sass/_layout.sass */
+/* line 49, ../../sass/_layout.sass */
 footer {
   padding: 15px 0;
   background-color: #eee;
 }
 
-/* line 37, ../../sass/_layout.sass */
+/* line 53, ../../sass/_layout.sass */
 .container {
   width: 1170px;
   margin: 0 auto;
   padding: 0 15px;
 }
 @media (max-width: 1200px) {
-  /* line 43, ../../sass/_layout.sass */
+  /* line 59, ../../sass/_layout.sass */
   .container {
     width: 910px;
   }
 }
 @media (max-width: 950px) {
-  /* line 47, ../../sass/_layout.sass */
+  /* line 63, ../../sass/_layout.sass */
   .container {
     width: 100%;
   }
 }
 
-/* line 50, ../../sass/_layout.sass */
+/* line 66, ../../sass/_layout.sass */
 .flex-sections {
   display: flex;
   flex-wrap: wrap;
   margin: 0 -30px;
 }
 @media (max-width: 750px) {
-  /* line 56, ../../sass/_layout.sass */
+  /* line 72, ../../sass/_layout.sass */
   .flex-sections {
     margin: 0;
   }
 }
-/* line 59, ../../sass/_layout.sass */
+/* line 75, ../../sass/_layout.sass */
 .flex-sections section {
   width: 33.333%;
   padding: 0 30px;
 }
 @media (max-width: 1200px) {
-  /* line 64, ../../sass/_layout.sass */
+  /* line 80, ../../sass/_layout.sass */
   .flex-sections section {
     width: 50%;
   }
 }
 @media (max-width: 750px) {
-  /* line 68, ../../sass/_layout.sass */
+  /* line 84, ../../sass/_layout.sass */
   .flex-sections section {
     width: 100%;
     padding: 0;

@@ -12,8 +12,24 @@ footer
   color: $pink
   margin: 0 auto
   h1
+    position: relative
     display: inline
     margin: 0
+    padding-left: 80px
+    @media (max-width: 750px)
+      padding-left: 70px
+    &:before
+      content: ''
+      position: absolute
+      display: block
+      height: 70px
+      width: 70px
+      background-image: url('../svg/logo.svg')
+      background-size: 100%
+      top: -15px
+      @media (max-width: 750px)
+        height: 60px
+        width: 60px
     a
       color: $pink
       &:hover
