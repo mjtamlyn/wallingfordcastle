@@ -3,6 +3,7 @@ dj-static==0.0.6
 Django==1.8.3
 django-braces==1.8.1
 django-floppyforms==1.5.2
+django-sslify==0.2.7
 gunicorn==19.3.0
 psycopg2==2.6.1
 requests==2.7.0

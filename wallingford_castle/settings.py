@@ -29,6 +29,7 @@ INSTALLED_APPS = (
 )
 
 MIDDLEWARE_CLASSES = (
+    'sslify.middleware.SSLifyMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,6 +58,7 @@ if not DEBUG:
     X_FRAME_OPTIONS = 'DENY'
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
