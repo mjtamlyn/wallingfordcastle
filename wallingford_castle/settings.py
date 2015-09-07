@@ -54,7 +54,6 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 
 if not DEBUG:
     SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
     X_FRAME_OPTIONS = 'DENY'
 
 TEMPLATES = [{
