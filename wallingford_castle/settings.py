@@ -84,4 +84,4 @@ SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')
 GA_TRACKING = os.environ.get('GA_TRACKING', '')
 
 SLACK_MEMBERSHIP_HREF = os.environ.get('SLACK_MEMBERSHIP_HREF', '')
-SLACK_BEGINNERS_HREF = os.environ.get('SLACK_MEMBERSHIP_HREF', '')
+SLACK_BEGINNERS_HREF = os.environ.get('SLACK_BEGINNERS_HREF', '')
