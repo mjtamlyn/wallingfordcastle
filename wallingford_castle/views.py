@@ -1,7 +1,7 @@
 import json
 
 from django.conf import settings
-from django.core.urlresolvers import reverse_lazy
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView
 
 from braces.views import MessageMixin
@@ -26,17 +26,26 @@ class MembershipInterestView(MessageMixin, CreateView):
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
+        response = super().form_valid(form)
         self.messages.success('Thanks for your interest! We will be in touch soon.')
         if settings.SLACK_MEMBERSHIP_HREF:
             data = json.dumps({
                 'icon_emoji': ':wave:',
-                'text': 'New membership interest received for %s!' % form.cleaned_data['name'],
+                'text': 'New membership interest received for %s!\n%s' % (
+                    form.cleaned_data['name'],
+                    self.request.build_absolute_uri(
+                        reverse(
+                            'admin:wallingford_castle_membershipinterest_change',
+                            args=(form.instance.pk,),
+                        )
+                    ),
+                )
             })
             try:
                 requests.post(settings.SLACK_MEMBERSHIP_HREF, data=data)
             except Exception:
                 pass
-        return super().form_valid(form)
+        return response
 
 
 class BeginnersCourseView(MessageMixin, CreateView):
@@ -45,14 +54,23 @@ class BeginnersCourseView(MessageMixin, CreateView):
     success_url = reverse_lazy('home')
 
     def form_valid(self, form):
+        response = super().form_valid(form)
         self.messages.success('Thanks for your interest! We will be in touch soon.')
         if settings.SLACK_BEGINNERS_HREF:
             data = json.dumps({
                 'icon_emoji': ':wave:',
-                'text': 'New beginners course interest received for %s!' % form.cleaned_data['name'],
+                'text': 'New beginners course interest received for %s!\n%s' % (
+                    form.cleaned_data['name'],
+                    self.request.build_absolute_uri(
+                        reverse(
+                            'admin:wallingford_castle_beginnerscourseinterest_change',
+                            args=(form.instance.pk,),
+                        )
+                    ),
+                )
             })
             try:
                 requests.post(settings.SLACK_BEGINNERS_HREF, data=data)
             except Exception:
                 pass
-        return super().form_valid(form)
+        return response
