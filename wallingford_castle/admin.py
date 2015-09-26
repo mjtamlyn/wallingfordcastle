@@ -3,5 +3,16 @@ from django.contrib import admin
 from .models import MembershipInterest, BeginnersCourseInterest
 
 
-admin.site.register(MembershipInterest)
+@admin.register(MembershipInterest)
+class MembershipInterestAdmin(admin.ModelAdmin):
+    list_display = ['name', 'age', 'membership_type', 'status']
+    list_filter = ['status', 'membership_type', 'age']
+    actions = ['make_member']
+
+    def make_member(self, request, queryset):
+        for interest in queryset:
+            interest.make_member(request)
+    make_member.short_description = 'Promote to pending member'
+
+
 admin.site.register(BeginnersCourseInterest)

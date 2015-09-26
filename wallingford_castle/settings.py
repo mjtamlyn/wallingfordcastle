@@ -17,6 +17,7 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = (
     'wallingford_castle',
+    'membership',
 
     'floppyforms',
 
