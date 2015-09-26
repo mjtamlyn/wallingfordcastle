@@ -14,6 +14,7 @@ class MembershipInterestAdmin(admin.ModelAdmin):
         for interest in queryset:
             interest.make_member(request)
     make_member.short_description = 'Promote to pending member'
+    # TODO: make_member button on admin edit
 
 
 @admin.register(BeginnersCourseInterest)
