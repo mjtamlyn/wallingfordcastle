@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Members</h2>
+<!-- TODO table styling -->
+<table>
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Membership</th>
+            <th>ArcheryGB number</th>
+            <th>Paid until</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for member in members %}
+        <tr>
+            <td>{{ member.name }}</td>
+            <td>{{ member.get_age_display }} {% if member.date_of_birth %}({{ member.date_of_birth }}){% endif %}</td>
+            <td>{{ member.get_membership_type_display }}</td>
+            <td>{{ member.agb_number|default:"Unknown" }}</td>
+            <td>{{ member.paid_until|default:'<span class="error">Not paid</span>' }}</td>
+            <!-- TODO edit details -->
+            <!-- TODO edit payment -->
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

@@ -9,5 +9,6 @@ urlpatterns = patterns('',
     url(r'^membership-interest/$', views.MembershipInterestView.as_view(), name='membership-interest'),
     url(r'^beginners-course/$', views.BeginnersCourseView.as_view(), name='beginners-course'),
 
+    url(r'^members/', include('membership.urls', namespace='membership')),
     url(r'^admin/', include(admin.site.urls)),
 )

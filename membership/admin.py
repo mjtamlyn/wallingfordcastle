@@ -7,3 +7,4 @@ from .models import Member
 class MembershipInterestAdmin(admin.ModelAdmin):
     list_display = ['name', 'age', 'membership_type', 'paid_until']
     list_filter = ['membership_type', 'age']
+    readonly_fields = ['created', 'modified']

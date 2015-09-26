@@ -1,5 +1,6 @@
 from django.contrib.auth.models import User
 from django.db import models, transaction
+from django.utils import timezone
 
 
 AGE_CHOICES = (
@@ -34,7 +35,8 @@ class MembershipInterest(models.Model):
     membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
 
-    # TODO Created/modified (on all models)
+    created = models.DateTimeField(default=timezone.now, editable=False)
+    modified = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name
@@ -44,6 +46,8 @@ class MembershipInterest(models.Model):
             try:
                 user = User.objects.get(email=self.contact_email)
             except User.DoesNotExist:
+                # TODO: Write a custom user model which has email auth and a
+                # single name field
                 user = User.objects.create(
                     email=self.contact_email,
                     username=self.contact_email,
@@ -56,6 +60,7 @@ class MembershipInterest(models.Model):
                 date_of_birth=self.date_of_birth,
                 agb_number=self.agb_number,
                 membership_type=self.membership_type,
+                interest=self,
             )
             self.status = STATUS_PROCESSED
             self.save()
@@ -69,6 +74,9 @@ class BeginnersCourseInterest(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     experience = models.TextField(blank=True, default='')
     notes = models.TextField(blank=True, default='')
+
+    created = models.DateTimeField(default=timezone.now, editable=False)
+    modified = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.name

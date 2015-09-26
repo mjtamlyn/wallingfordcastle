@@ -21,6 +21,8 @@ INSTALLED_APPS = (
 
     'floppyforms',
 
+    # TODO 'debug_toolbar',
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

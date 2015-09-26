@@ -8,6 +8,7 @@ class MembershipInterestAdmin(admin.ModelAdmin):
     list_display = ['name', 'age', 'membership_type', 'status']
     list_filter = ['status', 'membership_type', 'age']
     actions = ['make_member']
+    readonly_fields = ['created', 'modified']
 
     def make_member(self, request, queryset):
         for interest in queryset:
@@ -15,4 +16,6 @@ class MembershipInterestAdmin(admin.ModelAdmin):
     make_member.short_description = 'Promote to pending member'
 
 
-admin.site.register(BeginnersCourseInterest)
+@admin.register(BeginnersCourseInterest)
+class BeginnersCourseInterestAdmin(admin.ModelAdmin):
+    readonly_fields = ['created', 'modified']
