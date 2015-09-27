@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<h2>Edit membership details</h2>
+<form class="form" method="POST" action=".">
+    {% csrf_token %}
+    {% form form using 'floppyforms/layouts/p.html' %}
+    <input type="submit">
+</form>
+{% endblock content %}

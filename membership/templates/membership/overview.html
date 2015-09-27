@@ -11,6 +11,7 @@
             <th>Membership</th>
             <th>ArcheryGB number</th>
             <th>Paid until</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -21,8 +22,10 @@
             <td>{{ member.get_membership_type_display }}</td>
             <td>{{ member.agb_number|default:"Unknown" }}</td>
             <td>{{ member.paid_until|default:'<span class="error">Not paid</span>' }}</td>
-            <!-- TODO edit details -->
-            <!-- TODO edit payment -->
+            <td>
+                <a href="{% url 'membership:member-update' member_id=member.pk %}">Edit details</a>
+                <!-- TODO edit payment -->
+            </td>
         </tr>
         {% endfor %}
     </tbody>
