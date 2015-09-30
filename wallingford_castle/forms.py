@@ -18,7 +18,7 @@ class MembershipInterestForm(forms.ModelForm):
 
     class Meta:
         model = MembershipInterest
-        fields = '__all__'
+        exclude = ['status']
 
 
 class BeginnersCourseForm(forms.ModelForm):

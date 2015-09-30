@@ -30,7 +30,11 @@
         {% endfor %}
     </tbody>
 </table>
+{% if user.customer_id %}
+<h2>Update your payment details</h2>
+{% else %}
 <h2>Add your payment details</h2>
+{% endif %}
 <form action="{% url 'membership:payment-details' %}" method="POST">
     {% csrf_token %}
     <script
@@ -40,7 +44,6 @@
         data-amount="{{ TODO }}{{ total_membership_cost }}"
         data-name="Wallingford Castle Archers"
         data-description="Club Membership"
-        data-image="{{ TODO }}"
         data-locale="auto">
     </script>
 </form>

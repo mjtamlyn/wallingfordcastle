@@ -1,9 +1,12 @@
 from django.contrib import admin
 
-from .models import MembershipInterest, BeginnersCourseInterest
+from custom_user.admin import EmailUserAdmin
+
+from .models import MembershipInterest, BeginnersCourseInterest, User
 
 
 class ActionsOnChangeView(object):
+    # TODO: make this work
     def change_view(self, request, object_id, form_url='', extra_context=None):
         form = self.get_action_form()
         form.fields['action'].choices = self.get_action_choices(request)
@@ -23,9 +26,13 @@ class MembershipInterestAdmin(admin.ModelAdmin):
         for interest in queryset:
             interest.make_member(request)
     make_member.short_description = 'Promote to pending member'
-    # TODO: make_member button on admin edit
 
 
 @admin.register(BeginnersCourseInterest)
 class BeginnersCourseInterestAdmin(admin.ModelAdmin):
     readonly_fields = ['created', 'modified']
+
+
+@admin.register(User)
+class UserAdmin(EmailUserAdmin):
+    pass

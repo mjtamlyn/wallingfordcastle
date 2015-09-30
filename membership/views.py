@@ -60,7 +60,8 @@ class PaymentDetails(View):
         token = request.POST['stripeToken']
         if self.request.user.customer_id:
             customer = stripe.Customer.retrieve(self.request.user.customer_id)
-            customer.default_source = token
+            source = customer.sources.create(source=token)
+            customer.default_source = source
             customer.save()
         else:
             customer = stripe.Customer.create(

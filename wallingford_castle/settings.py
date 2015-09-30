@@ -20,6 +20,7 @@ INSTALLED_APPS = (
     'wallingford_castle',
     'membership',
 
+    'custom_user',
     'floppyforms',
 
     # TODO 'debug_toolbar',
@@ -89,6 +90,7 @@ EMAIL_BACKEND = (
     'django.core.mail.backends.smtp.EmailBackend'
 )
 
+AUTH_USER_MODEL = 'wallingford_castle.User'
 LOGIN_REDIRECT_URL = reverse_lazy('membership:overview')
 
 SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')

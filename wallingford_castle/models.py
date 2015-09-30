@@ -1,6 +1,7 @@
-from django.contrib.auth.models import User
 from django.db import models, transaction
 from django.utils import timezone
+
+from custom_user.models import AbstractEmailUser
 
 
 AGE_CHOICES = (
@@ -46,12 +47,9 @@ class MembershipInterest(models.Model):
             try:
                 user = User.objects.get(email=self.contact_email)
             except User.DoesNotExist:
-                # TODO: Write a custom user model which has email auth and a
-                # single name field
                 user = User.objects.create(
                     email=self.contact_email,
-                    username=self.contact_email,
-                    is_active=False
+                    is_active=False,
                 )
                 # TODO send_invitation_email(user)
             user.members.create(
@@ -80,3 +78,7 @@ class BeginnersCourseInterest(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class User(AbstractEmailUser):
+    customer_id = models.CharField(max_length=20)
