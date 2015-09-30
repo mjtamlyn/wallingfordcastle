@@ -60,6 +60,7 @@ class MembershipInterest(models.Model):
                 membership_type=self.membership_type,
                 interest=self,
             )
+            # TODO: Create subscription if the user already has payment set up
             self.status = STATUS_PROCESSED
             self.save()
             # TODO Slack notification with optional request.user

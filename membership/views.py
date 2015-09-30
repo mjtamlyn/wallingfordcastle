@@ -33,6 +33,7 @@ class MemberUpdate(LoginRequiredMixin, MessageMixin, UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
+        # TODO: Do we need to update subscriptions?
         self.messages.success('Details successfully updated!')
         if settings.SLACK_MEMBERSHIP_HREF:
             data = json.dumps({
@@ -70,4 +71,5 @@ class PaymentDetails(View):
             )
             self.request.user.customer_id = customer.id
             self.request.user.save()
+        # TODO: Create subscriptions
         return HttpResponseRedirect(reverse('membership:overview'))
