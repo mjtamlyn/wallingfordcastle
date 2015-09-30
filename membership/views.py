@@ -33,7 +33,7 @@ class MemberUpdate(LoginRequiredMixin, MessageMixin, UpdateView):
         self.messages.success('Details successfully updated!')
         if settings.SLACK_MEMBERSHIP_HREF:
             data = json.dumps({
-                'icon_emoji': ':up:',
+                'icon_emoji': ':exclamation:',
                 'text': '%s has updated details!\n%s' % (
                     form.cleaned_data['name'],
                     self.request.build_absolute_uri(

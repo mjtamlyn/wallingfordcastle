@@ -1,5 +1,6 @@
 import os
 
+from django.core.urlresolvers import reverse_lazy
 import dj_database_url
 
 
@@ -81,6 +82,14 @@ TEMPLATES = [{
         )
     }
 }]
+
+EMAIL_BACKEND = (
+    'django.core.mail.backends.console.EmailBackend'
+    if DEBUG else
+    'django.core.mail.backends.smtp.EmailBackend'
+)
+
+LOGIN_REDIRECT_URL = reverse_lazy('membership:overview')
 
 SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')
 
