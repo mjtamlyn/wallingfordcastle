@@ -4,6 +4,9 @@ from django.contrib import admin
 from . import views
 
 
+admin.autodiscover()
+
+
 urlpatterns = patterns('',
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^membership-interest/$', views.MembershipInterestView.as_view(), name='membership-interest'),

@@ -32,9 +32,19 @@ class MemberUpdate(LoginRequiredMixin, MessageMixin, UpdateView):
     def get_queryset(self):
         return self.request.user.members.all()
 
+    def get_object(self):
+        obj = super().get_object()
+        self.original_plan = obj.plan
+        return obj
+
     def form_valid(self, form):
         response = super().form_valid(form)
-        # TODO: Do we need to update subscriptions?
+        if self.object.plan != self.original_plan:
+            if self.object.subscription_id:
+                customer = stripe.Customer.retrieve(self.request.user.customer_id)
+                subscription = customer.subscriptions.retrieve(self.object.subscription_id)
+                subscription.plan = self.object.plan
+                subscription.save()
         self.messages.success('Details successfully updated!')
         if settings.SLACK_MEMBERSHIP_HREF:
             data = json.dumps({
@@ -58,7 +68,6 @@ class MemberUpdate(LoginRequiredMixin, MessageMixin, UpdateView):
 
 class PaymentDetails(View):
     def post(self, request, *args, **kwargs):
-        stripe.api_key = settings.STRIPE_SECRET_KEY
         token = request.POST['stripeToken']
         if self.request.user.customer_id:
             customer = stripe.Customer.retrieve(self.request.user.customer_id)
@@ -72,5 +81,8 @@ class PaymentDetails(View):
             )
             self.request.user.customer_id = customer.id
             self.request.user.save()
-        # TODO: Create subscriptions
+        for member in self.request.user.members.filter(subscription_id=''):
+            subscription = customer.subscriptions.create(plan=member.plan)
+            member.subscription_id = subscription.id
+            member.save()
         return HttpResponseRedirect(reverse('membership:overview'))

@@ -2,6 +2,7 @@ from django.db import models, transaction
 from django.utils import timezone
 
 from custom_user.models import AbstractEmailUser
+import stripe
 
 
 AGE_CHOICES = (
@@ -52,7 +53,7 @@ class MembershipInterest(models.Model):
                     is_active=False,
                 )
                 # TODO send_invitation_email(user)
-            user.members.create(
+            member = user.members.create(
                 name=self.name,
                 age=self.age,
                 date_of_birth=self.date_of_birth,
@@ -60,7 +61,12 @@ class MembershipInterest(models.Model):
                 membership_type=self.membership_type,
                 interest=self,
             )
-            # TODO: Create subscription if the user already has payment set up
+            if user.customer_id:
+                customer = stripe.Customer.retrieve(user.customer_id)
+                subscription = customer.subscriptions.create(plan=member.plan)
+                member.subscription_id = subscription.id
+                member.save()
+                # TODO: Notify user they have a new subscription
             self.status = STATUS_PROCESSED
             self.save()
             # TODO Slack notification with optional request.user
