@@ -23,7 +23,7 @@ INSTALLED_APPS = (
     'custom_user',
     'floppyforms',
 
-    # TODO 'debug_toolbar',
+    'debug_toolbar',
 
     'django.contrib.admin',
     'django.contrib.auth',
