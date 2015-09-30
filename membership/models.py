@@ -26,3 +26,7 @@ class Member(models.Model):
         if self.age == 'senior' and self.membership_type == 'full':
             return 'adult'
         return 'concession'
+
+    @property
+    def plan_cost(self):
+        return 15 if self.plan == 'adult' else 10

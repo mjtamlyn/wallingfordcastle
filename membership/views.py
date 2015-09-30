@@ -18,6 +18,7 @@ class Overview(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['members'] = self.request.user.members.all()
+        context['monthly_fee'] = sum(member.plan_cost for member in context['members'])
         context['STRIPE_KEY'] = settings.STRIPE_KEY
         return context
 

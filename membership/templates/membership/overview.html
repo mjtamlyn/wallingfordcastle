@@ -2,6 +2,7 @@
 
 {% block content %}
 <h2>Members</h2>
+<p>Monthly charge: £{{ monthly_fee }}</p>
 <!-- TODO table styling -->
 <table>
     <thead>
@@ -10,6 +11,7 @@
             <th>Age</th>
             <th>Membership</th>
             <th>ArcheryGB number</th>
+            <th>Monthly charge</th>
             <th>Paid until</th>
             <th></th>
         </tr>
@@ -21,6 +23,7 @@
             <td>{{ member.get_age_display }} {% if member.date_of_birth %}({{ member.date_of_birth }}){% endif %}</td>
             <td>{{ member.get_membership_type_display }}</td>
             <td>{{ member.agb_number|default:"Unknown" }}</td>
+            <td>£{{ member.plan_cost }}</td>
             <td>{{ member.paid_until|default:"Not paid" }}</td> <!-- TODO Payment received hook -->
             <td>
                 <a href="{% url 'membership:member-update' member_id=member.pk %}">Edit details</a>
@@ -40,7 +43,8 @@
         src="https://checkout.stripe.com/checkout.js" class="stripe-button"
         data-key="{{ STRIPE_KEY }}"
         data-email="{{ user.email }}"
-        data-amount="{{ TODO }}{{ total_membership_cost }}"
+        data-currency="GBP"
+        data-amount="{{ monthly_fee }}00"
         data-name="Wallingford Castle Archers"
         data-description="Club Membership"
         data-locale="auto">
