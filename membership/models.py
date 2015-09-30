@@ -30,3 +30,5 @@ class Member(models.Model):
     @property
     def plan_cost(self):
         return 15 if self.plan == 'adult' else 10
+
+    # TODO: Cancel subscription?
