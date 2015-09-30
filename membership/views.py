@@ -2,10 +2,12 @@ import json
 
 from django.conf import settings
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.views.generic import TemplateView, UpdateView
+from django.http import HttpResponseRedirect
+from django.views.generic import TemplateView, UpdateView, View
 
 from braces.views import LoginRequiredMixin, MessageMixin
 import requests
+import stripe
 
 from .forms import MemberForm
 
@@ -16,6 +18,7 @@ class Overview(LoginRequiredMixin, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['members'] = self.request.user.members.all()
+        context['STRIPE_KEY'] = settings.STRIPE_KEY
         return context
 
 
@@ -49,3 +52,21 @@ class MemberUpdate(LoginRequiredMixin, MessageMixin, UpdateView):
             except Exception:
                 pass
         return response
+
+
+class PaymentDetails(View):
+    def post(self, request, *args, **kwargs):
+        stripe.api_key = settings.STRIPE_SECRET_KEY
+        token = request.POST['stripeToken']
+        if self.request.user.customer_id:
+            customer = stripe.Customer.retrieve(self.request.user.customer_id)
+            customer.default_source = token
+            customer.save()
+        else:
+            customer = stripe.Customer.create(
+                source=token,
+                email=self.request.user.email,
+            )
+            self.request.user.customer_id = customer.id
+            self.request.user.save()
+        return HttpResponseRedirect(reverse('membership:overview'))

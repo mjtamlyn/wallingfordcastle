@@ -3,6 +3,15 @@ from django.contrib import admin
 from .models import MembershipInterest, BeginnersCourseInterest
 
 
+class ActionsOnChangeView(object):
+    def change_view(self, request, object_id, form_url='', extra_context=None):
+        form = self.get_action_form()
+        form.fields['action'].choices = self.get_action_choices(request)
+        form.fields['select_across'].initial = object_id
+        context = {'action_form': form}
+        super().change_view(request, object_id, form_url='', extra_context=context)
+
+
 @admin.register(MembershipInterest)
 class MembershipInterestAdmin(admin.ModelAdmin):
     list_display = ['name', 'age', 'membership_type', 'status']

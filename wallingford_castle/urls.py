@@ -10,7 +10,7 @@ urlpatterns = patterns('',
     url(r'^beginners-course/$', views.BeginnersCourseView.as_view(), name='beginners-course'),
 
     url(r'^members/', include('membership.urls', namespace='membership')),
-    # TODO: Registration templates
+    # TODO: Password reset flow templates
     # TODO: Style header links
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^admin/', include(admin.site.urls)),

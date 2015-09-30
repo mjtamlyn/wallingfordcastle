@@ -30,4 +30,18 @@
         {% endfor %}
     </tbody>
 </table>
+<h2>Add your payment details</h2>
+<form action="{% url 'membership:payment-details' %}" method="POST">
+    {% csrf_token %}
+    <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="{{ STRIPE_KEY }}"
+        data-email="{{ user.email }}"
+        data-amount="{{ TODO }}{{ total_membership_cost }}"
+        data-name="Wallingford Castle Archers"
+        data-description="Club Membership"
+        data-image="{{ TODO }}"
+        data-locale="auto">
+    </script>
+</form>
 {% endblock content %}
