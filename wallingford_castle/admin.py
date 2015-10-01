@@ -33,6 +33,6 @@ class UserAdmin(DjangoObjectActions, EmailUserAdmin):
     @takes_instance_or_queryset
     def send_welcome_email(self, request, queryset):
         for user in queryset:
-            user.send_welcome_email()
+            user.send_welcome_email(request)
     send_welcome_email.short_description = 'Send welcome email'
     send_welcome_email.label = 'Send welcome email'

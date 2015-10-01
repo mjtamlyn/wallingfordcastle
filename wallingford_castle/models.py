@@ -1,5 +1,9 @@
+from django.contrib.auth.tokens import default_token_generator
+from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.utils import timezone
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from custom_user.models import AbstractEmailUser
 from templated_email import send_templated_mail
@@ -93,7 +97,10 @@ class User(AbstractEmailUser):
     customer_id = models.CharField(max_length=20)
 
     def send_welcome_email(self, request=None):
-        url = '/TODO/'
+        url = reverse('register', kwargs={
+            'uidb64': urlsafe_base64_encode(force_bytes(self.pk)),
+            'token': default_token_generator.make_token(self),
+        })
         if request is not None:
             url = request.build_absolute_uri(url)
         send_templated_mail(

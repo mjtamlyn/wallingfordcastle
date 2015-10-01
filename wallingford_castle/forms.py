@@ -1,4 +1,7 @@
+from django.contrib.auth.forms import SetPasswordForm
+
 import floppyforms.__future__ as forms
+
 
 from .models import MembershipInterest, BeginnersCourseInterest
 
@@ -29,7 +32,9 @@ class BeginnersCourseForm(forms.ModelForm):
         self.fields['date_of_birth'].help_text = 'Juniors only'
         self.fields['experience'].label = 'Tell us about any archery you have done before'
         self.fields['experience'].help_text = 'No experience is necessary!'
-        self.fields['notes'].label = 'Please tell us about any injuries or health problems, or anything else you think we should know'
+        self.fields['notes'].label = (
+            'Please tell us about any injuries or health problems, or anything else you think we should know'
+        )
 
     def clean(self):
         if self.cleaned_data.get('age') == 'junior' and not self.cleaned_data.get('date_of_birth'):
@@ -38,3 +43,9 @@ class BeginnersCourseForm(forms.ModelForm):
     class Meta:
         model = BeginnersCourseInterest
         fields = '__all__'
+
+
+class RegisterForm(SetPasswordForm):
+    def save(self):
+        self.user.is_active = True
+        return super(RegisterForm, self).save()

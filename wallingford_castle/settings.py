@@ -95,6 +95,7 @@ TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
 
 AUTH_USER_MODEL = 'wallingford_castle.User'
 LOGIN_REDIRECT_URL = reverse_lazy('membership:overview')
+PASSWORD_RESET_TIMEOUT_DAYS = 7  # Also used for welcome email
 
 SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')
 
