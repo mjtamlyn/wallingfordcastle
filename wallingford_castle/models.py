@@ -58,7 +58,7 @@ class MembershipInterest(models.Model):
                     email=self.contact_email,
                     is_active=False,
                 )
-                user.send_welcome_email()
+                user.send_welcome_email(request)
             member = user.members.create(
                 name=self.name,
                 age=self.age,
