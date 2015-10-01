@@ -91,6 +91,7 @@ EMAIL_BACKEND = (
     if DEBUG else
     'django.core.mail.backends.smtp.EmailBackend'
 )
+TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
 
 AUTH_USER_MODEL = 'wallingford_castle.User'
 LOGIN_REDIRECT_URL = reverse_lazy('membership:overview')

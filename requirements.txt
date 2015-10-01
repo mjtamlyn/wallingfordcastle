@@ -15,3 +15,6 @@ sqlparse==0.1.16
 static3==0.6.1
 stripe==1.27.0
 wheel==0.24.0
+
+# Py3 compatible fork (collinanderson) + upstream changes for Django 1.8
+git+https://github.com/mjtamlyn/django-templated-email@cc5a94a2c53455c256e7b6f791df03a9971c3bcb#egg=django-templated-email

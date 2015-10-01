@@ -2,6 +2,7 @@ from django.db import models, transaction
 from django.utils import timezone
 
 from custom_user.models import AbstractEmailUser
+from templated_email import send_templated_mail
 import stripe
 
 
@@ -44,6 +45,7 @@ class MembershipInterest(models.Model):
         return self.name
 
     def make_member(self, request=None):
+        # TODO: Don't duplicate!
         with transaction.atomic():
             try:
                 user = User.objects.get(email=self.contact_email)
@@ -52,7 +54,7 @@ class MembershipInterest(models.Model):
                     email=self.contact_email,
                     is_active=False,
                 )
-                # TODO send_invitation_email(user)
+                user.send_welcome_email()
             member = user.members.create(
                 name=self.name,
                 age=self.age,
@@ -89,3 +91,16 @@ class BeginnersCourseInterest(models.Model):
 
 class User(AbstractEmailUser):
     customer_id = models.CharField(max_length=20)
+
+    def send_welcome_email(self, request=None):
+        url = '/TODO/'
+        if request is not None:
+            url = request.build_absolute_uri(url)
+        send_templated_mail(
+            template_name='welcome',
+            from_email='hello@wallingfordcastle.co.uk',
+            recipient_list=[self.email],
+            context={
+                'register_url': url,
+            },
+        )

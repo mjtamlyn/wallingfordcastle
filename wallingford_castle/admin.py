@@ -27,5 +27,12 @@ class BeginnersCourseInterestAdmin(admin.ModelAdmin):
 
 
 @admin.register(User)
-class UserAdmin(EmailUserAdmin):
-    pass
+class UserAdmin(DjangoObjectActions, EmailUserAdmin):
+    actions = objectactions = ['send_welcome_email']
+
+    @takes_instance_or_queryset
+    def send_welcome_email(self, request, queryset):
+        for user in queryset:
+            user.send_welcome_email()
+    send_welcome_email.short_description = 'Send welcome email'
+    send_welcome_email.label = 'Send welcome email'
