@@ -22,6 +22,7 @@ INSTALLED_APPS = (
     'membership',
 
     'custom_user',
+    'django_object_actions',
     'floppyforms',
 
     'debug_toolbar',
