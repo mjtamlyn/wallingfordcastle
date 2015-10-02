@@ -23,6 +23,7 @@ class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
 
 @admin.register(BeginnersCourseInterest)
 class BeginnersCourseInterestAdmin(admin.ModelAdmin):
+    list_display = ['name', 'age', 'contact_email']
     readonly_fields = ['created', 'modified']
 
 
