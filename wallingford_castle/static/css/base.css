@@ -63,24 +63,53 @@ footer {
   color: #CA4984;
   margin: 0 auto;
 }
-/* line 14, ../../sass/_layout.sass */
-header h1,
-footer h1 {
+/* line 15, ../../sass/_layout.sass */
+header a,
+footer a {
+  color: #CA4984;
+}
+/* line 17, ../../sass/_layout.sass */
+header a:hover,
+footer a:hover {
+  color: #CA4984;
+}
+
+/* line 20, ../../sass/_layout.sass */
+header {
+  background-color: #303236;
+  padding: 15px 0;
+}
+/* line 24, ../../sass/_layout.sass */
+header .container {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-align-items: center;
+  align-items: center;
+}
+/* line 32, ../../sass/_layout.sass */
+header h1 {
   position: relative;
-  display: inline;
-  margin: 0;
+  -webkit-flex-grow: 5;
+  flex-grow: 5;
+  margin: 5px 0;
   padding-left: 80px;
 }
 @media (max-width: 750px) {
-  /* line 14, ../../sass/_layout.sass */
-  header h1,
-  footer h1 {
-    padding-left: 70px;
+  /* line 32, ../../sass/_layout.sass */
+  header h1 {
+    padding-left: 60px;
   }
 }
-/* line 21, ../../sass/_layout.sass */
-header h1:before,
-footer h1:before {
+@media (max-width: 350px) {
+  /* line 32, ../../sass/_layout.sass */
+  header h1 {
+    font-size: 20px;
+  }
+}
+/* line 42, ../../sass/_layout.sass */
+header h1:before {
   content: "";
   position: absolute;
   display: block;
@@ -89,67 +118,68 @@ footer h1:before {
   background-image: url("../svg/logo.svg");
   background-size: 100%;
   top: -15px;
+  left: 0;
 }
 @media (max-width: 750px) {
-  /* line 21, ../../sass/_layout.sass */
-  header h1:before,
-  footer h1:before {
-    height: 60px;
-    width: 60px;
+  /* line 42, ../../sass/_layout.sass */
+  header h1:before {
+    height: 55px;
+    width: 55px;
   }
 }
-/* line 33, ../../sass/_layout.sass */
-header h1 a,
-footer h1 a {
-  color: #CA4984;
+/* line 56, ../../sass/_layout.sass */
+header .user-actions {
+  -webkit-flex-grow: 1;
+  flex-grow: 1;
+  text-align: right;
 }
-/* line 35, ../../sass/_layout.sass */
-header h1 a:hover,
-footer h1 a:hover {
-  color: #CA4984;
+/* line 61, ../../sass/_layout.sass */
+header .user-actions a {
+  padding: 5px;
 }
 
-/* line 40, ../../sass/_layout.sass */
+/* line 66, ../../sass/_layout.sass */
 footer nav ul {
   margin: 0;
 }
 
-/* line 43, ../../sass/_layout.sass */
-header {
-  padding: 20px 0;
-}
-
-/* line 46, ../../sass/_layout.sass */
+/* line 69, ../../sass/_layout.sass */
 article {
   margin-bottom: 15px;
 }
 
-/* line 49, ../../sass/_layout.sass */
+/* line 72, ../../sass/_layout.sass */
 footer {
   padding: 15px 0;
   background-color: #eee;
 }
 
-/* line 53, ../../sass/_layout.sass */
+/* line 76, ../../sass/_layout.sass */
 .container {
   width: 1170px;
   margin: 0 auto;
   padding: 0 15px;
 }
 @media (max-width: 1200px) {
-  /* line 59, ../../sass/_layout.sass */
+  /* line 82, ../../sass/_layout.sass */
   .container {
     width: 910px;
   }
 }
 @media (max-width: 950px) {
-  /* line 63, ../../sass/_layout.sass */
+  /* line 86, ../../sass/_layout.sass */
   .container {
     width: 100%;
   }
 }
+@media (max-width: 750px) {
+  /* line 76, ../../sass/_layout.sass */
+  .container {
+    padding: 0 5px;
+  }
+}
 
-/* line 66, ../../sass/_layout.sass */
+/* line 92, ../../sass/_layout.sass */
 .flex-sections {
   display: -webkit-flex;
   display: flex;
@@ -158,24 +188,24 @@ footer {
   margin: 0 -30px;
 }
 @media (max-width: 750px) {
-  /* line 74, ../../sass/_layout.sass */
+  /* line 100, ../../sass/_layout.sass */
   .flex-sections {
     margin: 0;
   }
 }
-/* line 77, ../../sass/_layout.sass */
+/* line 103, ../../sass/_layout.sass */
 .flex-sections section {
   width: 33.333%;
   padding: 0 30px;
 }
 @media (max-width: 1200px) {
-  /* line 82, ../../sass/_layout.sass */
+  /* line 108, ../../sass/_layout.sass */
   .flex-sections section {
     width: 50%;
   }
 }
 @media (max-width: 750px) {
-  /* line 86, ../../sass/_layout.sass */
+  /* line 112, ../../sass/_layout.sass */
   .flex-sections section {
     width: 100%;
     padding: 0;
@@ -250,9 +280,4 @@ p {
 sup {
   vertical-align: top;
   font-size: small;
-}
-
-/* line 11, ../../sass/base.sass */
-header {
-  background-color: #303236;
 }

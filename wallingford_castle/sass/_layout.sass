@@ -11,13 +11,34 @@ header,
 footer
   color: $pink
   margin: 0 auto
+
+  a
+    color: $pink
+    &:hover
+      color: $pink
+
+header
+  background-color: $grey
+  padding: 15px 0
+
+  .container
+    display: -webkit-flex
+    display: flex
+    -webkit-flex-wrap: wrap
+    flex-wrap: wrap
+    -webkit-align-items: center
+    align-items: center
+
   h1
     position: relative
-    display: inline
-    margin: 0
+    -webkit-flex-grow: 5
+    flex-grow: 5
+    margin: 5px 0
     padding-left: 80px
     @media (max-width: 750px)
-      padding-left: 70px
+      padding-left: 60px
+    @media (max-width: 350px)
+      font-size: 20px
     &:before
       content: ''
       position: absolute
@@ -27,21 +48,23 @@ footer
       background-image: url('../svg/logo.svg')
       background-size: 100%
       top: -15px
+      left: 0
       @media (max-width: 750px)
-        height: 60px
-        width: 60px
+        height: 55px
+        width: 55px
+
+  .user-actions
+    -webkit-flex-grow: 1
+    flex-grow: 1
+    text-align: right
+
     a
-      color: $pink
-      &:hover
-        color: $pink
+      padding: 5px
 
 footer
   nav
     ul
       margin: 0
-
-header
-  padding: 20px 0
 
 article
   margin-bottom: $margin-width
@@ -62,6 +85,9 @@ footer
   @media (max-width: 950px)
     &
       width: 100%
+
+  @media (max-width: 750px)
+    padding: 0 5px
 
 .flex-sections
   display: -webkit-flex

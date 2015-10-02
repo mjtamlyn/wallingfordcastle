@@ -1,6 +1,8 @@
 import os
 
+from django.core.urlresolvers import reverse_lazy
 import dj_database_url
+import stripe
 
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -17,8 +19,13 @@ ALLOWED_HOSTS = [
 
 INSTALLED_APPS = (
     'wallingford_castle',
+    'membership',
 
+    'custom_user',
+    'django_object_actions',
     'floppyforms',
+
+    'debug_toolbar',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -79,9 +86,23 @@ TEMPLATES = [{
     }
 }]
 
+EMAIL_BACKEND = (
+    'django.core.mail.backends.console.EmailBackend'
+    if DEBUG else
+    'django.core.mail.backends.smtp.EmailBackend'
+)
+TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
+
+AUTH_USER_MODEL = 'wallingford_castle.User'
+LOGIN_REDIRECT_URL = reverse_lazy('membership:overview')
+PASSWORD_RESET_TIMEOUT_DAYS = 7  # Also used for welcome email
+
 SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')
 
 GA_TRACKING = os.environ.get('GA_TRACKING', '')
 
 SLACK_MEMBERSHIP_HREF = os.environ.get('SLACK_MEMBERSHIP_HREF', '')
 SLACK_BEGINNERS_HREF = os.environ.get('SLACK_BEGINNERS_HREF', '')
+
+STRIPE_KEY = os.environ.get('STRIPE_KEY', 'pk_test_Y1b88Dl9MMyGcRJQLnyHyOVI')
+stripe.api_key = STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')

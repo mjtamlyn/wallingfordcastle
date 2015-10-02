@@ -1,0 +1,26 @@
+{% block subject %}Welcome to Wallingford Castle Archers!{% endblock %}
+
+{% block plain %}
+Hi!
+
+Thanks for your interest in joining Wallingford Castle Archers. We're delighted to have you!
+
+To register and pay, please click here:
+{{ register_url }}
+
+Hope to see you at a session soon!
+Wallingford Castle Archers Committee
+{% endblock %}
+
+{% block html %}
+<p>Hi!</p>
+
+<p>Thanks for your interest in joining Wallingford Castle Archers. We're delighted to have you!</p>
+
+<a href="{{ register_url }}">Register and pay here</a>
+
+<p>
+Hope to see you at a session soon!<br>
+Wallingford Castle Archers Committee
+</p>
+{% endblock %}
