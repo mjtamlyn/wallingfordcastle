@@ -66,7 +66,7 @@ class MemberUpdate(LoginRequiredMixin, MessageMixin, UpdateView):
         return response
 
 
-class PaymentDetails(View):
+class PaymentDetails(MessageMixin, View):
     def post(self, request, *args, **kwargs):
         token = request.POST['stripeToken']
         if self.request.user.customer_id:
@@ -85,4 +85,5 @@ class PaymentDetails(View):
             subscription = customer.subscriptions.create(plan=member.plan)
             member.subscription_id = subscription.id
             member.save()
+        self.messages.success('Thanks! You will receive a confirmation email soon.')
         return HttpResponseRedirect(reverse('membership:overview'))
