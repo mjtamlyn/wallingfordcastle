@@ -16,7 +16,6 @@ urlpatterns = patterns('',
     url(r'^beginners-course/$', views.BeginnersCourseView.as_view(), name='beginners-course'),
 
     url(r'^members/', include('membership.urls', namespace='membership')),
-    # TODO: Password reset flow templates
     # TODO: Style header links
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^accounts/register/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',
