@@ -88,11 +88,11 @@
             Membership is due monthly. You must already be a member of
             Archery GB or another World Archery affiliated body.
         </p>
-        <h3>Register interest</h3>
-        <form class="form" method="POST" action="{% url 'membership-interest' %}">
+        <form class="form page-form" method="POST" action="{% url 'membership-interest' %}">
+            <h3>Register interest</h3>
             {% csrf_token %}
             {% form membership_form using 'floppyforms/layouts/p.html' %}
-            <input type="submit">
+            <input type="submit" class="btn">
         </form>
     </section>
     <section>
@@ -123,11 +123,11 @@
             11.30am for seniors, 11.30am to 1pm for juniors.
             </li>
         </ul>
-        <h3>Register interest</h3>
-        <form class="form" method="POST" action="{% url 'beginners-course' %}">
+        <form class="form page-form" method="POST" action="{% url 'beginners-course' %}">
+            <h3>Register interest</h3>
             {% csrf_token %}
             {% form beginners_form using 'floppyforms/layouts/p.html' %}
-            <input type="submit">
+            <input type="submit" class="btn">
         </form>
     </section>
 </div>

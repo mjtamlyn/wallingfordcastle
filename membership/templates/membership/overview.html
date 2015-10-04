@@ -3,33 +3,34 @@
 {% block content %}
 <h2>Members</h2>
 <p>Monthly charge: £{{ monthly_fee }}</p>
-<!-- TODO table styling -->
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Age</th>
-            <th>Membership</th>
-            <th>ArcheryGB number</th>
-            <th>Monthly charge</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for member in members %}
-        <tr>
-            <td>{{ member.name }}</td>
-            <td>{{ member.get_age_display }} {% if member.date_of_birth %}({{ member.date_of_birth }}){% endif %}</td>
-            <td>{{ member.get_membership_type_display }}</td>
-            <td>{{ member.agb_number|default:"Unknown" }}</td>
-            <td>£{{ member.plan_cost }}</td>
-            <td>
-                <a href="{% url 'membership:member-update' member_id=member.pk %}">Edit details</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Membership</th>
+                <th>ArcheryGB number</th>
+                <th>Charge</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in members %}
+            <tr>
+                <td>{{ member.name }}</td>
+                <td>{{ member.get_age_display }} {% if member.date_of_birth %}({{ member.date_of_birth }}){% endif %}</td>
+                <td>{{ member.get_membership_type_display }}</td>
+                <td>{{ member.agb_number|default:"Unknown" }}</td>
+                <td>£{{ member.plan_cost }}</td>
+                <td>
+                    <a class="btn btn-small" href="{% url 'membership:member-update' member_id=member.pk %}">Edit details</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% if user.customer_id %}
 <h2>Update your payment details</h2>
 {% else %}
