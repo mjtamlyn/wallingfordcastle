@@ -1,4 +1,5 @@
 from django.contrib.auth.tokens import default_token_generator
+from django.contrib import messages
 from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.utils import timezone
@@ -49,7 +50,10 @@ class MembershipInterest(models.Model):
         return self.name
 
     def make_member(self, request=None):
-        # TODO: Don't duplicate!
+        if self.member_set.exists():
+            if request:
+                messages.error(request, '%s has already been converted to a member.' % self.name)
+            return
         with transaction.atomic():
             try:
                 user = User.objects.get(email=self.contact_email)
