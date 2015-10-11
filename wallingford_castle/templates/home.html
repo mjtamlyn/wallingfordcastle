@@ -16,13 +16,17 @@
     </section>
     <section>
         <h2>News</h2>
-        <p>First club session will be Sunday 11<sup>th</sup> October!</p>
         <p>
-        Our first beginners course of the season will start on Sunday
-        11<sup>th</sup> October and run every Sunday at 10am until Sunday
-        1<sup>st</sup> November. We will be running a have a go at the school
-        on Saturday 3<sup>rd</sup> October between 10am and 1pm, so come along
-        and try your hand at our sport if you think archery might be for you.
+        Our first beginners course is under way - it's great to see some
+        wonderful new archers!
+        </p>
+        <p>
+        Next beginners course dates will be Sunday 8th November, 15th November,
+        22nd November and 6th December. Sign up now to get your space!
+        </p>
+        <p>
+        On Sunday 29th November we will be hosting the County Indoor
+        Championships!
         </p>
     </section>
     <section>
@@ -89,7 +93,7 @@
             Archery GB or another World Archery affiliated body.
         </p>
         <form class="form page-form" method="POST" action="{% url 'membership-interest' %}">
-            <h3>Register interest</h3>
+            <h3>Register interest in membership</h3>
             {% csrf_token %}
             {% form membership_form using 'floppyforms/layouts/p.html' %}
             <input type="submit" class="btn">
@@ -119,12 +123,18 @@
         </p>
         <ul>
             <li>
-            October 11th, October 18th, October 25th, November 1st. 10am to
-            11.30am for seniors, 11.30am to 1pm for juniors.
+            November 8th, November 15th, November 22nd, December 6th. 10am to
+            11.30am.
             </li>
+            <li>January/February, dates TBC</li>
         </ul>
+        <p>
+            <small>If the course is oversubscribed and we have some juniors not
+            attending in a family group, we may run a juniors only course
+            11.30am to 1pm.</small>
+        </p>
         <form class="form page-form" method="POST" action="{% url 'beginners-course' %}">
-            <h3>Register interest</h3>
+            <h3>Sign up for a course</h3>
             {% csrf_token %}
             {% form beginners_form using 'floppyforms/layouts/p.html' %}
             <input type="submit" class="btn">
@@ -132,15 +142,3 @@
     </section>
 </div>
 {% endblock %}
-
-
-- About
-- News (have a go)
-- Session times
-- Location (will include a map)
-- Beginners course(s) - contact form
-- Membership - contact form
-- Ken
-
-
-Responsive font sizes
