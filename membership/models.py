@@ -10,6 +10,7 @@ class Member(models.Model):
     age = models.CharField(max_length=20, choices=AGE_CHOICES)
     date_of_birth = models.DateField(blank=True, null=True)
     agb_number = models.CharField(max_length=10, default='', blank=True)
+    address = models.TextField(default='')
     membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
     paid_until = models.DateField(blank=True, null=True)
     subscription_id = models.CharField(max_length=20, default='', blank=True, editable=False)

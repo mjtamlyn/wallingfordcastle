@@ -39,6 +39,7 @@ class MembershipInterest(models.Model):
     contact_email = models.EmailField()
     age = models.CharField(max_length=20, choices=AGE_CHOICES)
     date_of_birth = models.DateField(blank=True, null=True)
+    address = models.TextField(default='')
     agb_number = models.CharField(max_length=10, default='', blank=True)
     membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
@@ -67,6 +68,7 @@ class MembershipInterest(models.Model):
                 name=self.name,
                 age=self.age,
                 date_of_birth=self.date_of_birth,
+                address=self.address,
                 agb_number=self.agb_number,
                 membership_type=self.membership_type,
                 interest=self,
