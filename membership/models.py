@@ -15,6 +15,7 @@ class Member(models.Model):
     paid_until = models.DateField(blank=True, null=True)
     subscription_id = models.CharField(max_length=20, default='', blank=True, editable=False)
     interest = models.ForeignKey('wallingford_castle.MembershipInterest', blank=True, null=True)
+    contact_number = models.CharField(max_length=20, blank=True, default='')
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now_add=True)

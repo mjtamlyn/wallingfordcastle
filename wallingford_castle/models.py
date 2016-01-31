@@ -37,6 +37,7 @@ STATUS_CHOICES = (
 class MembershipInterest(models.Model):
     name = models.CharField(max_length=200)
     contact_email = models.EmailField()
+    contact_number = models.CharField(max_length=20, blank=True, default='')
     age = models.CharField(max_length=20, choices=AGE_CHOICES)
     date_of_birth = models.DateField(blank=True, null=True)
     address = models.TextField(default='')
@@ -87,6 +88,7 @@ class MembershipInterest(models.Model):
 class BeginnersCourseInterest(models.Model):
     name = models.CharField(max_length=200)
     contact_email = models.EmailField()
+    contact_number = models.CharField(max_length=20, blank=True, default='')
     age = models.CharField(max_length=20, choices=AGE_CHOICES)
     date_of_birth = models.DateField(blank=True, null=True)
     experience = models.TextField(blank=True, default='')
