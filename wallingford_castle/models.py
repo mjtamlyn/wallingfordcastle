@@ -70,6 +70,7 @@ class MembershipInterest(models.Model):
                 age=self.age,
                 date_of_birth=self.date_of_birth,
                 address=self.address,
+                contact_number=self.contact_number,
                 agb_number=self.agb_number,
                 membership_type=self.membership_type,
                 interest=self,
@@ -82,7 +83,17 @@ class MembershipInterest(models.Model):
                 # TODO: Notify user they have a new subscription
             self.status = STATUS_PROCESSED
             self.save()
-            # TODO Slack notification with optional request.user
+
+    def send_to_beginners(self):
+        BeginnersCourseInterest.objects.create(
+            name=self.name,
+            contact_email=self.contact_email,
+            contact_number=self.contact_number,
+            age=self.age,
+            date_of_birth=self.date_of_birth,
+        )
+        self.status = STATUS_BEGINNERS
+        self.save()
 
 
 class BeginnersCourseInterest(models.Model):

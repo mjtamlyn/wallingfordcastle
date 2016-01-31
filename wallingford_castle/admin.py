@@ -10,7 +10,7 @@ from .models import MembershipInterest, BeginnersCourseInterest, User
 class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['name', 'age', 'membership_type', 'status']
     list_filter = ['status', 'membership_type', 'age']
-    actions = objectactions = ['make_member']
+    actions = objectactions = ['make_member', 'send_to_beginners']
     readonly_fields = ['created', 'modified']
 
     @takes_instance_or_queryset
@@ -19,6 +19,13 @@ class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
             interest.make_member(request)
     make_member.short_description = 'Promote to pending member'
     make_member.label = 'Make pending member'
+
+    @takes_instance_or_queryset
+    def send_to_beginners(self, request, queryset):
+        for interest in queryset:
+            interest.send_to_beginners()
+    send_to_beginners.short_description = 'Send to beginners course'
+    send_to_beginners.label = 'Send to beginners course'
 
 
 @admin.register(BeginnersCourseInterest)
