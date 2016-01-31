@@ -1,4 +1,4 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import include, url
 from django.contrib import admin
 from django.contrib.auth.views import password_reset_confirm
 from django.core.urlresolvers import reverse_lazy
@@ -10,7 +10,7 @@ from .forms import RegisterForm
 admin.autodiscover()
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^membership-interest/$', views.MembershipInterestView.as_view(), name='membership-interest'),
     url(r'^beginners-course/$', views.BeginnersCourseView.as_view(), name='beginners-course'),
@@ -25,4 +25,4 @@ urlpatterns = patterns('',
             'post_reset_redirect': reverse_lazy('membership:overview'),
         }, name='register'),
     url(r'^admin/', include(admin.site.urls)),
-)
+]
