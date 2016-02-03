@@ -10,5 +10,5 @@ class MemberAdmin(admin.ModelAdmin):
     readonly_fields = ['created', 'modified']
 
     def has_payment_setup(self, instance):
-        return bool(instance.user.customer_id)
+        return bool(instance.subscription_id)
     has_payment_setup.boolean = True
