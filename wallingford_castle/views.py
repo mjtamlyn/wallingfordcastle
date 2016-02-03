@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView
 
 from beginners.forms import BeginnersInterestForm
+from beginners.models import BeginnersCourse
 from braces.views import MessageMixin
 import requests
 
@@ -18,6 +19,8 @@ class HomeView(MessageMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['membership_form'] = MembershipInterestForm()
         context['beginners_form'] = BeginnersInterestForm()
+        context['current_courses'] = BeginnersCourse.objects.current()
+        context['upcoming_courses'] = BeginnersCourse.objects.upcoming()
         return context
 
 

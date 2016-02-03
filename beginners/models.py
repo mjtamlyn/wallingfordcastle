@@ -6,11 +6,25 @@ from django.utils import timezone
 from wallingford_castle.models import AGE_CHOICES
 
 
+class BeginnersCourseManager(models.Manager):
+    def current(self):
+        now = timezone.now()
+        return self.filter(
+            beginnerscoursesession__start_time__gt=now,
+        ).exclude(pk__in=self.upcoming().values_list('id', flat=True)).distinct()
+
+    def upcoming(self):
+        now = timezone.now()
+        return self.exclude(beginnerscoursesession__start_time__lt=now).distinct()
+
+
 class BeginnersCourse(models.Model):
     counter = models.PositiveIntegerField(verbose_name='Beginners course #', unique=True)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now_add=True)
+
+    objects = BeginnersCourseManager()
 
     def __str__(self):
         return 'Beginners course #%s' % self.counter
@@ -29,6 +43,13 @@ class BeginnersCourseSession(models.Model):
 
     def __str__(self):
         return 'Beginners course session at %s' % self.start_time
+
+    def time_string(self):
+        return '%s, %s to %s' % (
+            self.start_time.strftime('%d %B %Y'),
+            self.start_time.strftime('%H:%M'),
+            (self.start_time + self.duration).strftime('%H:%M'),
+        )
 
 
 STATUS_WAITING = 'waiting'
