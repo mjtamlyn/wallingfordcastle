@@ -13,8 +13,7 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^$', views.HomeView.as_view(), name='home'),
     url(r'^membership-interest/$', views.MembershipInterestView.as_view(), name='membership-interest'),
-    url(r'^beginners-course/$', views.BeginnersCourseView.as_view(), name='beginners-course'),
-
+    url(r'^beginners/', include('beginners.urls', namespace='beginners')),
     url(r'^members/', include('membership.urls', namespace='membership')),
     # TODO: Style header links
     url(r'^accounts/', include('django.contrib.auth.urls')),

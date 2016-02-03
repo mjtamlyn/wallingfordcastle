@@ -133,7 +133,7 @@
             attending in a family group, we may run a juniors only course
             11.30am to 1pm.</small>
         </p>
-        <form class="form page-form" method="POST" action="{% url 'beginners-course' %}">
+        <form class="form page-form" method="POST" action="{% url 'beginners:interest' %}">
             <h3>Sign up for a course</h3>
             {% csrf_token %}
             {% form beginners_form using 'floppyforms/layouts/p.html' %}

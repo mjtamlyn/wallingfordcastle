@@ -3,7 +3,7 @@ from django.contrib import admin
 from custom_user.admin import EmailUserAdmin
 from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
 
-from .models import MembershipInterest, BeginnersCourseInterest, User
+from .models import MembershipInterest, User
 
 
 @admin.register(MembershipInterest)
@@ -26,12 +26,6 @@ class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
             interest.send_to_beginners()
     send_to_beginners.short_description = 'Send to beginners course'
     send_to_beginners.label = 'Send to beginners course'
-
-
-@admin.register(BeginnersCourseInterest)
-class BeginnersCourseInterestAdmin(admin.ModelAdmin):
-    list_display = ['name', 'age', 'contact_email']
-    readonly_fields = ['created', 'modified']
 
 
 @admin.register(User)

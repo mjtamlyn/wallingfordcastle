@@ -85,7 +85,9 @@ class MembershipInterest(models.Model):
             self.save()
 
     def send_to_beginners(self):
-        BeginnersCourseInterest.objects.create(
+        from beginners.models import Beginner
+
+        Beginner.objects.create(
             name=self.name,
             contact_email=self.contact_email,
             contact_number=self.contact_number,
@@ -94,22 +96,6 @@ class MembershipInterest(models.Model):
         )
         self.status = STATUS_BEGINNERS
         self.save()
-
-
-class BeginnersCourseInterest(models.Model):
-    name = models.CharField(max_length=200)
-    contact_email = models.EmailField()
-    contact_number = models.CharField(max_length=20, blank=True, default='')
-    age = models.CharField(max_length=20, choices=AGE_CHOICES)
-    date_of_birth = models.DateField(blank=True, null=True)
-    experience = models.TextField(blank=True, default='')
-    notes = models.TextField(blank=True, default='')
-
-    created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
-
-    def __str__(self):
-        return self.name
 
 
 class User(AbstractEmailUser):
