@@ -4,8 +4,8 @@ from .models import Member
 
 
 @admin.register(Member)
-class MembershipInterestAdmin(admin.ModelAdmin):
-    list_display = ['name', 'age', 'membership_type', 'has_payment_setup']
+class MemberAdmin(admin.ModelAdmin):
+    list_display = ['name', 'age', 'membership_type', 'has_payment_setup', 'agb_number']
     list_filter = ['membership_type', 'age']
     readonly_fields = ['created', 'modified']
 
