@@ -7,13 +7,16 @@ from wallingford_castle.models import AGE_CHOICES
 
 
 class BeginnersCourse(models.Model):
-    counter = models.PositiveIntegerField(unique=True)
+    counter = models.PositiveIntegerField(verbose_name='Beginners course #', unique=True)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return 'Beginners course #%s' % self.counter
+
+    class Meta:
+        ordering = ('-counter',)
 
 
 class BeginnersCourseSession(models.Model):
