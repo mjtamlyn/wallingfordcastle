@@ -72,7 +72,7 @@ class AdminAllocateCourseView(FormView):
 
 @admin.register(Beginner)
 class BeginnerAdmin(DjangoObjectActions, admin.ModelAdmin):
-    list_display = ['name', 'age', 'contact_email', 'course', 'status']
+    list_display = ['name', 'age', 'contact_email', 'course', 'status', 'paid']
     list_filter = ['course', 'status']
     readonly_fields = ['created', 'modified']
     actions = objectactions = ['allocate_to_course']
