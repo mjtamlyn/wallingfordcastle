@@ -68,7 +68,7 @@ class PaymentDetails(MessageMixin, View):
         if self.request.user.customer_id:
             customer = stripe.Customer.retrieve(self.request.user.customer_id)
             source = customer.sources.create(source=token)
-            customer.default_source = source
+            customer.default_source = source.id
             customer.save()
         else:
             customer = stripe.Customer.create(
