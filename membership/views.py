@@ -40,11 +40,7 @@ class MemberUpdate(LoginRequiredMixin, MessageMixin, UpdateView):
     def form_valid(self, form):
         response = super().form_valid(form)
         if self.object.plan != self.original_plan:
-            if self.object.subscription_id:
-                customer = stripe.Customer.retrieve(self.request.user.customer_id)
-                subscription = customer.subscriptions.retrieve(self.object.subscription_id)
-                subscription.plan = self.object.plan
-                subscription.save()
+            self.object.update_plan()
         self.messages.success('Details successfully updated!')
         if settings.SLACK_MEMBERSHIP_HREF:
             data = json.dumps({

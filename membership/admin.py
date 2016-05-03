@@ -1,14 +1,20 @@
 from django.contrib import admin
 
+from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
+
 from .models import Member
 
 
 @admin.register(Member)
-class MemberAdmin(admin.ModelAdmin):
-    list_display = ['name', 'age', 'membership_type', 'has_payment_setup', 'agb_number']
-    list_filter = ['membership_type', 'age']
+class MemberAdmin(DjangoObjectActions, admin.ModelAdmin):
+    list_display = ['name', 'age', 'membership_type', 'active', 'squad', 'agb_number']
+    list_filter = ['membership_type', 'age', 'squad']
     readonly_fields = ['created', 'modified']
+    actions = objectactions = ['update_plan']
 
-    def has_payment_setup(self, instance):
-        return bool(instance.subscription_id)
-    has_payment_setup.boolean = True
+    @takes_instance_or_queryset
+    def update_plan(self, request, queryset):
+        for member in queryset:
+            member.update_plan()
+    update_plan.short_description = 'Update plan'
+    update_plan.label = 'Update plan'
