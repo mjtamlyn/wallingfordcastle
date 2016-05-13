@@ -57,13 +57,8 @@ class MembershipInterest(models.Model):
                 messages.error(request, '%s has already been converted to a member.' % self.name)
             return
         with transaction.atomic():
-            try:
-                user = User.objects.get(email=self.contact_email)
-            except User.DoesNotExist:
-                user = User.objects.create(
-                    email=self.contact_email,
-                    is_active=False,
-                )
+            user, created = User.objects.get_or_create(email=self.contact_email, defaults={'active': False})
+            if created:
                 user.send_welcome_email(request)
             member = user.members.create(
                 name=self.name,
@@ -115,4 +110,25 @@ class User(AbstractEmailUser):
             context={
                 'register_url': url,
             },
+        )
+
+    def send_beginners_course_email(self, request, beginners, course, created):
+        if created:
+            register_url = reverse('register', kwargs={
+                'uidb64': urlsafe_base64_encode(force_bytes(self.pk)),
+                'token': default_token_generator.make_token(self),
+            })
+            register_url = request.build_absolute_uri(register_url)
+        else:
+            register_url = None
+        send_templated_mail(
+            template_name='beginners_course',
+            from_email='hello@wallingfordcastle.co.uk',
+            recipient_list=[self.email],
+            context={
+                'beginners': beginners,
+                'course': course,
+                'register_url': register_url,
+                'overview_url': request.build_absolute_uri(reverse('membership:overview'))
+            }
         )

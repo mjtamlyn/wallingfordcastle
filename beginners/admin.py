@@ -1,3 +1,4 @@
+import collections
 import functools
 
 from django.conf.urls import url
@@ -8,6 +9,8 @@ from django.http import HttpResponseRedirect
 from django.views.generic import FormView
 
 from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
+
+from wallingford_castle.models import User
 
 from .models import STATUS_ON_COURSE, Beginner, BeginnersCourse, BeginnersCourseSession
 
@@ -60,10 +63,19 @@ class AdminAllocateCourseView(FormView):
         return context
 
     def form_valid(self, form):
-        self.get_beginners().update(
-            course=form.cleaned_data['course'],
-            status=STATUS_ON_COURSE,
-        )
+        beginners = self.get_beginners()
+        course = form.cleaned_data['course']
+        by_user = collections.defaultdict(list)
+        for beginner in beginners:
+            beginner.course = course
+            beginner.status = STATUS_ON_COURSE
+            by_user[beginner.contact_email].append(beginner)
+        for email, begs in by_user.items():
+            user, created = User.objects.get_or_create(email=email, defaults={'is_active': False})
+            for beginner in begs:
+                beginner.user = user
+                beginner.save()
+            user.send_beginners_course_email(self.request, beginners=begs, course=course, created=created)
         return super().form_valid(form)
 
     def get_success_url(self):
@@ -88,7 +100,8 @@ class BeginnerAdmin(DjangoObjectActions, admin.ModelAdmin):
 
         info = self.model._meta.app_label, self.model._meta.model_name
 
-        urls.insert(0,
+        urls.insert(
+            0,
             url(r'^allocate/$', wrap(AdminAllocateCourseView.as_view()), name='%s_%s_allocate' % info),
         )
         return urls

@@ -3,7 +3,7 @@ import datetime
 from django.db import models
 from django.utils import timezone
 
-from wallingford_castle.models import AGE_CHOICES
+from wallingford_castle.models import AGE_CHOICES, User
 
 
 class BeginnersCourseManager(models.Manager):
@@ -75,8 +75,11 @@ class Beginner(models.Model):
     experience = models.TextField(blank=True, default='')
     notes = models.TextField(blank=True, default='')
 
+    user = models.ForeignKey(User, blank=True, null=True)
+
     course = models.ForeignKey(BeginnersCourse, blank=True, null=True)
     paid = models.BooleanField(default=False)
+    invoice_id = models.CharField(max_length=32, blank=True, default='')
     communication_notes = models.TextField(blank=True, default='')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_WAITING)
 

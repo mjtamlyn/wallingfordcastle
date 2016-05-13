@@ -1,0 +1,27 @@
+{% block subject %}Welcome to Wallingford Castle Archers!{% endblock %}
+
+{% block plain %}
+Hi!
+
+Thanks for your interest in doing a beginners course with Wallingford Castle Archers.
+
+{% for beginner in beginners %}
+{{ beginner }}
+{% endfor %}
+
+Your course dates are:
+{% for session in course.beginnerscoursesession_set.all %}
+{{ session.start_time }}
+{% endfor %}
+
+{% if register_url %}
+To register and pay, please click here:
+{{ register_url }}
+{% else %}
+To pay for your course, please click here:
+{{ overview_url }}
+{% endif %}
+
+Hope to see you at a session soon!
+Wallingford Castle Archers Committee
+{% endblock %}
