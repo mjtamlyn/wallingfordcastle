@@ -86,5 +86,11 @@ class Beginner(models.Model):
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now_add=True)
 
+    @property
+    def fee(self):
+        if self.age == 'junior':
+            return 30
+        return 50
+
     def __str__(self):
         return self.name

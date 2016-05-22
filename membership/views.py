@@ -19,6 +19,8 @@ class Overview(LoginRequiredMixin, TemplateView):
         context = super().get_context_data(**kwargs)
         context['members'] = self.request.user.members.all()
         context['monthly_fee'] = sum(member.plan_cost for member in context['members'])
+        context['beginners'] = self.request.user.beginner_set.all()
+        context['beginners_to_pay'] = sum(beginner.fee for beginner in self.request.user.beginner_set.filter(paid=False))
         context['STRIPE_KEY'] = settings.STRIPE_KEY
         return context
 

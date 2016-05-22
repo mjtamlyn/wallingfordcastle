@@ -3,25 +3,44 @@
 {% block plain %}
 Hi!
 
-Thanks for your interest in doing a beginners course with Wallingford Castle Archers.
+Thank you for your interest in doing a beginners' course with Wallingford Castle Archers.
 
-{% for beginner in beginners %}
-{{ beginner }}
-{% endfor %}
-
-Your course dates are:
+We have now finalised the dates and they will be as follows:
 {% for session in course.beginnerscoursesession_set.all %}
 {{ session.start_time }}
 {% endfor %}
 
-{% if register_url %}
-To register and pay, please click here:
-{{ register_url }}
-{% else %}
-To pay for your course, please click here:
-{{ overview_url }}
-{% endif %}
+The course costs £50 for adults and £30 for under 18s. To pay, please click here:
+{% if register_url %}{{ register_url }}{% else %}{{ overview_url }}{% endif %}
 
-Hope to see you at a session soon!
-Wallingford Castle Archers Committee
+If you think you will have issues with one or more of the dates but would still like to do the next course, or if you would rather wait until our next course, please reply to this email.
+
+See you on the range soon!
+
+Wallingford Committee
+{% endblock %}
+
+{% block html %}
+<p>Hi!</p>
+
+<p>
+We have now finalised the dates and they will be as follows:
+<ul>
+{% for session in course.beginnerscoursesession_set.all %}
+<li>{{ session.start_time }}</li>
+{% endfor %}
+</ul>
+</p>
+
+<p>
+The course costs £50 for adults and £30 for under 18s. <a href="{% if register_url %}{{ register_url }}{% else %}{{ overview_url }}{% endif %}">Please pay here.</a>
+
+<p>
+If you think you will have issues with one or more of the dates but would still like to do the next course, or if you would rather wait until our next course, please reply to this email.
+</p>
+
+<p>
+See you on the range soon!<br>
+Wallingford Committee
+</p>
 {% endblock %}

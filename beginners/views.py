@@ -2,10 +2,12 @@ import json
 
 from django.conf import settings
 from django.core.urlresolvers import reverse, reverse_lazy
-from django.views.generic import CreateView
+from django.http import HttpResponseRedirect
+from django.views.generic import CreateView, View
 
 from braces.views import MessageMixin
 import requests
+import stripe
 
 from .forms import BeginnersInterestForm
 
@@ -36,3 +38,31 @@ class BeginnersInterestView(MessageMixin, CreateView):
             except Exception:
                 pass
         return response
+
+
+class Payment(MessageMixin, View):
+    def post(self, request, *args, **kwargs):
+        token = request.POST['stripeToken']
+        if self.request.user.customer_id:
+            customer = stripe.Customer.retrieve(self.request.user.customer_id)
+            source = customer.sources.create(source=token)
+            customer.default_source = source.id
+            customer.save()
+        else:
+            customer = stripe.Customer.create(
+                source=token,
+                email=self.request.user.email,
+            )
+            self.request.user.customer_id = customer.id
+            self.request.user.save()
+        beginners = self.request.user.beginner_set.filter(paid=False)
+        amount = sum(beginner.fee for beginner in beginners)
+        charge = stripe.Charge.create(
+            amount=amount * 100,
+            currency='gbp',
+            customer=customer.id,
+            description='Beginners course at Wallingford Castle Archers',
+        )
+        beginners.update(invoice_id=charge.id, paid=True)
+        self.messages.success('Thanks! You will receive a confirmation email soon.')
+        return HttpResponseRedirect(reverse('membership:overview'))

@@ -1,6 +1,57 @@
 {% extends 'base.html' %}
 
 {% block content %}
+
+{% if beginners %}
+<h2>Beginners courses</h2>
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Age</th>
+                <th>Dates</th>
+                <th>Fee</th>
+                <th>Paid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for beginner in beginners %}
+            <tr>
+                <td>{{ beginner.name }}</td>
+                <td>{{ beginner.get_age_display }} {% if beginner.date_of_birth %}({{ beginner.date_of_birth }}){% endif %}</td>
+                <td>
+                    {% for session in beginner.course.beginnerscoursesession_set.all %}
+                    {{ session.time_string }}<br>
+                    {% endfor %}
+                </td>
+                <td>£{{ beginner.fee }}</td>
+                <td>{{ beginner.paid|yesno:"Yes,No" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% if beginners_to_pay %}
+<h2>Pay £{{ beginners_to_pay }}</h2>
+<form action="{% url 'beginners:payment' %}" method="POST">
+    {% csrf_token %}
+    <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="{{ STRIPE_KEY }}"
+        data-email="{{ user.email }}"
+        data-currency="GBP"
+        data-amount="{{ beginners_to_pay }}00"
+        data-name="Wallingford Castle Archers"
+        data-description="Beginners courses"
+        data-locale="auto">
+    </script>
+</form>
+{% endif %}
+{% endif %}
+
+{% if members %}
 <h2>Members</h2>
 <p>Monthly charge: £{{ monthly_fee }}</p>
 <div class="table-wrapper">
@@ -31,6 +82,7 @@
         </tbody>
     </table>
 </div>
+
 {% if user.customer_id %}
 <h2>Update your payment details</h2>
 {% else %}
@@ -49,6 +101,7 @@
         data-locale="auto">
     </script>
 </form>
+{% endif %}
 <p><small>
 Payments are processed securely using Stripe. Wallingford Castle Archers does
 not store your credit card details. You will be billed monthly for all the
@@ -56,4 +109,5 @@ membership associated with your account. If you have any problems, please
 contact the committee. Charges will be shown on your account as WALLINGFORD C.
 ARCHERS.
 </small></p>
+
 {% endblock content %}
