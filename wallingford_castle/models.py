@@ -113,7 +113,7 @@ class User(AbstractEmailUser):
         )
 
     def send_beginners_course_email(self, request, beginners, course, created):
-        if created:
+        if not self.is_active:
             register_url = reverse('register', kwargs={
                 'uidb64': urlsafe_base64_encode(force_bytes(self.pk)),
                 'token': default_token_generator.make_token(self),
