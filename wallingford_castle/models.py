@@ -57,7 +57,7 @@ class MembershipInterest(models.Model):
                 messages.error(request, '%s has already been converted to a member.' % self.name)
             return
         with transaction.atomic():
-            user, created = User.objects.get_or_create(email=self.contact_email, defaults={'active': False})
+            user, created = User.objects.get_or_create(email=self.contact_email, defaults={'is_active': False})
             if created:
                 user.send_welcome_email(request)
             member = user.members.create(
