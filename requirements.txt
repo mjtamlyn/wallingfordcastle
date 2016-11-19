@@ -17,4 +17,4 @@ stripe==1.29.0
 wheel==0.26.0
 
 # Py3 compatible fork (collinanderson) + upstream changes for Django 1.8
-git+https://github.com/mjtamlyn/django-templated-email@cc5a94a2c53455c256e7b6f791df03a9971c3bcb#egg=django-templated-email
+-e git+https://github.com/mjtamlyn/django-templated-email@cc5a94a2c53455c256e7b6f791df03a9971c3bcb#egg=django-templated-email
