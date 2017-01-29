@@ -16,6 +16,8 @@ ALLOWED_HOSTS = [
     'wallingfordcastle.co.uk',
     'www.wallingfordcastle.co.uk',
 ]
+if DEBUG:
+    ALLOWED_HOSTS += ['localhost']
 
 INSTALLED_APPS = (
     'wallingford_castle',
@@ -44,6 +46,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
 ROOT_URLCONF = 'wallingford_castle.urls'

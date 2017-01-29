@@ -1,19 +1,19 @@
-dj-database-url==0.3.0
+dj-database-url==0.4.2
 dj-static==0.0.6
-Django==1.9.1
-django-braces==1.8.1
-django-custom-user==0.5
-django-debug-toolbar==1.4
-django-floppyforms==1.6.0
-django-object-actions==0.7.0
+Django==1.11a1
+django-braces==1.10
+django-custom-user==0.7
+django-debug-toolbar==1.6
+django-floppyforms==1.7.0
+django-object-actions==0.9.0
 django-sslify==0.2.7
-gunicorn==19.4.5
+gunicorn==19.6.0
 psycopg2==2.6.1
-requests==2.9.1
+requests==2.13.0
 six==1.10.0
 sqlparse==0.1.18
-static3==0.6.1
-stripe==1.29.0
+static3==0.7.0
+stripe==1.46.0
 wheel==0.26.0
 
 # Py3 compatible fork (collinanderson) + upstream changes for Django 1.8
