@@ -162,46 +162,60 @@ header .user-actions a {
 footer nav ul {
   margin: 0;
 }
-
 /* line 70, ../../sass/_layout.sass */
+footer .legals {
+  float: right;
+  display: flex;
+}
+/* line 74, ../../sass/_layout.sass */
+footer .legals a {
+  padding: 0 8px;
+  border-left: 1px solid #aaa;
+}
+/* line 77, ../../sass/_layout.sass */
+footer .legals a:first-child {
+  border: none;
+}
+
+/* line 80, ../../sass/_layout.sass */
 article {
   padding-bottom: 15px;
   overflow: auto;
   background-color: white;
 }
 
-/* line 75, ../../sass/_layout.sass */
+/* line 85, ../../sass/_layout.sass */
 footer {
   padding: 15px 0;
   background-color: #eee;
 }
 
-/* line 79, ../../sass/_layout.sass */
+/* line 89, ../../sass/_layout.sass */
 .container {
   width: 1170px;
   margin: 0 auto;
   padding: 0 15px;
 }
 @media (max-width: 1200px) {
-  /* line 85, ../../sass/_layout.sass */
+  /* line 95, ../../sass/_layout.sass */
   .container {
     width: 910px;
   }
 }
 @media (max-width: 950px) {
-  /* line 89, ../../sass/_layout.sass */
+  /* line 99, ../../sass/_layout.sass */
   .container {
     width: 100%;
   }
 }
 @media (max-width: 750px) {
-  /* line 79, ../../sass/_layout.sass */
+  /* line 89, ../../sass/_layout.sass */
   .container {
     padding: 0 5px;
   }
 }
 
-/* line 95, ../../sass/_layout.sass */
+/* line 105, ../../sass/_layout.sass */
 .flex-sections {
   display: -webkit-flex;
   display: flex;
@@ -210,24 +224,24 @@ footer {
   margin: 0 -30px;
 }
 @media (max-width: 750px) {
-  /* line 103, ../../sass/_layout.sass */
+  /* line 113, ../../sass/_layout.sass */
   .flex-sections {
     margin: 0;
   }
 }
-/* line 106, ../../sass/_layout.sass */
+/* line 116, ../../sass/_layout.sass */
 .flex-sections section {
   width: 33.333%;
   padding: 0 30px;
 }
 @media (max-width: 1200px) {
-  /* line 111, ../../sass/_layout.sass */
+  /* line 121, ../../sass/_layout.sass */
   .flex-sections section {
     width: 50%;
   }
 }
 @media (max-width: 750px) {
-  /* line 115, ../../sass/_layout.sass */
+  /* line 125, ../../sass/_layout.sass */
   .flex-sections section {
     width: 100%;
     padding: 0;
