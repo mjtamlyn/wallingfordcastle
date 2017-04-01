@@ -10,7 +10,7 @@ from .models import MembershipInterest, User
 class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['name', 'age', 'membership_type', 'status']
     list_filter = ['status', 'membership_type', 'age']
-    actions = objectactions = ['make_member', 'send_to_beginners']
+    actions = change_actions = ['make_member', 'send_to_beginners']
     readonly_fields = ['created', 'modified']
 
     @takes_instance_or_queryset
@@ -30,7 +30,7 @@ class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(DjangoObjectActions, EmailUserAdmin):
-    actions = objectactions = ['send_new_user_email', 'send_welcome_email']
+    actions = change_actions = ['send_new_user_email', 'send_welcome_email']
 
     @takes_instance_or_queryset
     def send_new_user_email(self, request, queryset):

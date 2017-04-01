@@ -87,7 +87,7 @@ class BeginnerAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['name', 'age', 'contact_email', 'course', 'status', 'paid']
     list_filter = ['course', 'status']
     readonly_fields = ['created', 'modified']
-    actions = objectactions = ['allocate_to_course']
+    actions = change_actions = ['allocate_to_course']
 
     def get_urls(self):
         urls = super().get_urls()
