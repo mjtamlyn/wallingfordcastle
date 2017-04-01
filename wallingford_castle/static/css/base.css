@@ -304,6 +304,7 @@ a:hover {
 h1 {
   font-size: 30px;
   font-weight: normal;
+  margin: 1em 0 0.5em;
 }
 @media (max-width: 750px) {
   /* line 11, ../../sass/_typography.sass */
@@ -312,32 +313,33 @@ h1 {
   }
 }
 
-/* line 18, ../../sass/_typography.sass */
+/* line 19, ../../sass/_typography.sass */
 h2 {
   font-size: 22px;
-  font-weight: normal;
+  font-weight: bold;
+  margin: 1em 0 0.5em;
 }
 @media (max-width: 750px) {
-  /* line 18, ../../sass/_typography.sass */
+  /* line 19, ../../sass/_typography.sass */
   h2 {
     font-size: 20px;
-    margin: 10px 0;
   }
 }
 
-/* line 26, ../../sass/_typography.sass */
+/* line 27, ../../sass/_typography.sass */
 p {
   font-size: 18px;
+  margin: 1em 0;
 }
 @media (max-width: 750px) {
-  /* line 26, ../../sass/_typography.sass */
+  /* line 27, ../../sass/_typography.sass */
   p {
     font-size: 16px;
-    margin: 5px 0;
+    margin: 0.5em 0;
   }
 }
 
-/* line 33, ../../sass/_typography.sass */
+/* line 35, ../../sass/_typography.sass */
 sup {
   vertical-align: top;
   font-size: small;
