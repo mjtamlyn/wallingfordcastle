@@ -96,7 +96,7 @@ class MembershipInterest(models.Model):
 class User(AbstractEmailUser):
     customer_id = models.CharField(max_length=20)
 
-    def send_welcome_email(self, request=None):
+    def send_new_user_email(self, request=None):
         url = reverse('register', kwargs={
             'uidb64': urlsafe_base64_encode(force_bytes(self.pk)),
             'token': default_token_generator.make_token(self),
@@ -104,12 +104,19 @@ class User(AbstractEmailUser):
         if request is not None:
             url = request.build_absolute_uri(url)
         send_templated_mail(
-            template_name='welcome',
+            template_name='new_user',
             from_email='hello@wallingfordcastle.co.uk',
             recipient_list=[self.email],
             context={
                 'register_url': url,
             },
+        )
+
+    def send_welcome_email(self, request=None):
+        send_templated_mail(
+            template_name='welcome',
+            from_email='hello@wallingfordcastle.co.uk',
+            recipient_list=[self.email],
         )
 
     def send_beginners_course_email(self, request, beginners, course, created):

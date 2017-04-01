@@ -1,26 +1,61 @@
 {% block subject %}Welcome to Wallingford Castle Archers!{% endblock %}
 
 {% block plain %}
-Hi!
+Hi there!
 
-Thanks for your interest in joining Wallingford Castle Archers. We're delighted to have you!
+Thank you for signing up to join Wallingford Castle Archers, we look forward
+sharing a range with you!
 
-To register and pay, please click here:
-{{ register_url }}
+Just a few house keeping items, if you haven't found it already, the club
+constitution and code of conduct can be found on the website, so have a read of
+those, particularly with regards to outdoor shooting. Any important notices
+will be emailed to you, and will also go up on our public Facebook page[0]
+and our private club group[1]. The group is very much a community page,
+with anyone sharing anything archery related (vaguely!) so it would be
+wonderful to have as many club members involved as we can.
 
-Hope to see you at a session soon!
-Wallingford Castle Archers Committee
+Any questions about kit, how things work, or anything really, don't be afraid
+to ask someone at a session, we're all happy to help out new members or can
+pass your questions on to those who can find you an answer.
+
+See you on the range soon!
+Wallingford committee
+
+[0] https://www.facebook.com/wallingfordcastlearchers/
+[1] https://www.facebook.com/groups/196865697342600/
 {% endblock %}
 
 {% block html %}
-<p>Hi!</p>
-
-<p>Thanks for your interest in joining Wallingford Castle Archers. We're delighted to have you!</p>
-
-<a href="{{ register_url }}">Register and pay here</a>
+<p>
+Hi there!
+</p>
 
 <p>
-Hope to see you at a session soon!<br>
-Wallingford Castle Archers Committee
+Thank you for signing up to join Wallingford Castle Archers, we look forward
+sharing a range with you!
+</p>
+
+<p>
+Just a few house keeping items, if you haven't found it already, the club
+constitution and code of conduct can be found on the website, so have a read of
+those, particularly with regards to outdoor shooting. Any important notices
+will be emailed to you, and will also go up on our public
+<a href="https://www.facebook.com/wallingfordcastlearchers/">Facebook page</a>
+and our
+<a href="https://www.facebook.com/groups/196865697342600/">private club group</a>.
+The group is very much a community page, with anyone sharing anything archery
+related (vaguely!) so it would be wonderful to have as many club members
+involved as we can.
+</p>
+
+<p>
+Any questions about kit, how things work, or anything really, don't be afraid
+to ask someone at a session, we're all happy to help out new members or can
+pass your questions on to those who can find you an answer.
+</p>
+
+<p>
+See you on the range soon!<br>
+Wallingford committee
 </p>
 {% endblock %}

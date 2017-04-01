@@ -30,7 +30,14 @@ class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(DjangoObjectActions, EmailUserAdmin):
-    actions = objectactions = ['send_welcome_email']
+    actions = objectactions = ['send_new_user_email', 'send_welcome_email']
+
+    @takes_instance_or_queryset
+    def send_new_user_email(self, request, queryset):
+        for user in queryset:
+            user.send_new_user_email(request)
+    send_new_user_email.short_description = 'Send new user email'
+    send_new_user_email.label = 'Send new user email'
 
     @takes_instance_or_queryset
     def send_welcome_email(self, request, queryset):

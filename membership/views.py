@@ -72,6 +72,7 @@ class PaymentDetails(MessageMixin, View):
             source = customer.sources.create(source=token)
             customer.default_source = source.id
             customer.save()
+            self.request.user.send_welcome_email()
         else:
             customer = stripe.Customer.create(
                 source=token,
