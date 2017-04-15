@@ -20,7 +20,7 @@ class HomeView(MessageMixin, TemplateView):
         context['membership_form'] = MembershipInterestForm()
         context['beginners_form'] = BeginnersInterestForm()
         context['current_courses'] = BeginnersCourse.objects.current()
-        context['upcoming_courses'] = BeginnersCourse.objects.upcoming()
+        context['upcoming_courses'] = BeginnersCourse.objects.upcoming().order_by('counter')
         return context
 
 
