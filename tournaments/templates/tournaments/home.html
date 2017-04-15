@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <h2>Tournament prospectus</h2>
+        <p>
+        1st Wallingford Castle Archers 720 tournament, to be held on 5th August
+        2017.
+        </p>
+        <h3>Rounds</h3>
+        <p>WRS WA 70m round with Individual Olympic Round for recurve archers</p>
+        <p>WRS WA 50m round with Individual Match Round for compound archers</p>
+        <h3>Event Format</h3>
+        <p>
+        WA70m and WA50m rounds to be shot in accordance with World Archery
+        Rules of Shooting. Arrows will be shot in ends of 6 arrows in 4
+        minutes. There will be four archers per target. Compounds will shoot at
+        individual 6 zone target faces.
+        </p>
+        <h3>Judges</h3>
+        <p>Chris Evans (Chair), Guy Perring & TBC</p>
+        <h3>Awards</h3>
+        <p>
+        Awards will be made for Gents and Ladies, recurve and compound.
+        There will be no seperate category for barebow or longbow archers, or
+        for juniors, but all are welcome to compete.
+        </p>
+        <h3>Tournament Organiser</h3>
+        <p><a href="mailto:marc.tamlyn@gmail.com">Marc Tamlyn</a></p>
+        <h3>Dress</h3>
+        <p>Dress code is according to the AGB Rules of Shooting</p>
+        <h3>Drug testing</h3>
+        <p>
+        Archers competing at record status tournaments may be liable to drug
+        testing. Competitors who are approached to give samples must comply.
+        Non-compliance will be treated as a positive result. Parents/Guardians
+        must check the relevant box on the entry form giving consent for junior
+        archers (under 18s) to be drug tested if approached.
+        </p>
+    </section>
+    <section>
+        <h2>Important information</h2>
+        <h3>Timing</h3>
+        <p>Registration opens 8am. ArcheryGB cards will be required.</p>
+        <p>
+        Assembly at 8.45am followed by 3 ends of practice and the qualification
+        round. Match play will begin as soon as possible after the main round.
+        Awards will take place at the Sports Park Bar immediately after
+        shooting concludes.
+        </p>
+        <h3>Venue</h3>
+        <p>
+        The tournament will take place at our outdoor venue at Wallingford
+        Sports Park, Wallingford OX10 9RB. The shooting field is the northern
+        field, please park in the main car park and follow signs through to the
+        field (approx 200m). Parking is available nearer the line for archers
+        with mobility problems only.
+        </p>
+        <iframe
+            width="100%"
+            height="300"
+            frameborder="0" style="border:0"
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDGuvasiOAUbxa4w_xoZ8YaY38M9Vpz2Ec&q=Wallingford%20SportsPark,%20Wallingford&zoom=14" allowfullscreen>
+        </iframe>
+        <h3>Refreshments</h3>
+        <p>
+        Hot and cold food and drinks will be available. The bar will also be
+        open after shooting concludes.
+        </p>
+        <h3>Camping</h3>
+        <p>
+        Camping will be available on the Friday night, with showers and toilets
+        available all night. No practice facilities are guaranteed on the
+        Friday.
+        </p>
+    </section>
+    <section>
+        <h2>Enter now</h2>
+        <p>Entry fee is £15. Entries must be received by July 29th 2017.</p>
+        {% if existing_entries %}
+        <h3>Entries</h3>
+        <ul>
+            {% for entry in existing_entries %}
+            <li>
+                <strong>{{ entry.name }}</strong>
+                {% if entry.paid %}
+                Paid
+                {% endif %}
+                <a href="{% url 'tournaments:entry-update' pk=entry.pk %}">Edit</a>
+                {% if not entry.paid %}
+                <a href="{% url 'tournaments:entry-delete' pk=entry.pk %}">Remove</a>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% if to_pay %}
+        <form action="{% url 'tournaments:pay' %}" method="POST">
+            {% csrf_token %}
+            <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="{{ STRIPE_KEY }}"
+                data-email="{{ user.email }}"
+                data-currency="GBP"
+                data-amount="{{ to_pay }}00"
+                data-name="Wallingford Castle Archers"
+                data-description="Tournament Entry"
+                data-locale="auto">
+            </script>
+        </form>
+        {% endif %}
+        {% endif %}
+    </section>
+</div>
+{% endblock %}

@@ -23,6 +23,7 @@ INSTALLED_APPS = (
     'wallingford_castle',
     'membership',
     'beginners',
+    'tournaments',
 
     'custom_user',
     'django_object_actions',

@@ -15,6 +15,7 @@ urlpatterns = [
     url(r'^membership-interest/$', views.MembershipInterestView.as_view(), name='membership-interest'),
     url(r'^beginners/', include('beginners.urls', namespace='beginners')),
     url(r'^members/', include('membership.urls', namespace='membership')),
+    url(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
     # TODO: Style header links
     url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^accounts/register/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',
