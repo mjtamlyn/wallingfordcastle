@@ -59,7 +59,7 @@ class MembershipInterest(models.Model):
         with transaction.atomic():
             user, created = User.objects.get_or_create(email=self.contact_email, defaults={'is_active': False})
             if created:
-                user.send_welcome_email(request)
+                user.send_new_user_email(request)
             member = user.members.create(
                 name=self.name,
                 age=self.age,
@@ -75,7 +75,7 @@ class MembershipInterest(models.Model):
                 subscription = customer.subscriptions.create(plan=member.plan)
                 member.subscription_id = subscription.id
                 member.save()
-                # TODO: Notify user they have a new subscription
+                user.send_welcome_email()
             self.status = STATUS_PROCESSED
             self.save()
 
@@ -117,6 +117,7 @@ class User(AbstractEmailUser):
             template_name='welcome',
             from_email='hello@wallingfordcastle.co.uk',
             recipient_list=[self.email],
+            context={},
         )
 
     def send_beginners_course_email(self, request, beginners, course, created):

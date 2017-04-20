@@ -72,7 +72,6 @@ class PaymentDetails(MessageMixin, View):
             source = customer.sources.create(source=token)
             customer.default_source = source.id
             customer.save()
-            self.request.user.send_welcome_email()
         else:
             customer = stripe.Customer.create(
                 source=token,
@@ -80,6 +79,7 @@ class PaymentDetails(MessageMixin, View):
             )
             self.request.user.customer_id = customer.id
             self.request.user.save()
+            self.request.user.send_welcome_email()
         for member in self.request.user.members.filter(subscription_id=''):
             subscription = customer.subscriptions.create(plan=member.plan)
             member.subscription_id = subscription.id
