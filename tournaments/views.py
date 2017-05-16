@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.auth import login
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -9,7 +10,7 @@ from django.views.generic import (
 import stripe
 from braces.views import LoginRequiredMixin, MessageMixin
 
-from .forms import EntryForm
+from .forms import EntryForm, RegisterForm
 from .models import Entry
 
 
@@ -23,15 +24,22 @@ class TournamentHome(TemplateView):
             context['to_pay'] = self.request.user.entry_set.filter(paid=False).count() * 15
             context['STRIPE_KEY'] = settings.STRIPE_KEY
             context['entry_form'] = EntryForm()
+        else:
+            context['register_form'] = RegisterForm()
         return context
 
 
 class TournamentRegistration(FormView):
     template_name = 'register.html'
+    form_class = RegisterForm
 
     def form_valid(self, form):
-        form.save()
+        user = form.save()
+        login(self.request, user)
         return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('tournaments:home')
 
 
 class EntryCreate(LoginRequiredMixin, MessageMixin, CreateView):

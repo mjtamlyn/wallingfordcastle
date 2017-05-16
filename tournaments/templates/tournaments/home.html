@@ -112,7 +112,13 @@
                 data-locale="auto">
             </script>
         </form>
-        <br>
+        <p><small>
+        Payments are processed securely using Stripe. Wallingford Castle Archers does
+        not store your credit card details. If you have any problems, please
+        contact the tournament organiser. Payment can be accepted via cheque or
+        BACS on request. Charges will be shown on your account as WALLINGFORD
+        C. ARCHERS.
+        </small></p>
         {% endif %}
         {% endif %}
         {% if user.is_authenticated %}
@@ -123,7 +129,13 @@
             <input type="submit" value="Enter" class="btn">
         </form>
         {% else %}
-        LOGIN / REGISTER
+        <form class="form page-form" action="{% url 'tournaments:register' %}" method="POST">
+            <h2>Register account</h2>
+            {% csrf_token %}
+            {% form register_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" value="Register" class="btn">
+        </form>
+        <p><a href="{% url 'login' %}">Login to existing account</a></p>
         {% endif %}
     </section>
 </div>
