@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.contrib.auth import login
 from django.http import Http404
@@ -7,6 +9,7 @@ from django.views.generic import (
     CreateView, DeleteView, FormView, TemplateView, UpdateView, View,
 )
 
+import requests
 import stripe
 from braces.views import LoginRequiredMixin, MessageMixin
 
@@ -50,7 +53,24 @@ class EntryCreate(LoginRequiredMixin, MessageMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         self.messages.success('Entry added, please pay below.')
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        data = json.dumps({
+            'icon_emoji': ':wave:',
+            'text': 'New entry received for %s!\n%s' % (
+                form.instance.name,
+                self.request.build_absolute_uri(
+                    reverse(
+                        'admin:tournaments_entry_change',
+                        args=(form.instance.pk,),
+                    )
+                ),
+            )
+        })
+        try:
+            requests.post(settings.SLACK_TOURNAMENT_HREF, data=data)
+        except Exception:
+            pass
+        return response
 
     def get_success_url(self):
         return reverse('tournaments:home')
