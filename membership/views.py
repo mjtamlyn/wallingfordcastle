@@ -5,14 +5,15 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView, UpdateView, View
 
-from braces.views import LoginRequiredMixin, MessageMixin
+from braces.views import MessageMixin
 import requests
 import stripe
 
+from wallingford_castle.mixins import FullMemberRequired
 from .forms import MemberForm
 
 
-class Overview(LoginRequiredMixin, TemplateView):
+class Overview(FullMemberRequired, TemplateView):
     template_name = 'membership/overview.html'
 
     def get_context_data(self, **kwargs):
@@ -25,7 +26,7 @@ class Overview(LoginRequiredMixin, TemplateView):
         return context
 
 
-class MemberUpdate(LoginRequiredMixin, MessageMixin, UpdateView):
+class MemberUpdate(FullMemberRequired, MessageMixin, UpdateView):
     template_name = 'membership/member-update.html'
     form_class = MemberForm
     pk_url_kwarg = 'member_id'
