@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
 
+{% load floppyforms %}
+
 {% block content %}
 <div class="flex-sections">
     <section>
@@ -19,7 +21,7 @@
         individual 6 zone target faces.
         </p>
         <h3>Judges</h3>
-        <p>Chris Evans (Chair), Guy Perring & TBC</p>
+        <p>Chris Evans (Chair), Richard Jones & Guy Perring</p>
         <h3>Awards</h3>
         <p>
         Awards will be made for Gents and Ladies, recurve and compound.
@@ -108,7 +110,18 @@
                 data-locale="auto">
             </script>
         </form>
+        <br>
         {% endif %}
+        {% endif %}
+        {% if user.is_authenticated %}
+        <form class="form page-form" action="{% url 'tournaments:enter' %}" method="POST">
+            <h2>Add entry</h2>
+            {% csrf_token %}
+            {% form entry_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" value="Enter" class="btn">
+        </form>
+        {% else %}
+        LOGIN / REGISTER
         {% endif %}
     </section>
 </div>

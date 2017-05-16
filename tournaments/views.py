@@ -6,6 +6,7 @@ from django.views.generic import (
 
 from braces.views import LoginRequiredMixin, MessageMixin
 
+from .forms import EntryForm
 from .models import Entry
 
 
@@ -14,8 +15,10 @@ class TournamentHome(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        context['existing_entries'] = self.request.user.entry_set.all()
-        context['to_pay'] = self.request.user.entry_set.filter(paid=False).count() * 15
+        if self.request.user.is_authenticated():
+            context['existing_entries'] = self.request.user.entry_set.all()
+            context['to_pay'] = self.request.user.entry_set.filter(paid=False).count() * 15
+            context['entry_form'] = EntryForm()
         return context
 
 
@@ -30,7 +33,7 @@ class TournamentRegistration(FormView):
 class EntryCreate(LoginRequiredMixin, MessageMixin, CreateView):
     template_name = 'tournaments/entry_form.html'
     model = Entry
-    fields = ['name', 'agb_number', 'club', 'gender', 'bowstyle', 'notes']
+    form_class = EntryForm
 
     def form_valid(self, form):
         form.instance.user = self.request.user
