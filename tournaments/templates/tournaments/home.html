@@ -99,6 +99,7 @@
         </ul>
         {% if to_pay %}
         <form action="{% url 'tournaments:pay' %}" method="POST">
+            <p>To pay: £{{ to_pay }}</p>
             {% csrf_token %}
             <script
                 src="https://checkout.stripe.com/checkout.js" class="stripe-button"
