@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        {% if object %}
+        <h2>Update entry details</h2>
+        {% else %}
+        <h2>Add entry</h2>
+        {% endif %}
+        <form class="form page-form" method="POST" action=".">
+            {% csrf_token %}
+            {% form form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" value="{% if object %}Save details{% else %}Enter{% endif %}" class="btn">
+        </form>
+    </section>
+</div>
+{% endblock %}

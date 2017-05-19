@@ -11,8 +11,11 @@
             <div class="container">
                 <h1><a href="{% url 'home' %}">Wallingford Castle Archers</a></h1>
                 <div class="user-actions">
+                    <a href="{% url 'tournaments:home' %}">Tournaments</a>
                     {% if user.is_authenticated %}
-                    <a href="{% url 'membership:overview' %}">Members</a>
+                        {% if not user.tournament_only %}
+                        <a href="{% url 'membership:overview' %}">Members</a>
+                        {% endif %}
                     <a href="{% url 'logout' %}">Sign out</a>
                     {% else %}
                     <a href="{% url 'login' %}">Sign in</a>

@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <p>Are you sure you want to remove the entry for {{ entry }}?</p>
+        {% if entry.paid %}
+        <p>Please contact the tournament organiser to arrange a refund.</p>
+        {% endif %}
+        <form class="form" method="POST" action=".">
+            {% csrf_token %}
+            <input type="submit" value="Confirm" class="btn">
+        </form>
+    </section>
+</div>
+{% endblock %}
+

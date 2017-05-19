@@ -23,6 +23,7 @@ INSTALLED_APPS = (
     'wallingford_castle',
     'membership',
     'beginners',
+    'tournaments',
 
     'custom_user',
     'django_object_actions',
@@ -109,6 +110,7 @@ GA_TRACKING = os.environ.get('GA_TRACKING', '')
 
 SLACK_MEMBERSHIP_HREF = os.environ.get('SLACK_MEMBERSHIP_HREF', '')
 SLACK_BEGINNERS_HREF = os.environ.get('SLACK_BEGINNERS_HREF', '')
+SLACK_TOURNAMENT_HREF = os.environ.get('SLACK_TOURNAMENT_HREF', '')
 
 STRIPE_KEY = os.environ.get('STRIPE_KEY', 'pk_test_Y1b88Dl9MMyGcRJQLnyHyOVI')
 stripe.api_key = STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')

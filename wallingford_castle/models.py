@@ -95,6 +95,7 @@ class MembershipInterest(models.Model):
 
 class User(AbstractEmailUser):
     customer_id = models.CharField(max_length=20)
+    tournament_only = models.BooleanField(default=False)
 
     def send_new_user_email(self, request=None):
         url = reverse('register', kwargs={
