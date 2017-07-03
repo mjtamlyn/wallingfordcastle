@@ -31,6 +31,11 @@ class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
 @admin.register(User)
 class UserAdmin(DjangoObjectActions, EmailUserAdmin):
     actions = change_actions = ['send_new_user_email', 'send_welcome_email']
+    fieldsets = EmailUserAdmin.fieldsets + (
+        ('Internal fields', {
+            'fields': ('customer_id', 'tournament_only')
+        }),
+    )
 
     @takes_instance_or_queryset
     def send_new_user_email(self, request, queryset):

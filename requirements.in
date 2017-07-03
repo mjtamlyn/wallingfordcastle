@@ -1,0 +1,16 @@
+dj-database-url
+dj-static
+Django
+django-braces
+django-custom-user
+django-debug-toolbar
+django-floppyforms
+django-object-actions
+django-sslify
+gunicorn
+psycopg2
+requests
+static3
+stripe
+
+-e git+https://github.com/mjtamlyn/django-templated-email@cc5a94a2c53455c256e7b6f791df03a9971c3bcb#egg=django-templated-email
