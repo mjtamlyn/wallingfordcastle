@@ -5,15 +5,26 @@ Hi!
 
 Thank you for your interest in doing a beginners' course with Wallingford Castle Archers.
 
+{% if course %}
 We have now finalised the dates and they will be as follows:
 {% for session in course.beginnerscoursesession_set.all %}
 {{ session.start_time }}
 {% endfor %}
+{% else %}
+Your fast track course dates will be arranged with your coach.
+{% endif %}
 
-The course costs £50 for adults and £30 for under 18s. To pay, please click here:
+{% if course %}
+The course costs £50 for adults and £30 for under 18s.
+{% else %}
+The course costs £100.
+{% endif %}
+To pay, please click here:
 {% if register_url %}{{ register_url }}{% else %}{{ overview_url }}{% endif %}
 
+{% if course %}
 If you think you will have issues with one or more of the dates but would still like to do the next course, or if you would rather wait until our next course, please reply to this email.
+{% endif %}
 
 See you on the range soon!
 
@@ -23,6 +34,7 @@ Wallingford Committee
 {% block html %}
 <p>Hi!</p>
 
+{% if course %}
 <p>
 We have now finalised the dates and they will be as follows:
 <ul>
@@ -31,13 +43,24 @@ We have now finalised the dates and they will be as follows:
 {% endfor %}
 </ul>
 </p>
+{% else %}
+<p>Your fast track course dates will be arranged with your coach.</p>
+{% endif %}
 
 <p>
-The course costs £50 for adults and £30 for under 18s. <a href="{% if register_url %}{{ register_url }}{% else %}{{ overview_url }}{% endif %}">Please pay here.</a>
+{% if course %}
+The course costs £50 for adults and £30 for under 18s.
+{% else %}
+The course costs £100.
+{% endif %}
+<a href="{% if register_url %}{{ register_url }}{% else %}{{ overview_url }}{% endif %}">Please pay here.</a>
+</p>
 
+{% if course %}
 <p>
 If you think you will have issues with one or more of the dates but would still like to do the next course, or if you would rather wait until our next course, please reply to this email.
 </p>
+{% endif %}
 
 <p>
 See you on the range soon!<br>

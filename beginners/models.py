@@ -55,12 +55,14 @@ class BeginnersCourseSession(models.Model):
 STATUS_WAITING = 'waiting'
 STATUS_NOT_INTERESTED = 'not-interested'
 STATUS_ON_COURSE = 'on-course'
+STATUS_FAST_TRACK = 'fast-track'
 STATUS_JOINED = 'joined'
 STATUS_LEFT = 'left'
 STATUS_CHOICES = (
     (STATUS_WAITING, 'Waiting for a course'),
     (STATUS_NOT_INTERESTED, 'No longer interested'),
     (STATUS_ON_COURSE, 'Allocated a course'),
+    (STATUS_FAST_TRACK, 'Arranged a fast track course'),
     (STATUS_JOINED, 'Completed course and joined the club'),
     (STATUS_LEFT, 'Completed course but did not join'),
 )
@@ -88,6 +90,8 @@ class Beginner(models.Model):
 
     @property
     def fee(self):
+        if self.status == STATUS_FAST_TRACK:
+            return 100
         if self.age == 'junior':
             return 30
         return 50

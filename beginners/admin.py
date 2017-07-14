@@ -12,7 +12,10 @@ from django_object_actions import DjangoObjectActions, takes_instance_or_queryse
 
 from wallingford_castle.models import User
 
-from .models import STATUS_ON_COURSE, Beginner, BeginnersCourse, BeginnersCourseSession
+from .models import (
+    STATUS_FAST_TRACK, STATUS_ON_COURSE, Beginner, BeginnersCourse,
+    BeginnersCourseSession,
+)
 
 
 class BeginnersCourseSessionInline(admin.TabularInline):
@@ -40,8 +43,9 @@ class BeginnersCourseAdmin(admin.ModelAdmin):
 class AllocateCourseForm(forms.Form):
     course = forms.ModelChoiceField(
         BeginnersCourse.objects,
-        empty_label=None,
+        empty_label='Fast track',
         widget=forms.RadioSelect,
+        required=False,
     )
 
 
@@ -67,8 +71,11 @@ class AdminAllocateCourseView(FormView):
         course = form.cleaned_data['course']
         by_user = collections.defaultdict(list)
         for beginner in beginners:
-            beginner.course = course
-            beginner.status = STATUS_ON_COURSE
+            if course:
+                beginner.course = course
+                beginner.status = STATUS_ON_COURSE
+            else:
+                beginner.status = STATUS_FAST_TRACK
             by_user[beginner.contact_email].append(beginner)
         for email, begs in by_user.items():
             user, created = User.objects.get_or_create(email=email, defaults={'is_active': False})
