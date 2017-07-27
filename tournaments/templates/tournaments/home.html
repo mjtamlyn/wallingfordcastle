@@ -120,7 +120,14 @@
         C. ARCHERS.
         </small></p>
         {% endif %}
+        {% else %}
+        <p><strong>
+            The competition is now full. Please contact the
+            <a href="mailto:marc.tamlyn@gmail.com">Tournament Organiser</a> to
+            be added to a waiting list.
+        </strong></p>
         {% endif %}
+        {% comment %}
         {% if user.is_authenticated %}
         <form class="form page-form" action="{% url 'tournaments:enter' %}" method="POST">
             <h2>Add entry</h2>
@@ -137,6 +144,7 @@
         </form>
         <p><a href="{% url 'login' %}">Login to existing account</a></p>
         {% endif %}
+        {% endcomment %}
     </section>
 </div>
 {% endblock %}
