@@ -91,7 +91,10 @@ class Beginner(models.Model):
     @property
     def fee(self):
         if self.status == STATUS_FAST_TRACK:
-            return 100
+            if self.age == 'junior':
+                return 60
+            else:
+                return 100
         if self.age == 'junior':
             return 30
         return 50
