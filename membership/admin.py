@@ -7,8 +7,8 @@ from .models import Member
 
 @admin.register(Member)
 class MemberAdmin(DjangoObjectActions, admin.ModelAdmin):
-    list_display = ['name', 'age', 'membership_type', 'active', 'squad', 'agb_number']
-    list_filter = ['active', 'membership_type', 'age', 'squad']
+    list_display = ['name', 'age', 'membership_type', 'active', 'agb_number', 'age_group', 'level']
+    list_filter = ['active', 'membership_type', 'age', 'level']
     readonly_fields = ['created', 'modified']
     actions = objectactions = ['update_plan']
 

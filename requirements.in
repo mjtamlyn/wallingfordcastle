@@ -9,6 +9,7 @@ django-object-actions
 django-sslify
 gunicorn
 psycopg2
+python-dateutil
 requests
 static3
 stripe
