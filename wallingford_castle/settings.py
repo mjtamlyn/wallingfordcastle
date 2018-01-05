@@ -70,7 +70,7 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    MIDDLEWARE_CLASSES = ('sslify.middleware.SSLifyMiddleware',) + MIDDLEWARE_CLASSES
+    MIDDLEWARE = ('sslify.middleware.SSLifyMiddleware',) + MIDDLEWARE
 
 TEMPLATES = [{
     'BACKEND': 'django.template.backends.django.DjangoTemplates',
