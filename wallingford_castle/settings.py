@@ -1,6 +1,6 @@
 import os
 
-from django.core.urlresolvers import reverse_lazy
+from django.urls import reverse_lazy
 import dj_database_url
 import stripe
 
@@ -39,7 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
 )
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

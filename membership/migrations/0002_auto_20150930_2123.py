@@ -17,11 +17,11 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='member',
             name='interest',
-            field=models.ForeignKey(null=True, blank=True, to='wallingford_castle.MembershipInterest'),
+            field=models.ForeignKey(null=True, blank=True, to='wallingford_castle.MembershipInterest', on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name='member',
             name='user',
-            field=models.ForeignKey(related_name='members', to=settings.AUTH_USER_MODEL),
+            field=models.ForeignKey(related_name='members', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE),
         ),
     ]

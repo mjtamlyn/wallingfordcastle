@@ -1,9 +1,9 @@
 import json
 
 from django.conf import settings
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, View
+from django.urls import reverse, reverse_lazy
 
 from braces.views import MessageMixin
 import requests

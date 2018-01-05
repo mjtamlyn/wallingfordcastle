@@ -1,10 +1,10 @@
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib import messages
-from django.core.urlresolvers import reverse
 from django.db import models, transaction
 from django.utils import timezone
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
+from django.urls import reverse
 
 from custom_user.models import AbstractEmailUser
 from templated_email import send_templated_mail

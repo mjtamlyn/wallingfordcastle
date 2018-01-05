@@ -34,7 +34,7 @@ class BeginnersCourse(models.Model):
 
 
 class BeginnersCourseSession(models.Model):
-    course = models.ForeignKey(BeginnersCourse)
+    course = models.ForeignKey(BeginnersCourse, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
     duration = models.DurationField(default=datetime.timedelta(minutes=90))
 
@@ -77,9 +77,9 @@ class Beginner(models.Model):
     experience = models.TextField(blank=True, default='')
     notes = models.TextField(blank=True, default='')
 
-    user = models.ForeignKey(User, blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    course = models.ForeignKey(BeginnersCourse, blank=True, null=True)
+    course = models.ForeignKey(BeginnersCourse, blank=True, null=True, on_delete=models.CASCADE)
     paid = models.BooleanField(default=False)
     invoice_id = models.CharField(max_length=32, blank=True, default='')
     communication_notes = models.TextField(blank=True, default='')

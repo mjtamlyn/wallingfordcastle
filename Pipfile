@@ -17,12 +17,12 @@ python_version = "3.6"
 [packages]
 
 django-templated-email = {editable = true, git = "https://github.com/mjtamlyn/django-templated-email", ref = "cc5a94a2c53455c256e7b6f791df03a9971c3bcb"}
+django-floppyforms = {git = "https://github.com/rtpg/django-floppyforms", editable = true, ref = "e118e79c77664ea08ae72f59ea02412da7d9b3a8"}
 dj-database-url = "*"
 dj-static = "*"
 django-braces = "*"
 django-custom-user = "*"
 django-debug-toolbar = "*"
-django-floppyforms = "*"
 django-object-actions = "*"
 django-sslify = "*"
 Django = "*"

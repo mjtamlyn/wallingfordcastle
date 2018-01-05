@@ -1,8 +1,8 @@
 import json
 
 from django.conf import settings
-from django.core.urlresolvers import reverse, reverse_lazy
 from django.views.generic import TemplateView, CreateView
+from django.urls import reverse, reverse_lazy
 
 from beginners.forms import BeginnersInterestForm
 from beginners.models import BeginnersCourse

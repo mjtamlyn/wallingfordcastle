@@ -19,7 +19,7 @@ LEVEL_CHOICES = (
 
 
 class Member(models.Model):
-    user = models.ForeignKey('wallingford_castle.User', related_name='members')
+    user = models.ForeignKey('wallingford_castle.User', related_name='members', on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     age = models.CharField(max_length=20, choices=AGE_CHOICES)
     date_of_birth = models.DateField(blank=True, null=True)
@@ -29,7 +29,7 @@ class Member(models.Model):
     level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default='', blank=True)
     paid_until = models.DateField(blank=True, null=True)
     subscription_id = models.CharField(max_length=20, default='', blank=True, editable=False)
-    interest = models.ForeignKey('wallingford_castle.MembershipInterest', blank=True, null=True)
+    interest = models.ForeignKey('wallingford_castle.MembershipInterest', blank=True, null=True, on_delete=models.CASCADE)
     contact_number = models.CharField(max_length=20, blank=True, default='')
 
     active = models.BooleanField(default=True)

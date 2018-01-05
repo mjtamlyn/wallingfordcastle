@@ -3,10 +3,10 @@ import functools
 
 from django.conf.urls import url
 from django.contrib import admin
-from django.core.urlresolvers import reverse
 from django import forms
 from django.http import HttpResponseRedirect
 from django.views.generic import FormView
+from django.urls import reverse
 
 from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
 

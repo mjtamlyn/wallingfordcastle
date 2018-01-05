@@ -15,7 +15,7 @@ BOWSTYLE_CHOICES = (
 
 
 class Entry(models.Model):
-    user = models.ForeignKey(User)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
     agb_number = models.CharField('ArcheryGB number', max_length=50)
     club = models.CharField(max_length=200)
