@@ -18,8 +18,9 @@ AGE_CHOICES = (
 
 MEMBERSHIP_CHOICES = (
     ('full', 'Full member'),
-    ('student', 'Student member'),
+    ('concession', 'Concession member'),
     ('associate', 'Associate member'),
+    ('non-shooting', 'Non-shooting member'),
 )
 
 STATUS_PENDING = 'pending'

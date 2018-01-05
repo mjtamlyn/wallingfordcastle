@@ -41,6 +41,8 @@ class Member(models.Model):
 
     @property
     def plan(self):
+        if self.membership_type == 'non-shooting':
+            return 'non-shooting'
         if self.age == 'senior' and self.membership_type == 'full':
             return 'adult'
         return 'concession'
@@ -50,6 +52,7 @@ class Member(models.Model):
         return {
             'adult': 15,
             'concession': 10,
+            'non-shooting': 5,
         }[self.plan]
 
     @property
