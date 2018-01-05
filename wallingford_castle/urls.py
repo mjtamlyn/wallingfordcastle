@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.views import password_reset_confirm
-from django.urls import include, reverse_lazy, re_path
+from django.urls import include, path, reverse_lazy, re_path
 
 from . import views
 from .forms import RegisterForm
@@ -17,7 +17,7 @@ urlpatterns = [
     re_path(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
     # TODO: Style header links
     re_path(r'^accounts/', include('django.contrib.auth.urls')),
-    re_path(r'^accounts/register/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/',
+    path('accounts/register/<uidb64>/<token>/',
         password_reset_confirm, {
             'set_password_form': RegisterForm,
             'template_name': 'registration/register.html',

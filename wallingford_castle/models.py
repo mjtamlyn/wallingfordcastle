@@ -97,13 +97,17 @@ class User(AbstractEmailUser):
     customer_id = models.CharField(max_length=20, blank=True, default='')
     tournament_only = models.BooleanField(default=False)
 
-    def send_new_user_email(self, request=None):
+    def generate_register_url(self, request=None):
         url = reverse('register', kwargs={
-            'uidb64': urlsafe_base64_encode(force_bytes(self.pk)),
+            'uidb64': urlsafe_base64_encode(force_bytes(self.pk)).decode('utf-8'),
             'token': default_token_generator.make_token(self),
         })
         if request is not None:
             url = request.build_absolute_uri(url)
+        return url
+
+    def send_new_user_email(self, request=None):
+        url = self.generate_register_url(request)
         send_templated_mail(
             template_name='new_user',
             from_email='hello@wallingfordcastle.co.uk',
@@ -123,11 +127,7 @@ class User(AbstractEmailUser):
 
     def send_beginners_course_email(self, request, beginners, course, created):
         if not self.is_active:
-            register_url = reverse('register', kwargs={
-                'uidb64': urlsafe_base64_encode(force_bytes(self.pk)),
-                'token': default_token_generator.make_token(self),
-            })
-            register_url = request.build_absolute_uri(register_url)
+            register_url = self.generate_register_url(request)
         else:
             register_url = None
         send_templated_mail(
