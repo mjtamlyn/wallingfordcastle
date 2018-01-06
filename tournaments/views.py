@@ -22,7 +22,7 @@ class TournamentHome(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
-        if self.request.user.is_authenticated():
+        if self.request.user.is_authenticated:
             context['existing_entries'] = self.request.user.entry_set.all()
             context['to_pay'] = self.request.user.entry_set.filter(paid=False).count() * 15
             context['STRIPE_KEY'] = settings.STRIPE_KEY
