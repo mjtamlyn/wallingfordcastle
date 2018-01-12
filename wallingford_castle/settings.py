@@ -23,6 +23,7 @@ INSTALLED_APPS = (
     'wallingford_castle',
     'membership',
     'beginners',
+    'events',
     'tournaments',
 
     'custom_user',

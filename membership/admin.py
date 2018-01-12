@@ -11,6 +11,7 @@ class MemberAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_filter = ['active', 'membership_type', 'age', 'level']
     readonly_fields = ['created', 'modified']
     actions = objectactions = ['update_plan']
+    search_fields = ['name']
 
     @takes_instance_or_queryset
     def update_plan(self, request, queryset):
