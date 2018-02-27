@@ -2,6 +2,7 @@
 
 {% block content %}
 
+<p><a href="{% url 'membership:overview' %}">< Back to membership overview</a></p>
 <h2>Events</h2>
 <p>Register to attend a club shoot, tournament, social…</p>
 
@@ -10,7 +11,18 @@
     <section>
         <h3>{{ event }}<br><small>{{ event.date }}</small></h3>
         <p>{{ event.description|linebreaks }}</p>
-        <a class="btn" href="">Register</a>
+        <a class="btn" href="{% url 'events:book-event' pk=event.pk %}">Register</a>
+        {% if event.registered_members %}
+            <p>Booked:</p>
+            <ul>
+                {% for booking in event.registered_members %}
+                <li>
+                    {{ booking.member }}<br>
+                    {{ booking.responses|linebreaksbr }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </section>
 {% empty %}
     <section>
