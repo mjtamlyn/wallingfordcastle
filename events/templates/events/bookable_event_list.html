@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h2>Events</h2>
+<p>Register to attend a club shoot, tournament, social…</p>
+
+<div class="flex-sections">
+{% for event in events %}
+    <section>
+        <h3>{{ event }}<br><small>{{ event.date }}</small></h3>
+        <p>{{ event.description|linebreaks }}</p>
+        <a class="btn" href="">Register</a>
+    </section>
+{% empty %}
+    <section>
+        No upcoming events right now.
+    </section>
+{% endfor %}
+</div>
+
+{% endblock %}
