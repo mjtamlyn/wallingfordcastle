@@ -14,6 +14,7 @@ urlpatterns = [
     re_path(r'^membership-interest/$', views.MembershipInterestView.as_view(), name='membership-interest'),
     re_path(r'^beginners/', include('beginners.urls', namespace='beginners')),
     re_path(r'^members/', include('membership.urls', namespace='membership')),
+    re_path(r'^members/events/', include('events.urls', namespace='events')),
     re_path(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
     # TODO: Style header links
     re_path(r'^accounts/', include('django.contrib.auth.urls')),
