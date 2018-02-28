@@ -32,6 +32,6 @@ class BookEventForm(forms.Form):
             member = self.members[0]
         return Booking.objects.create(
             event=self.event,
-            member=self.cleaned_data['member'],
+            member=member,
             response_answers=answers,
         )
