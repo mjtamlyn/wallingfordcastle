@@ -6,6 +6,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.urls import reverse
 from django.utils import timezone
 
+import requests
 from wallingford_castle.mixins import FullMemberRequired
 
 from .forms import BookEventForm
