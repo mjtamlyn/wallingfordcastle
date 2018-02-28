@@ -1,3 +1,5 @@
+import json
+
 from django.conf import settings
 from django.views.generic import FormView, ListView
 from django.views.generic.detail import SingleObjectMixin
