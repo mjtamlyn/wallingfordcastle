@@ -26,7 +26,7 @@ class BookEventForm(forms.Form):
         answers = {}
         for question in self.event.bookingquestion_set.order_by('order'):
             answers[question.text] = self.cleaned_data['question_%s' % question.id]
-        Booking.objects.create(
+        return Booking.objects.create(
             event=self.event,
             member=self.cleaned_data['member'],
             response_answers=answers,

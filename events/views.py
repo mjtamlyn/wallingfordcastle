@@ -44,7 +44,19 @@ class BookEvent(FullMemberRequired, SingleObjectMixin, FormView):
         return kwargs
 
     def form_valid(self, form):
-        form.save()
+        booking = form.save()
+        if settings.SLACK_EVENTS_HREF:
+            data = json.dumps({
+                'icon_emoji': ':white_check_mark:',
+                'text': '%s has registered for %s!' % (
+                    booking.member,
+                    booking.event,
+                )
+            })
+            try:
+                requests.post(settings.SLACK_EVENTS_HREF, data=data)
+            except Exception:
+                pass
         return super().form_valid(form)
 
     def get_success_url(self):
