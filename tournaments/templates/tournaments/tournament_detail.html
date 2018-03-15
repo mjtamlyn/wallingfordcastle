@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <h2>Tournament prospectus</h2>
+        <p>
+        {{ tournament }}, {% if tournament.is_future %}to be {% endif %}held on
+        {{ tournament.date|date:"jS F Y" }}.
+        </p>
+        <h3>Rounds</h3>
+        {{ tournament.rounds|linebreaks }}
+        <h3>Event Format</h3>
+        {{ tournament.event_format|linebreaks }}
+        <h3>Judges</h3>
+        {{ tournament.judges|linebreaks }}
+        <h3>Awards</h3>
+        {{ tournament.awards|linebreaks }}
+        <h3>Tournament Organiser</h3>
+        <p><a href="mailto:{{ tournament.tournament_organiser_email }}">{{ tournament.tournament_organiser }}</a></p>
+        <h3>Dress</h3>
+        {{ tournament.dress|linebreaks }}
+        <h3>Drug testing</h3>
+        {{ tournament.drug_testing|linebreaks }}
+    </section>
+    <section>
+        <h2>Important information</h2>
+        <h3>Timing</h3>
+        {{ tournament.timing|linebreaks }}
+        <h3>Venue</h3>
+        {{ tournament.venue_description|linebreaks }}
+        <iframe
+            width="100%"
+            height="300"
+            frameborder="0" style="border:0"
+            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDGuvasiOAUbxa4w_xoZ8YaY38M9Vpz2Ec&q={{ tournament.venue_google_search }}&zoom=14" allowfullscreen>
+        </iframe>
+        <h3>Refreshments</h3>
+        {{ tournament.refreshments|linebreaks }}
+        <h3>Camping</h3>
+        {{ tournament.camping|linebreaks }}
+    </section>
+    <section>
+        {% if tournament.entry_is_open %}
+        <h2>Enter now</h2>
+        {% else %}
+        <h2>Entry information</h2>
+        {% endif %}
+
+        {{ tournament.entry_information|linebreaks }}
+
+        {% if not tournament.past %}
+        <p>
+        Entry fee is £{{ tournament.entry_fee }}.
+        {% if tournament.entries_will_open %}
+        Entries will open on {{ tournament.entries_open|date:"jS F Y" }}.
+        {% elif tournament.entry_is_open %}
+        Entries must be received by {{ tournament.entries_close|date:"jS F Y" }}.
+        {% endif %}
+        </p>
+        {% endif %}
+
+        {% if existing_entries %}
+            <h3>Entries</h3>
+            <ul>
+                {% for entry in existing_entries %}
+                <li>
+                    <strong>{{ entry.name }}</strong>
+                    {% if entry.paid %}
+                    Paid
+                    {% endif %}
+                    <a href="{% url 'tournaments:entry-update' tournament_slug=tournament.slug pk=entry.pk %}">Edit</a>
+                    {% if not entry.paid %}
+                    <a href="{% url 'tournaments:entry-delete' tournament_slug=tournament.slug pk=entry.pk %}">Remove</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% if to_pay %}
+            <form action="{% url 'tournaments:pay' tournament_slug=tournament.slug %}" method="POST">
+                <p>To pay: £{{ to_pay }}</p>
+                {% csrf_token %}
+                <script
+                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                    data-key="{{ STRIPE_KEY }}"
+                    data-email="{{ user.email }}"
+                    data-currency="GBP"
+                    data-amount="{{ to_pay }}00"
+                    data-name="Wallingford Castle Archers"
+                    data-description="Tournament Entry"
+                    data-locale="auto">
+                </script>
+            </form>
+            <p><small>
+            Payments are processed securely using Stripe. Wallingford Castle Archers does
+            not store your credit card details. If you have any problems, please
+            contact the tournament organiser. Payment can be accepted via cheque or
+            BACS on request. Charges will be shown on your account as WALLINGFORD
+            C. ARCHERS.
+            </small></p>
+            {% endif %}
+        {% elif not tournament.entry_is_open and not tournament.past %}
+            <p><strong>
+                The competition is now full. Please contact the
+                <a href="mailto:{{ tournament.tournament_organiser_email }}">Tournament Organiser</a> to
+                be added to a waiting list.
+            </strong></p>
+        {% endif %}
+
+        {% if tournament.entry_is_open %}
+            {% if user.is_authenticated %}
+            <form class="form page-form" action="{% url 'tournaments:enter' tournament_slug=tournament.slug %}" method="POST">
+                <h2>Add entry</h2>
+                {% csrf_token %}
+                {% form entry_form using 'floppyforms/layouts/p.html' %}
+                <input type="submit" value="Enter" class="btn">
+            </form>
+            {% else %}
+            <form class="form page-form" action="{% url 'tournaments:register' tournament_slug=tournament.slug %}" method="POST">
+                <h2>Register account</h2>
+                {% csrf_token %}
+                {% form register_form using 'floppyforms/layouts/p.html' %}
+                <input type="submit" value="Register" class="btn">
+            </form>
+            <p><a href="{% url 'login' %}">Login to existing account</a></p>
+            {% endif %}
+        {% endif %}
+    </section>
+</div>
+{% endblock %}
+

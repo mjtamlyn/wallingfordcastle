@@ -1,150 +1,50 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block content %}
 <div class="flex-sections">
     <section>
-        <h2>Tournament prospectus</h2>
+        <h2>Upcoming open tournaments</h2>
         <p>
-        1st Wallingford Castle Archers 720 tournament, to be held on 5th August
-        2017.
+        We look forwards to welcoming you to Wallingford Castle Archers for a
+        tournament.
         </p>
-        <h3>Rounds</h3>
-        <p>WRS WA 70m round with Individual Olympic Round for recurve archers</p>
-        <p>WRS WA 50m round with Individual Match Round for compound archers</p>
-        <h3>Event Format</h3>
+        {% for tournament in upcoming_tournaments %}
+        <h3>{{ tournament }}</h3>
+        <p><strong>{{ tournament.date|date:"jS F Y" }}</strong></p>
+        {{ tournament.rounds|linebreaks }}
+        <a href="{{ tournament.get_absolute_url }}" class="btn">Find out more</a>
+        {% empty %}
         <p>
-        WA70m and WA50m rounds to be shot in accordance with World Archery
-        Rules of Shooting. Arrows will be shot in ends of 6 arrows in 4
-        minutes. There will be four archers per target. Compounds will shoot at
-        individual 6 zone target faces.
-        </p>
-        <h3>Judges</h3>
-        <p>Chris Evans (Chair), Richard Jones & Guy Perring</p>
-        <h3>Awards</h3>
-        <p>
-        Awards will be made for Gents and Ladies, recurve and compound.
-        There will be no seperate category for barebow or longbow archers, or
-        for juniors, but all are welcome to compete.
-        </p>
-        <h3>Tournament Organiser</h3>
-        <p><a href="mailto:marc.tamlyn@gmail.com">Marc Tamlyn</a></p>
-        <h3>Dress</h3>
-        <p>Dress code is according to the AGB Rules of Shooting</p>
-        <h3>Drug testing</h3>
-        <p>
-        Archers competing at record status tournaments may be liable to drug
-        testing. Competitors who are approached to give samples must comply.
-        Non-compliance will be treated as a positive result. Parents/Guardians
-        must check the relevant box on the entry form giving consent for junior
-        archers (under 18s) to be drug tested if approached.
-        </p>
+        We don't have any future shoots confirmed yet, but watch this space and
+        follow us on
+        <a href="https://www.facebook.com/wallingfordcastlearchers/">Facebook</a>
+        to find out first when we open entries.
+        {% endfor %}
     </section>
     <section>
-        <h2>Important information</h2>
-        <h3>Timing</h3>
-        <p>Registration opens 8am. ArcheryGB cards will be required.</p>
+        <h2>Past open tournaments</h2>
         <p>
-        Assembly at 8.45am followed by 3 ends of practice and the qualification
-        round. Match play will begin as soon as possible after the main round.
-        Awards will take place at the Sports Park Bar immediately after
-        shooting concludes.
+        Wallingford Castle Archers run regular open World Record Status events,
+        as well as other shoots like the Oxfordshire Indoor Championships and
+        the Castle Junior Archery League.
         </p>
-        <h3>Venue</h3>
-        <p>
-        The tournament will take place at our outdoor venue at Wallingford
-        Sports Park, Wallingford OX10 9RB. The shooting field is the northern
-        field, please park in the main car park and follow signs through to the
-        field (approx 200m). Parking is available nearer the line for archers
-        with mobility problems only.
-        </p>
-        <iframe
-            width="100%"
-            height="300"
-            frameborder="0" style="border:0"
-            src="https://www.google.com/maps/embed/v1/place?key=AIzaSyDGuvasiOAUbxa4w_xoZ8YaY38M9Vpz2Ec&q=Wallingford%20SportsPark,%20Wallingford&zoom=14" allowfullscreen>
-        </iframe>
-        <h3>Refreshments</h3>
-        <p>
-        Hot and cold food and drinks will be available. The bar will also be
-        open after shooting concludes.
-        </p>
-        <h3>Camping</h3>
-        <p>
-        Camping will be available on the Friday night for £5/unit, with showers
-        and toilets available all night. No practice facilities are guaranteed
-        on the Friday. To book camping please
-        <a href="mailto:marc.tamlyn@gmail.com">contact the Tournament Organiser</a>.
-        </p>
-    </section>
-    <section>
-        <h2>Enter now</h2>
-        <p>Entry fee is £15. Entries must be received by July 29th 2017.</p>
-        {% if existing_entries %}
-        <h3>Entries</h3>
         <ul>
-            {% for entry in existing_entries %}
-            <li>
-                <strong>{{ entry.name }}</strong>
-                {% if entry.paid %}
-                Paid
-                {% endif %}
-                <a href="{% url 'tournaments:entry-update' pk=entry.pk %}">Edit</a>
-                {% if not entry.paid %}
-                <a href="{% url 'tournaments:entry-delete' pk=entry.pk %}">Remove</a>
-                {% endif %}
-            </li>
+            {% for tournament in past_tournaments %}
+            <li><a href="{{ tournament.get_absolute_url }}">{{ tournament }}</a> - {{ tournament.date|date:"jS F Y" }}</li>
             {% endfor %}
         </ul>
-        {% if to_pay %}
-        <form action="{% url 'tournaments:pay' %}" method="POST">
-            <p>To pay: £{{ to_pay }}</p>
-            {% csrf_token %}
-            <script
-                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                data-key="{{ STRIPE_KEY }}"
-                data-email="{{ user.email }}"
-                data-currency="GBP"
-                data-amount="{{ to_pay }}00"
-                data-name="Wallingford Castle Archers"
-                data-description="Tournament Entry"
-                data-locale="auto">
-            </script>
-        </form>
-        <p><small>
-        Payments are processed securely using Stripe. Wallingford Castle Archers does
-        not store your credit card details. If you have any problems, please
-        contact the tournament organiser. Payment can be accepted via cheque or
-        BACS on request. Charges will be shown on your account as WALLINGFORD
-        C. ARCHERS.
-        </small></p>
-        {% endif %}
-        {% else %}
-        <p><strong>
-            The competition is now full. Please contact the
-            <a href="mailto:marc.tamlyn@gmail.com">Tournament Organiser</a> to
-            be added to a waiting list.
-        </strong></p>
-        {% endif %}
-        {% comment %}
-        {% if user.is_authenticated %}
-        <form class="form page-form" action="{% url 'tournaments:enter' %}" method="POST">
-            <h2>Add entry</h2>
-            {% csrf_token %}
-            {% form entry_form using 'floppyforms/layouts/p.html' %}
-            <input type="submit" value="Enter" class="btn">
-        </form>
-        {% else %}
-        <form class="form page-form" action="{% url 'tournaments:register' %}" method="POST">
-            <h2>Register account</h2>
-            {% csrf_token %}
-            {% form register_form using 'floppyforms/layouts/p.html' %}
-            <input type="submit" value="Register" class="btn">
-        </form>
-        <p><a href="{% url 'login' %}">Login to existing account</a></p>
-        {% endif %}
-        {% endcomment %}
+    </section>
+    <section>
+        <h2>Other tournaments</h2>
+        <p>
+        Watch out for the pink shirts of WCA at some of these upcoming events
+        in the local area!
+        </p>
+        <ul>
+            {% for event in bookable_events %}
+            <li>{{ event }} - {{ event.date|date:"jS F Y" }}</li>
+            {% endfor %}
+        </ul>
     </section>
 </div>
 {% endblock %}
