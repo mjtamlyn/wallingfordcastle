@@ -106,7 +106,7 @@ class EntryCreate(LoginRequiredMixin, TournamentMixin, MessageMixin, CreateView)
 class EntryUpdate(LoginRequiredMixin, TournamentMixin, MessageMixin, UpdateView):
     template_name = 'tournaments/entry_form.html'
     model = Entry
-    fields = ['name', 'agb_number', 'club', 'gender', 'bowstyle', 'notes']
+    fields = ['name', 'agb_number', 'club', 'date_of_birth', 'gender', 'bowstyle', 'notes', 'drugs_consent', 'gdpr_consent', 'future_event_consent']
 
     def get_object(self):
         obj = super().get_object()

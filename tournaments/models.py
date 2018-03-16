@@ -77,12 +77,16 @@ class Entry(models.Model):
     name = models.CharField(max_length=200)
     agb_number = models.CharField('ArcheryGB number', max_length=50)
     club = models.CharField(max_length=200)
+    date_of_birth = models.DateField(blank=True, null=True, help_text='Required for junior archers.')
     gender = models.CharField(max_length=50, choices=GENDER_CHOICES)
     bowstyle = models.CharField(max_length=50, choices=BOWSTYLE_CHOICES)
     notes = models.TextField(help_text='''
         Please include details of any accessibility requirements, other
         bowstyles, junior or masters age categories etc.
     ''', blank=True, default='')
+    drugs_consent = models.BooleanField('I consent to drugs testing as required under WRS rules.', default=False)
+    gdpr_consent = models.BooleanField('I consent that some of the information here provided will be shared with tournament organisers, scoring systems, other competitors and ArcheryGB. I also consent that I may be contacted with further details of the event via email.', default=False)
+    future_event_consent = models.BooleanField('Please contact me about future competitions at Wallingford Castle Archers', default=False)
     paid = models.BooleanField(default=False)
 
     def __str__(self):
