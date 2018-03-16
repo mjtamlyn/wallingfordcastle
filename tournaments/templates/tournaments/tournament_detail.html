@@ -101,7 +101,7 @@
             C. ARCHERS.
             </small></p>
             {% endif %}
-        {% elif not tournament.entry_is_open and tournament.is_future %}
+        {% elif not tournament.entry_is_open and not tournament.entry_will_open %}
             <p><strong>
                 The competition is now full. Please contact the
                 <a href="mailto:{{ tournament.tournament_organiser_email }}">Tournament Organiser</a> to
