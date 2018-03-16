@@ -51,10 +51,10 @@
 
         {{ tournament.entry_information|linebreaks }}
 
-        {% if not tournament.past %}
+        {% if tournament.is_future %}
         <p>
         Entry fee is £{{ tournament.entry_fee }}.
-        {% if tournament.entries_will_open %}
+        {% if tournament.entry_will_open %}
         Entries will open on {{ tournament.entries_open|date:"jS F Y" }}.
         {% elif tournament.entry_is_open %}
         Entries must be received by {{ tournament.entries_close|date:"jS F Y" }}.
@@ -101,7 +101,7 @@
             C. ARCHERS.
             </small></p>
             {% endif %}
-        {% elif not tournament.entry_is_open and not tournament.past %}
+        {% elif not tournament.entry_is_open and tournament.is_future %}
             <p><strong>
                 The competition is now full. Please contact the
                 <a href="mailto:{{ tournament.tournament_organiser_email }}">Tournament Organiser</a> to

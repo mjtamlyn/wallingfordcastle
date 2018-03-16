@@ -66,10 +66,6 @@ class Tournament(models.Model):
     def entry_is_open(self):
         return self.entries_open < timezone.now() < self.entries_close
 
-    @property
-    def past(self):
-        return timezone.now() >= self.date
-
 
 class Entry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
