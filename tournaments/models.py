@@ -60,7 +60,7 @@ class Tournament(models.Model):
 
     @property
     def entry_will_open(self):
-        return timezone.now() < self.entries_close
+        return timezone.now() < self.entries_open
 
     @property
     def entry_is_open(self):
