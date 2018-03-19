@@ -83,8 +83,9 @@ class EntryCreate(LoginRequiredMixin, TournamentMixin, MessageMixin, CreateView)
         response = super().form_valid(form)
         data = json.dumps({
             'icon_emoji': ':wave:',
-            'text': 'New entry received for %s!\n%s' % (
+            'text': 'New entry received for %s to %s!\n%s' % (
                 form.instance.name,
+                form.instance.tournament,
                 self.request.build_absolute_uri(
                     reverse(
                         'admin:tournaments_entry_change',
