@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<h1>Didcot Girls School</h1>
+<p>Wallingford Castle Archers are pleased to be working with Didcot Girls School to offer an after school archery club.</p>
+<p>Sessions will be running after school on Mondays on the following dates:</p>
+<ul>
+    <li>23rd April 2018</li>
+    <li>30th April 2018</li>
+    <li><em>(No session 7th May 2018 due to bank holiday)</em></li>
+    <li>14th May 2018</li>
+    <li>21st May 2018</li>
+</ul>
+<p>The cost for this half term is £20, payable in advance.</p>
+<p>To register for the course, please complete the form below.</p>
+<form class="form" method="POST" action=".">
+    {% csrf_token %}
+    {% form form using 'floppyforms/layouts/p.html' %}
+    <input type="submit" class="btn" value="Register">
+</form>
+{% endblock %}
