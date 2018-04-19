@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<h1>Didcot Girls School</h1>
+<p>Thanks for registering TODO{{ object.student_name }} for the archery club at Didcot Girls School.</p>
+{% if object.paid %}
+<p>Payment confirmed, thanks!</p>
+{% else %}
+<p>To pay: £20</p>
+<form action="." method="POST">
+    {% csrf_token %}
+    <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="{{ STRIPE_KEY }}"
+        data-email="{{ object.email }}"
+        data-currency="GBP"
+        data-amount="2000"
+        data-name="Wallingford Castle Archers"
+        data-description="Didcot Girls School Archery Club"
+        data-locale="auto">
+    </script>
+</form>
+{% endif %}
+{% endblock %}

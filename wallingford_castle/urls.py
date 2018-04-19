@@ -25,4 +25,5 @@ urlpatterns = [
             'post_reset_redirect': reverse_lazy('membership:overview'),
         }, name='register'),
     re_path(r'^admin/', admin.site.urls),
+    path('', include('courses.urls', namespace='courses')),
 ]

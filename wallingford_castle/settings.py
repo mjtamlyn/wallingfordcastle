@@ -25,6 +25,7 @@ INSTALLED_APPS = (
     'beginners',
     'events',
     'tournaments',
+    'courses',
 
     'custom_user',
     'django_object_actions',
