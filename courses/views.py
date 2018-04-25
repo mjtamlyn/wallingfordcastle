@@ -9,7 +9,6 @@ from .models import CourseSignup
 from .forms import CourseSignupForm
 
 
-
 class DGSSignup(CreateView):
     template_name = 'courses/dgs.html'
     form_class = CourseSignupForm
@@ -36,7 +35,7 @@ class DGSPayment(DetailView):
         if signup.paid:
             return HttpResponseNotAllowed()
         stripe.Charge.create(
-            amount=2000,
+            amount=5500,
             currency="GBP",
             description="Didcot Girls School Archery Club",
             source=token,
