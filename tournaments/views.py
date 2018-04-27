@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 from django.contrib.auth import login
 from django.http import Http404
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.views.generic import (
     CreateView, DeleteView, DetailView, FormView, TemplateView, UpdateView,
@@ -157,4 +157,4 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
         )
         to_pay = self.request.user.entry_set.update(paid=True)
         self.messages.success('Thanks! You will receive a confirmation email soon.')
-        return tournament.get_absolute_url()
+        return redirect(tournament.get_absolute_url())
