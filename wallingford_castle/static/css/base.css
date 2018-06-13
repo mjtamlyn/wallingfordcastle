@@ -342,9 +342,10 @@ footer {
 /* line 204, ../../sass/_layout.sass */
 .hero h1 {
   font-size: 34px;
+  text-align: center;
 }
 
-/* line 207, ../../sass/_layout.sass */
+/* line 208, ../../sass/_layout.sass */
 .intro {
   margin: 30px auto;
   max-width: 600px;
