@@ -24,6 +24,7 @@ INSTALLED_APPS = (
     'membership',
     'beginners',
     'events',
+    'bookings',
     'tournaments',
     'courses',
 

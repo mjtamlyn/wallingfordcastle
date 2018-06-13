@@ -45,3 +45,8 @@ class MembershipInterestView(MessageMixin, CreateView):
             except Exception:
                 pass
         return response
+
+
+
+class Venues(TemplateView):
+    template_name = 'venues.html'

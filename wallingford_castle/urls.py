@@ -16,6 +16,8 @@ urlpatterns = [
     re_path(r'^members/', include('membership.urls', namespace='membership')),
     re_path(r'^members/events/', include('events.urls', namespace='events')),
     re_path(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
+    re_path(r'^events/', include('bookings.urls', namespace='bookings')),
+    re_path(r'^venues/$', views.Venues.as_view(), name='venues'),
     # TODO: Style header links
     re_path(r'^accounts/', include('django.contrib.auth.urls')),
     path('accounts/register/<uidb64>/<token>/',
