@@ -21,67 +21,34 @@
         </p>
     </section>
     <section>
-        <h2>WCA Summer tournaments 2018</h2>
-        <p>
-        Wallingford Castle Archers will be hosting two tournaments this summer
-        - a junior team challenge and a 720 & Head to Head event.
-        </p>
-        <h3>Junior Team Challenge</h3>
-        <p>A new event on Saturday 19th May 2018</p>
-        <p>
-        The morning will feature WRS and UKRS 60m, 50m, 40m and 30m recurve
-        rounds, and the 50m compound round. In the afternoon, we will have club
-        team head to head events.
-        </p>
-        <p><a class="btn" href="/tournaments/junior-team-challenge-2018/">Find out more</a>
-        <h3>2nd WCA 720 Tournament</h3>
+        <h2>2nd WCA 720 Tournament</h2>
         <p>
         The 2nd WCA 720 will be held on Saturday 4th August 2018, and is open
         to entry.
+        </p>
+        <p>
+        WRS WA 70m round with Individual Olympic Round for recurve archers
+        </p>
+        <p>
+        WRS WA 50m round with Individual Match Round for compound archers
+        </p>
         <p><a class="btn" href="/tournaments/2nd-wca-720/">Find out more</a>
         </p>
    </section>
     <section>
-        <h2>Membership</h2>
+        <h2>Summer Holiday Archery</h2>
         <p>
-            <strong>Adult members</strong><br>
-            £15 per calendar month. Membership includes the Sunday afternoon
-            sessions, use of club equipment and membership to the national
-            governing body, Archery GB. All new members must commit to at least
-            6 months of membership to cover their affiliation fees.
+        Over the summer holidays we will be offering archery classes for
+        children aged 6-18. Sessions will be available tailored for complete
+        beginners and those with a bit more experience.
         </p>
         <p>
-            <strong>Concession members</strong><br>
-            £10 per calendar month. Membership includes sessions, including a
-            junior only session on Sunday mornings, as well as the usual open
-            afternoon session, use of club equipment and membership to the
-            national governing body, Archery GB. All new members must commit to
-            at least 3 months of membership.
+        We are still working out the details for these sessions, but we'd love
+        to hear from you if you're interested in attending.
         </p>
         <p>
-            Concession membership is available to all archers aged 10-24, and
-            any archers with a disability. For budding archers under 10, we
-            support a variety of local groups at primary schools and leisure
-            centres. Please contact us for details.
+        <a class="btn" href="mailto:hello@wallingfordcastle.co.uk">Get in touch</a>
         </p>
-        <p>
-            <strong>Associate members</strong></br>
-            £10 per calendar month. Membership includes everything that full
-            membership does, with the exception of membership to Archery GB.
-            Membership is due monthly. You must already be a member of
-            Archery GB or another World Archery affiliated body.
-        </p>
-        <p>
-            <strong>Non-shooting members</strong></br>
-            £5 per calendar month. Membership includes only membership of
-            Archery GB, with no shooting rights.
-        </p>
-        <form class="form page-form" method="POST" action="{% url 'membership-interest' %}">
-            <h3>Register interest in membership</h3>
-            {% csrf_token %}
-            {% form membership_form using 'floppyforms/layouts/p.html' %}
-            <input type="submit" class="btn">
-        </form>
     </section>
 </div>
 {% endblock %}

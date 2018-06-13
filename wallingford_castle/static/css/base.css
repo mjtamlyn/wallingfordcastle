@@ -335,8 +335,16 @@ footer {
 .hero--photocrowd:before {
   background-image: url(../img/photocrowd.jpg);
 }
-
 /* line 201, ../../sass/_layout.sass */
+.hero--diana:before {
+  background-image: url(../img/diana.jpg);
+}
+/* line 204, ../../sass/_layout.sass */
+.hero h1 {
+  font-size: 34px;
+}
+
+/* line 207, ../../sass/_layout.sass */
 .intro {
   margin: 30px auto;
   max-width: 600px;

@@ -13,6 +13,10 @@ from .forms import MembershipInterestForm
 class HomeView(MessageMixin, TemplateView):
     template_name = 'home.html'
 
+
+class Join(TemplateView): 
+    template_name = 'join.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['membership_form'] = MembershipInterestForm()
@@ -45,7 +49,6 @@ class MembershipInterestView(MessageMixin, CreateView):
             except Exception:
                 pass
         return response
-
 
 
 class Venues(TemplateView):
