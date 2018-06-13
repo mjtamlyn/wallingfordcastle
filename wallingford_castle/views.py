@@ -4,8 +4,6 @@ from django.conf import settings
 from django.views.generic import TemplateView, CreateView
 from django.urls import reverse, reverse_lazy
 
-from beginners.forms import BeginnersInterestForm
-from beginners.models import BeginnersCourse
 from braces.views import MessageMixin
 import requests
 
@@ -15,12 +13,13 @@ from .forms import MembershipInterestForm
 class HomeView(MessageMixin, TemplateView):
     template_name = 'home.html'
 
+
+class Join(TemplateView): 
+    template_name = 'join.html'
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['membership_form'] = MembershipInterestForm()
-        context['beginners_form'] = BeginnersInterestForm()
-        context['current_courses'] = BeginnersCourse.objects.current()
-        context['upcoming_courses'] = BeginnersCourse.objects.upcoming().order_by('counter')
         return context
 
 
@@ -50,3 +49,7 @@ class MembershipInterestView(MessageMixin, CreateView):
             except Exception:
                 pass
         return response
+
+
+class Venues(TemplateView):
+    template_name = 'venues.html'

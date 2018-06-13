@@ -2,7 +2,7 @@ import json
 
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.views.generic import CreateView, View
+from django.views.generic import CreateView, TemplateView, View
 from django.urls import reverse, reverse_lazy
 
 from braces.views import MessageMixin
@@ -10,6 +10,18 @@ import requests
 import stripe
 
 from .forms import BeginnersInterestForm
+from .models import BeginnersCourse
+
+
+class BeginnersIndex(TemplateView):
+    template_name = 'beginners/index.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['beginners_form'] = BeginnersInterestForm()
+        context['current_courses'] = BeginnersCourse.objects.current()
+        context['upcoming_courses'] = BeginnersCourse.objects.upcoming().order_by('counter')
+        return context
 
 
 class BeginnersInterestView(MessageMixin, CreateView):

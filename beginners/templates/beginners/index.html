@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block hero %}
+<div class="hero hero--coaching">
+    <h1>Learn archery</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <h2>Beginners courses</h2>
+        <p>
+        We run regular beginners courses through the year. It's the ideal
+        introduction to the sport, teaching you all the basics including how to
+        set up, shoot the bow and score your arrows.
+        </p>
+        <p>
+        Beginners courses include six hours of small group tuition over 3 or 4
+        sessions. All equipment and coaching will be provided, and at the end
+        of the course you will be given a short assessment, just to make sure
+        you've taken what we've taught you. After this you will be able to join
+        any other open archery club in the country. The course, including hire
+        of bows etc. for all sessions will cost £50 for adults and £30 for
+        juniors.
+        </p>
+        <p>
+        If you would like to sign up for the next beginners course, please fill
+        in the form below. The course have limited numbers due to the size of
+        the hall and availability of targets, and places will be allocated on a
+        first come first served basis where possible. Payment is accepted
+        online before the course, or by cash or cheque (payable to Wallingford
+        Castle Archers) at the first session.
+        </p>
+    </section>
+    <section>
+        <h3>Upcoming course dates</h3>
+        <ul>
+            {% for course in upcoming_courses %}
+            <li>{% for session in course.beginnerscoursesession_set.all %}{{ session.time_string }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</li>
+            {% endfor %}
+            <li>Courses run regularly throughout the year and will be arranged according to demand.</li>
+        </ul>
+        {% if current_courses %}
+        <h3>Current course dates</h3>
+        <ul>
+            {% for course in current_courses %}
+            <li>{% for session in course.beginnerscoursesession_set.all %}{{ session.time_string }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <h3>Fast track courses</h3>
+        <p>
+        We are also able to offer one to one, fast track courses. These courses
+        are arranged around your schedule as much as possible, and are ideal
+        for people with limited availability. Fast track courses cost £100,
+        with discounts available for small groups.
+        </p>
+    </section>
+    <section>
+        <h3>Sign up for a course</h3>
+        <form class="form page-form" method="POST" action="{% url 'beginners:interest' %}">
+            {% csrf_token %}
+            {% form beginners_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn">
+        </form>
+    </section>
+</div>
+{% endblock %}

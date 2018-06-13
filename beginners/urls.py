@@ -1,4 +1,4 @@
-from django.conf.urls import re_path
+from django.urls import path
 
 from . import views
 
@@ -6,6 +6,7 @@ from . import views
 app_name = 'beginners'
 
 urlpatterns = [
-    re_path(r'^beginners/$', views.BeginnersInterestView.as_view(), name='interest'),
-    re_path(r'^payment/$', views.Payment.as_view(), name='payment'),
+    path('', views.BeginnersIndex.as_view(), name='index'),
+    path('beginners/', views.BeginnersInterestView.as_view(), name='interest'),
+    path('payment/', views.Payment.as_view(), name='payment'),
 ]
