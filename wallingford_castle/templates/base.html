@@ -55,11 +55,21 @@
         </article>
         <footer>
             <div class="container">
-                <a href="mailto:hello@wallingfordcastle.co.uk">Contact us</a>
-                <div class="legals">
-                    <a href="{{ STATIC_URL }}docs/constitution.pdf">Constitution</a>
-                    <a href="{{ STATIC_URL }}docs/code_of_conduct.pdf">Code of conduct - Members</a>
-                    <a href="{{ STATIC_URL }}docs/parents_conduct.pdf">Code of conduct - Parents</a>
+                <div class="footer">
+                    <div class="footer__col">
+                        <img src="{{ STATIC_URL }}img/on-target.png" class="footer__on-target" />
+                        <div class="footer__specialisms">
+                            <img src="{{ STATIC_URL }}img/on-target-community.png" class="footer__specialism" />
+                            <img src="{{ STATIC_URL }}img/on-target-young.png" class="footer__specialism" />
+                            <img src="{{ STATIC_URL }}img/on-target-performance.png" class="footer__specialism" />
+                        </div>
+                    </div>
+                    <div class="footer__col footer__col--links">
+                        <a href="mailto:hello@wallingfordcastle.co.uk">Contact us</a>
+                        <a href="{{ STATIC_URL }}docs/constitution.pdf">Constitution</a>
+                        <a href="{{ STATIC_URL }}docs/code_of_conduct.pdf">Code of conduct - Members</a>
+                        <a href="{{ STATIC_URL }}docs/parents_conduct.pdf">Code of conduct - Parents</a>
+                    </div>
                 </div>
             </div>
         </footer>

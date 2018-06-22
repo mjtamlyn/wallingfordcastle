@@ -1,0 +1,27 @@
+.footer
+  display: flex
+  justify-content: space-between
+
+  @media (max-width: 500px)
+    flex-wrap: wrap
+
+  &__on-target
+    background-color: $grey
+    padding: 7px 5px
+    max-width: 250px
+    border-radius: 5px
+
+  &__col--links
+    font-size: 14px
+    display: flex
+    flex-direction: column
+    justify-content: flex-start
+
+  &__specialisms
+    display: flex
+    flex-wrap: wrap
+    margin: 0 -5px
+
+  &__specialism
+    width: 100px
+    height: 112px
