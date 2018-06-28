@@ -1,12 +1,16 @@
 from django.conf import settings
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
-from django.views.generic import CreateView, DetailView
+from django.views.generic import CreateView, DetailView, TemplateView
 from django.urls import reverse
 
 import stripe
 
 from .models import CourseSignup
 from .forms import CourseSignupForm
+
+
+class Summer2018(TemplateView):
+    template_name = 'courses/summer-2018.html'
 
 
 class DGSSignup(CreateView):

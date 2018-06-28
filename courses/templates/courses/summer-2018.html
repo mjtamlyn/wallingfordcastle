@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block hero %}
+<div class="hero hero--targets">
+    <h1>Summer holiday archery</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <h2>About</h2>
+        <p>
+        Over the summer holidays we will be offering a range of archery classes
+        for children aged 6-18. Whether you've never held a bow before, shoot
+        regularly at school and want to keep practicing over the holidays, or
+        are wanting an opportunity to progress your skills, we have the classes
+        for you.
+        </p>
+        <p>
+        All sessions will be run in small groups of around 8 children with an
+        experienced coach. Equipment is provided, but if you have your own
+        equipment you can bring it along.
+        </p>
+        <h3>Venue, weather and attire</h3>
+        <p>
+        All sessions will take place at our outdoor venue -
+        <a href="{% url 'venues' %}">Wallingford Sports Park</a>. We do of
+        course hope for wonderful sunny days, but archery is an all weather
+        sport and sessions will continue in light rain. It is important that
+        children bring appropriate attire for the conditions - sun cream, coats
+        etc. Most imporantly, long hair must be tied back and closed toed shoes
+        must be worn. We reserve the right to stop children participating if
+        their clothing does not allow them to take part safely.
+        </p>
+    </section>
+    <section>
+        <h2>Groups</h2>
+        <p>
+        Beginner and intermediate sessions are available in three different age groups
+        - 6-9 year olds, 9-12 year olds, and 12-18 year olds. The age groups are not
+        completely fixed however - we are happy to be flexible where we can to
+        accommodate groups.
+        </p>
+        <h3>Beginner archers</h3>
+        <p>
+        These classes are ideal for children with no or very little previous
+        experience of archery. We will cover how to shoot the bow, how to be
+        safe on the archery range, and how to score your arrows. Each session
+        is self contained and new archers are welcome at any session, but we
+        will also be progressing repeat visitors towards their first World
+        Archery beginners awards.
+        </p>
+        <h3>Intermediate archers</h3>
+        <p>
+        These classes are ideal for children with some regular recent
+        experience of archery. This may be at the club, at their school or at a
+        local leisure centre. These coach led sessions will cover a range of
+        technique, skills and knowledge about the sport. There will be an
+        opportunity to attain World Archery beginners awards.
+        </p>
+        <h3>Advanced archers</h3>
+        <p>
+        For archers with more experience, we also offer individual or small
+        group coaching sessions. For more information, please contact us.
+        </p>
+    </section>
+    <section>
+        <h2>Booking</h2>
+        <p>
+        We understand that many children go on holiday during the summer, and
+        as such every session is self contained. You can book onto as many or
+        as few sessions as you like!
+        </p>
+        <h3>Dates and times</h3>
+        <p>
+        We plan to follow the same session times each day, and run sessions
+        every Tuesday and Thursday throughout the summer holidays.
+        </p>
+        <p>Dates:</p>
+        <ul>
+            <li>Thursday 26th July</li>
+            <li>Tuesday 31st July</li>
+            <li>Thursday 2nd August</li>
+            <li>Tuesday 7th August</li>
+            <li>Thursday 9th August</li>
+            <li>Tuesday 14th August</li>
+            <li>Thursday 16th August</li>
+            <li>Tuesday 21st August</li>
+            <li>Thursday 23rd August</li>
+            <li>Tuesday 28th August</li>
+            <li>Thursday 30th August</li>
+            <li>Tuesday 4th September</li>
+        </ul>
+        <p>Session times:</p>
+        <ul>
+            <li>10am-11am: 6-9 year old beginners</li>
+            <li>11am-12pm: 6-9 year old intermediates</li>
+            <li>12:30pm-1:30pm: 9-12 year old beginners</li>
+            <li>1:30pm-2:30pm: 9-12 year old intermediates</li>
+            <li>3pm-4pm: 12-18 year old beginners</li>
+            <li>4pm-5pm: 12-18 year old intermediates</li>
+        </ul>
+        <h3>Cost</h3>
+        <p>
+        Each session costs £5 per child payable in advance. Club members have a
+        reduced fee of £4 per session.
+        </p>
+    </section>
+</div>
+{% endblock %}
