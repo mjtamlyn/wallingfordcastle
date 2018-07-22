@@ -44,10 +44,8 @@ class Summer2018SignupForm(forms.ModelForm):
     student_date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type' :'date'}))
     group = forms.ChoiceField(choices=(
         ('', '---------'),
-        ('6-9 beginners', '6-9 beginners'),
-        ('6-9 intermediates', '6-9 intermediates'),
-        ('9-12 beginners', '9-12 beginners'),
-        ('9-12 intermediates', '9-12 intermediates'),
+        ('6-12 beginners', '6-12 beginners'),
+        ('6-12 intermediates', '6-12 intermediates'),
         ('12-18 beginners', '12-18 beginners'),
         ('12-18 intermediates', '12-18 intermediates'),
     ))

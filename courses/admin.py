@@ -16,10 +16,8 @@ class Summer2018Summary(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         sessions = (
-            ('6-9 beginners', []),
-            ('6-9 intermediates', []),
-            ('9-12 beginners', []),
-            ('9-12 intermediates', []),
+            ('6-12 beginners', []),
+            ('6-12 intermediates', []),
             ('12-18 beginners', []),
             ('12-18 intermediates', []),
         )
