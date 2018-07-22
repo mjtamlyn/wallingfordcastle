@@ -1,0 +1,32 @@
+{% extends 'admin/base_site.html' %}
+
+{% load i18n admin_urls %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+    &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; Summary
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <h1>Attendance summary</h1>
+    {% for date, sessions in summary %}
+    <h2>{{ date }}</h2>
+    {% for session, names in sessions %}
+    <h3>{{ session }}</h3>
+    <ul>
+    {% for name in names %}
+    <li>{{ name }}</li>
+    {% empty %}
+    <li><strong>None</strong></li>
+    {% endfor %}
+    </ul>
+    {% endfor %}
+    {% endfor %}
+</div>
+{% endblock %}
