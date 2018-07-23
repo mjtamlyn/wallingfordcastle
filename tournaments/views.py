@@ -147,7 +147,7 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
             source = customer.sources.create(source=token)
             self.request.user.customer_id = customer.id
             self.request.user.save()
-        to_pay = self.request.user.entry_set.filter(paid=False, tournament=self.tournament).count() * 100 * tournament.entry_fee
+        to_pay = self.request.user.entry_set.filter(paid=False, tournament=tournament).count() * 100 * tournament.entry_fee
         stripe.Charge.create(
             amount=to_pay,
             currency="GBP",
@@ -155,6 +155,6 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
             customer=customer.id,
             source=source.id,
         )
-        to_pay = self.request.user.entry_set.filter(tournament=self.tournament).update(paid=True)
+        to_pay = self.request.user.entry_set.filter(tournament=tournament).update(paid=True)
         self.messages.success('Thanks! You will receive a confirmation email soon.')
         return redirect(tournament.get_absolute_url())
