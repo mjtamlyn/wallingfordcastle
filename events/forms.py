@@ -10,7 +10,7 @@ class BookEventForm(forms.Form):
         self.user = user
         self.event = event
         super().__init__(**kwargs)
-        self.members = user.members.all()
+        self.members = Member.objects.managed_by(user)
         if len(self.members) > 1:
             self.fields['member'] = forms.ModelChoiceField(queryset=self.members)
         for question in event.bookingquestion_set.order_by('order'):

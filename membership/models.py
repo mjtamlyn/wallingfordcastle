@@ -6,6 +6,11 @@ import stripe
 from wallingford_castle.models import AGE_CHOICES, MEMBERSHIP_CHOICES
 
 
+class MemberManager(models.Manager):
+    def managed_by(self, user):
+        return self.filter(archer__user=user) | self.filter(archer__managing_users=user)
+
+
 LEVEL_CHOICES = (
     ('', 'Unknown'),
     ('performance', 'Performance'),
@@ -25,6 +30,8 @@ class Member(models.Model):
     active = models.BooleanField(default=True)
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now_add=True)
+
+    objects = MemberManager()
 
     def __str__(self):
         return self.archer.name

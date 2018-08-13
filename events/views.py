@@ -7,6 +7,7 @@ from django.urls import reverse
 from django.utils import timezone
 
 import requests
+from membership.models import Member
 from wallingford_castle.mixins import FullMemberRequired
 
 from .forms import BookEventForm
@@ -21,7 +22,7 @@ class EventList(FullMemberRequired, ListView):
     def get_queryset(self):
         bookable_events = Event.objects.filter(bookable=True, date__gt=timezone.now()).order_by('date')
         for event in bookable_events:
-            event.registered_members = event.booking_set.filter(member__user=self.request.user)
+            event.registered_members = event.booking_set.filter(member__in=Member.objects.managed_by(self.request.user))
         return bookable_events
 
 
