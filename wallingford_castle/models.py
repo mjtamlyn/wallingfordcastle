@@ -56,21 +56,34 @@ class MembershipInterest(models.Model):
         return self.name
 
     def make_member(self, request=None):
+        from membership.models import Member
+
         if self.member_set.exists():
             if request:
                 messages.error(request, '%s has already been converted to a member.' % self.name)
             return
         with transaction.atomic():
-            user, created = User.objects.get_or_create(email=self.contact_email, defaults={'is_active': False})
-            if created:
-                user.send_new_user_email(request)
-            member = user.members.create(
-                name=self.name,
-                age=self.age,
-                date_of_birth=self.date_of_birth,
-                address=self.address,
-                contact_number=self.contact_number,
-                agb_number=self.agb_number,
+            archer = None
+            try:
+                archer = Archer.objects.get(user__email=self.contact_email, name__iexact=self.name)
+            except Archer.DoesNotExist:
+                user, created = User.objects.get_or_create(email=self.contact_email, defaults={'is_active': False})
+                if created:
+                    user.send_new_user_email(request)
+            else:
+                user = archer.user
+            if archer is None:
+                archer = Archer.objects.create(
+                    user=user,
+                    name=self.name,
+                    age=self.age,
+                    date_of_birth=self.date_of_birth,
+                    address=self.address,
+                    contact_number=self.contact_number,
+                    agb_number=self.agb_number,
+                )
+            member = Member.objects.create(
+                archer=archer,
                 membership_type=self.membership_type,
                 interest=self,
             )
