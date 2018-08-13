@@ -50,11 +50,11 @@ class MemberUpdate(FullMemberRequired, MessageMixin, UpdateView):
             data = json.dumps({
                 'icon_emoji': ':exclamation:',
                 'text': '%s has updated details!\n%s' % (
-                    form.cleaned_data['name'],
+                    self.object.archer.name,
                     self.request.build_absolute_uri(
                         reverse(
                             'admin:membership_member_change',
-                            args=(form.instance.pk,),
+                            args=(self.object.pk,),
                         )
                     ),
                 )
