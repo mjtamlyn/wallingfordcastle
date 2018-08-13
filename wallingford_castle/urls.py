@@ -12,6 +12,7 @@ admin.autodiscover()
 urlpatterns = [
     re_path(r'^$', views.HomeView.as_view(), name='home'),
     re_path(r'^join/$', views.Join.as_view(), name='join'),
+    re_path(r'^juniors/$', views.Juniors.as_view(), name='juniors'),
     re_path(r'^membership-interest/$', views.MembershipInterestView.as_view(), name='membership-interest'),
     re_path(r'^beginners/', include('beginners.urls', namespace='beginners')),
     re_path(r'^members/', include('membership.urls', namespace='membership')),

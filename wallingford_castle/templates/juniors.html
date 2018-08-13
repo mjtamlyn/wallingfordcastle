@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block hero %}
+<div class="hero hero--juniors">
+    <h1>Junior archery</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <h2>Junior archers</h2>
+        <p>
+        Wallingford Castle Archers are proud to be the largest junior club in
+        Oxfordshire, and pride ourselves on our family friendly atmosphere. As
+        a Young People specialist club, we aim to provide structured
+        environments suitable to young archers aged 6-18, with plenty
+        opportunities to progress their skills, compete, and enjoy their
+        archery.
+        </p>
+        <h2>Junior archers aged 11-18</h2>
+        <p>
+        Young people attending secondary school form our junior club. We have a
+        dedicated weekly session for archers of this age, covering novices up
+        to archers competing at national level. Junior members are also able to
+        shoot at other club sessions, although parental supervision is required
+        for some sessions. We have many family groups who shoot together.
+        </p>
+        <p>
+        Junior members of Wallingford Castle Archers are encouraged to gain
+        competitive experience, through our membership of the Castle Junior
+        Archery League, Perris Indoor League, and other local competitions. Our
+        coaching team are also heavily involved with the county junior
+        development squad.
+        </p>
+        <p>
+        To get started in archery, archers of this age should attend a <a
+        href="{% url 'beginners:index' %}">beginners course</a> first.
+        </p>
+    </section>
+    <section>
+        <h2>Minis - ages 6-11</h2>
+        <p>
+        Young people of primary school age form our minis club. We meet on a
+        Sunday mornings in term time, and also put on additional sessions over
+        the summer holidays. All sessions are structured and led by qualified
+        coaches specialising in young people. We run two sessions of 45 minutes
+        and each session is split into groups based on age and ability. Minis
+        sessions are bookable on a term by term basis, and carry a charge of £6
+        per session for non-members and £3 per session for members.
+        </p>
+        <p>
+        Minis wishing to start archery can book their first term as
+        non-members. For insurance reasons, once you have attended a certain
+        number of hours (usually one term) you must join as a member of the
+        club, which includes membership of ArcheryGB.
+        </p>
+        <p>
+        The intense nature of beginners courses makes them unsuitable for our
+        youngest archers, and they take longer to progress to independent
+        proficiency in core skills such as range safety, set up, warm ups and
+        core technique. The environment of open sessions can also prove
+        distracting and disruptive for young children. As such, juniors under
+        year 5 may only attend minis sessions and occasional other events as
+        organised by the club. Once archers are in year 5 or 6, and have
+        achieved their World Archery White Arrow beginners award, they may also
+        attend junior sessions and open sessions with parental supervision.
+        We've found this can be a great way for members in year 6 to prepare
+        for secondary school.
+        </p>
+    </section>
+    <section>
+        <h2>Book minis</h2>
+        <form class="form page-form">
+            <p>
+            <strong>
+            Bookings for our first minis term (Autumn 2018) are coming soon. Keen
+            to have a go? Why not book a <a href="{% url 'courses:summer-2018' %}">
+            summer holiday session</a>.
+            </strong>
+            </p>
+            <h3>Dates for Autumn 2018</h3>
+            <p>
+            All minis sessions will be 10:00-10:45am or 10:45-11:00am depending
+            on age and ability. We will confirm which session we would like you
+            to attend as soon as possible.
+            </p>
+            <ul>
+                <li>September 16th</li>
+                <li>September 23rd</li>
+                <li>September 30th</li>
+                <li>October 7th</li>
+                <li>October 14th</li>
+                <li><em>No session October 21st due to half term</em></li>
+                <li>October 28th</li>
+                <li>November 4th</li>
+                <li>November 11th</li>
+                <li>November 18th</li>
+                <li><em>No session November 25th due to Oxfordshire senior championships</em></li>
+                <li>December 2nd</li>
+                <li>December 9th</li>
+            </ul>
+        </form>
+    </section>
+</div>
+{% endblock %}

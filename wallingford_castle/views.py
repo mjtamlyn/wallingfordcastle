@@ -23,6 +23,10 @@ class Join(TemplateView):
         return context
 
 
+class Juniors(TemplateView):
+    template_name = 'juniors.html'
+
+
 class MembershipInterestView(MessageMixin, CreateView):
     form_class = MembershipInterestForm
     template_name = 'membership_form.html'
