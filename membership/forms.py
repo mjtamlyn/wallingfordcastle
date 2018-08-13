@@ -4,9 +4,8 @@ from .models import Member
 
 
 class MemberForm(forms.ModelForm):
-    class Meta:
-        model = Member
-        fields = ['name', 'age', 'date_of_birth', 'address', 'contact_number', 'membership_type']
+    # TODO: rebuild this to deal with split model
+    # fields = ['name', 'age', 'date_of_birth', 'address', 'contact_number', 'membership_type']
 
     def __init__(self, **kwargs):
         kwargs.setdefault('label_suffix', '')

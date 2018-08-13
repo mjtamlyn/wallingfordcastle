@@ -1,3 +1,5 @@
+import datetime
+
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib import messages
 from django.db import models, transaction
@@ -9,6 +11,7 @@ from django.urls import reverse
 from custom_user.models import AbstractEmailUser
 from templated_email import send_templated_mail
 import stripe
+from dateutil.relativedelta import relativedelta
 
 
 AGE_CHOICES = (
@@ -142,3 +145,58 @@ class User(AbstractEmailUser):
                 'overview_url': request.build_absolute_uri(reverse('membership:overview'))
             }
         )
+
+
+class Archer(models.Model):
+    """
+    Represents any archer - members, non-members on courses, beginners,
+    tournament visitors etc.
+    """
+
+    user = models.ForeignKey(User, related_name='archers', on_delete=models.CASCADE)
+    managing_users = models.ManyToManyField(User, related_name='managed_archers', blank=True)
+
+    name = models.CharField(max_length=200)
+    age = models.CharField(max_length=20, choices=AGE_CHOICES)
+    date_of_birth = models.DateField(blank=True, null=True)
+    agb_number = models.CharField(max_length=10, default='', blank=True)
+    address = models.TextField(default='')
+    contact_number = models.CharField(max_length=20, blank=True, default='')
+
+    created = models.DateTimeField(default=timezone.now, editable=False)
+    modified = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def age_group(self):
+        if not self.date_of_birth:
+            return None
+        today = datetime.date.today()
+        years = relativedelta(today, self.date_of_birth).years
+        if years >= 25:
+            return 'Senior'
+        if years < 8:
+            group = 'U8'
+        if years < 10:
+            group = 'U10'
+        if years < 12:
+            group = 'U12'
+        elif years < 14:
+            group = 'U14'
+        elif years < 16:
+            group = 'U16'
+        elif years < 18:
+            group = 'U18'
+        else:
+            group = 'Senior (U25)'
+        this_years_birthday = self.date_of_birth.replace(year=today.year)
+        days_to_birthday = (this_years_birthday - today).days
+        if days_to_birthday < 0:
+            this_years_birthday += relativedelta(years=1)
+            days_to_birthday = (this_years_birthday - today).days
+        if days_to_birthday < 90 and years % 2:
+            group += ' (Moving up on %s)' % this_years_birthday.strftime('%d/%m/%Y')
+        return group
+
