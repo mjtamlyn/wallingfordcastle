@@ -65,17 +65,17 @@
                 <th>Age</th>
                 <th>Membership</th>
                 <th>ArcheryGB number</th>
-                <th>Charge</th>
+                <th>Monthly fee</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             {% for member in members %}
             <tr>
-                <td>{{ member.name }}</td>
-                <td>{{ member.get_age_display }} {% if member.date_of_birth %}({{ member.date_of_birth }}){% endif %}</td>
+                <td>{{ member.archer.name }}</td>
+                <td>{{ member.archer.get_age_display }} {% if member.archer.date_of_birth %}({{ member.archer.date_of_birth }}){% endif %}</td>
                 <td>{{ member.get_membership_type_display }}</td>
-                <td>{{ member.agb_number|default:"Unknown" }}</td>
+                <td>{{ member.archer.agb_number|default:"Unknown" }}</td>
                 <td>£{{ member.plan_cost }}</td>
                 <td>
                     <a class="btn btn-small" href="{% url 'membership:member-update' member_id=member.pk %}">Edit details</a>

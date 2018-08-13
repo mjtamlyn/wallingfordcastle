@@ -8,7 +8,7 @@ class BeginnersInterestForm(forms.ModelForm):
         kwargs.setdefault('label_suffix', '')
         super().__init__(**kwargs)
         self.fields['date_of_birth'].label = 'Date of Birth'
-        self.fields['date_of_birth'].help_text = 'Juniors only'
+        self.fields['date_of_birth'].required = True
         self.fields['experience'].label = 'Tell us about any archery you have done before'
         self.fields['experience'].help_text = 'No experience is necessary!'
         self.fields['notes'].label = (

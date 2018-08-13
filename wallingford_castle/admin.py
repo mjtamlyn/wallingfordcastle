@@ -3,7 +3,14 @@ from django.contrib import admin
 from custom_user.admin import EmailUserAdmin
 from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
 
-from .models import MembershipInterest, User
+from .models import Archer, MembershipInterest, User
+
+
+@admin.register(Archer)
+class ArcherAdmin(admin.ModelAdmin):
+    list_display = ['name', 'agb_number', 'date_of_birth', 'age_group']
+    search_fields = ['name']
+    autocomplete_fields = ['user', 'managing_users']
 
 
 @admin.register(MembershipInterest)

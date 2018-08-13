@@ -9,6 +9,7 @@ from braces.views import MessageMixin
 import requests
 import stripe
 
+from membership.models import Member
 from wallingford_castle.mixins import FullMemberRequired
 from .forms import MemberForm
 
@@ -18,7 +19,7 @@ class Overview(FullMemberRequired, TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['members'] = self.request.user.members.all()
+        context['members'] = Member.objects.managed_by(self.request.user).select_related('archer')
         context['monthly_fee'] = sum(member.plan_cost for member in context['members'])
         context['beginners'] = self.request.user.beginner_set.all()
         context['beginners_to_pay'] = sum(beginner.fee for beginner in self.request.user.beginner_set.filter(paid=False))
@@ -33,7 +34,7 @@ class MemberUpdate(FullMemberRequired, MessageMixin, UpdateView):
     success_url = reverse_lazy('membership:overview')
 
     def get_queryset(self):
-        return self.request.user.members.all()
+        return Member.objects.managed_by(self.request.user).select_related('archer')
 
     def get_object(self):
         obj = super().get_object()
