@@ -190,11 +190,11 @@ class Archer(models.Model):
         years = relativedelta(today, self.date_of_birth).years
         if years >= 25:
             return 'Senior'
-        if years < 8:
+        elif years < 8:
             group = 'U8'
-        if years < 10:
+        elif years < 10:
             group = 'U10'
-        if years < 12:
+        elif years < 12:
             group = 'U12'
         elif years < 14:
             group = 'U14'
