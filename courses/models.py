@@ -14,7 +14,8 @@ class Course(models.Model):
 
     # TODO
     # course description
-    # price
+    # price/price per session
+    # members price/price per session
     # bookable by members
     # bookable by non-members
     # open for bookings
@@ -50,6 +51,10 @@ class Attendee(models.Model):
     contact = models.BooleanField(default=False)
     paid = models.BooleanField(default=False)
     invoice_id = models.CharField(max_length=32, blank=True, default='')
+
+    # TODO: add missing fields
+    # created = models.DateTimeField(default=timezone.now, editable=False)
+    # modified = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return 'Attendee %s on course %s' % (self.archer, self.course)
