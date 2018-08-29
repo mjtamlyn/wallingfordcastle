@@ -102,6 +102,10 @@ class MembersBookCourseForm(forms.Form):
         super().__init__(**kwargs)
         self.members = Member.objects.managed_by(user)
         self.fields['member'] = forms.ModelChoiceField(queryset=self.members)
+        self.fields['acknowledgement' ] = forms.BooleanField(
+            label='I understand that the cost of the course will be added to the next membership payment',
+            required=True,
+        )
 
     def clean_member(self):
         member = self.cleaned_data['member']
