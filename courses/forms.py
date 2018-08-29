@@ -2,7 +2,8 @@ import datetime
 
 from django import forms
 
-from .models import CourseSignup, Summer2018Signup
+from membership.models import Member
+from .models import Attendee, CourseSignup, Summer2018Signup
 
 
 class CourseSignupForm(forms.ModelForm):
@@ -92,3 +93,28 @@ class Summer2018SignupForm(forms.ModelForm):
             'student_date_of_birth', 'group', 'dates', 'experience', 'notes',
             'gdpr_consent', 'contact_consent',
         ]
+
+
+class MembersBookCourseForm(forms.Form):
+    def __init__(self, user, course, **kwargs):
+        self.user = user
+        self.course = course
+        super().__init__(**kwargs)
+        self.members = Member.objects.managed_by(user)
+        self.fields['member'] = forms.ModelChoiceField(queryset=self.members)
+
+    def clean_member(self):
+        member = self.cleaned_data['member']
+        if member.archer.attendee_set.filter(course=self.course).exists():
+            raise forms.ValidationError('%s is already registered' % member.archer)
+        return member
+
+    def save(self):
+        answers = {}
+        if 'member' in self.cleaned_data:
+            member = self.cleaned_data['member']
+        # TODO: add the billing part
+        return Attendee.objects.create(
+            course=self.course,
+            archer=member.archer,
+        )

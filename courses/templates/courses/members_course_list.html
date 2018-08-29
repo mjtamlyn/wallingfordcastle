@@ -12,13 +12,13 @@
         <h3>{{ course }}</h3>
         { course.description|linebreaks }
         <p>Course cost: { course.cost }<br><small>The cost of the course will be added to the next membership invoice</small></p>
-        <p><a class="btn">Book</a></p>
+        <p><a href="{% url 'courses:members-course-booking' pk=course.id %}" class="btn">Book</a></p>
         {% if course.registered_members %}
             <p>Booked:</p>
             <ul>
                 {% for booking in course.registered_members %}
                 <li>
-                    {{ course.archer }}
+                    {{ booking.archer }}
                 </li>
                 {% endfor %}
             </ul>

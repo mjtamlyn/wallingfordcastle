@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<p><a href="{% url 'courses:members-course-list' %}">< Back to course list</a></p>
+<h2>{{ course }}</h2>
+{ course.description|linebreaks }
+<p>{ course.dates }</p>
+<form class="form" method="POST" action=".">
+    {% csrf_token %}
+    {% form form using 'floppyforms/layouts/p.html' %}
+    <input type="submit" class="btn">
+</form>
+{% endblock %}
+
