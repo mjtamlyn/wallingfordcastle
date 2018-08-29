@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p><a href="{% url 'membership:overview' %}">< Back to membership overview</a></p>
+
+<h2>Members courses</h2>
+<p>Register for a club coaching course</p>
+
+<div class="flex-sections">
+    {% for course in object_list %}
+    <section>
+        <h3>{{ course }}</h3>
+        { course.description|linebreaks }
+        <p>Course cost: { course.cost }<br><small>The cost of the course will be added to the next membership invoice</small></p>
+        <p><a class="btn">Book</a></p>
+        {% if course.registered_members %}
+            <p>Booked:</p>
+            <ul>
+                {% for booking in course.registered_members %}
+                <li>
+                    {{ course.archer }}
+                </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </section>
+    {% empty %}
+    There are no courses available for members to book right now.
+    {% endfor %}
+</div>
+{% endblock %}

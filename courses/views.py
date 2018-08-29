@@ -1,11 +1,11 @@
 from django.conf import settings
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
-from django.views.generic import CreateView, DetailView, TemplateView
+from django.views.generic import CreateView, DetailView, ListView, TemplateView
 from django.urls import reverse
 
 import stripe
 
-from .models import CourseSignup, Summer2018Signup
+from .models import Course, CourseSignup, Summer2018Signup
 from .forms import CourseSignupForm, Summer2018SignupForm
 
 
@@ -89,3 +89,18 @@ class DGSPayment(DetailView):
         signup.paid = True
         signup.save()
         return HttpResponseRedirect(reverse('courses:dgs-payment', kwargs={'id': signup.id}))
+
+
+class MembersCourseList(ListView):
+    model = Course
+    template_name = 'courses/members_course_list.html'
+
+    def get_queryset(self):
+        # TODO
+        # Exclude courses which aren't open, or available to members
+        # Maybe order by start date?
+        bookable_courses = Course.objects.all()
+        for course in bookable_courses:
+            user = self.request.user
+            course.registered_members = course.attendee_set.filter(archer__user=user) | course.attendee_set.filter(archer__managing_users=user)
+        return bookable_courses

@@ -12,6 +12,13 @@ class Course(models.Model):
     name = models.CharField(max_length=255)
     can_book_individual_sessions = models.BooleanField(default=False)
 
+    # TODO
+    # course description
+    # price
+    # bookable by members
+    # bookable by non-members
+    # open for bookings
+
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now_add=True)
 

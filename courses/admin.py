@@ -6,7 +6,7 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.views.generic import ListView
 
-from .models import CourseSignup, Summer2018Signup
+from .models import Course, CourseSignup, Session, Summer2018Signup
 
 
 class Summer2018Summary(ListView):
@@ -73,3 +73,20 @@ class Summer2018SignupAdmin(admin.ModelAdmin):
 @admin.register(CourseSignup)
 class CourseSignupAdmin(admin.ModelAdmin):
     list_display = ['student_name', 'email', 'student_date_of_birth', 'paid']
+
+
+class SessionInline(admin.TabularInline):
+    model = Session
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ['name', 'course_start_date']
+    readonly_fields = ['created', 'modified']
+    inlines = [SessionInline]
+
+    def course_start_date(self, obj):
+        first_session = obj.session_set.order_by('start_time').first()
+        if first_session:
+            return first_session.start_time.date()
+        return 'No sessions'
