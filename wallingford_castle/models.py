@@ -166,7 +166,7 @@ class User(AbstractEmailUser):
 
         if self.subscription_id:
             new_items = []
-            subscription = stripe.Subscription.retrieve("sub_75kmHQVUIj0D3L")
+            subscription = stripe.Subscription.retrieve(self.subscription_id)
             for item in subscription['items']['data']:
                 if item.plan.id not in plans:
                     new_items.append({'id': item.id, 'deleted': True})
