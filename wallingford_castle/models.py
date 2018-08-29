@@ -184,6 +184,17 @@ class User(AbstractEmailUser):
             customer = stripe.Customer.retrieve(self.customer_id)
             customer.subscriptions.create(items=new_items)
 
+    def add_invoice_item(self, amount, description):
+        if not self.customer_id or not self.subscription_id:
+            raise ValueError('User does not have a subscription')
+        stripe.InvoiceItem.create(
+            customer=self.customer_id,
+            subscription=self.subscription_id,
+            amount=amount,
+            currency='gbp',
+            description=description,
+        )
+
 
 class Archer(models.Model):
     """

@@ -117,7 +117,10 @@ class MembersBookCourseForm(forms.Form):
         answers = {}
         if 'member' in self.cleaned_data:
             member = self.cleaned_data['member']
-        # TODO: add the billing part
+        member.archer.user.add_invoice_item(
+            amount=self.course.members_price * 100,
+            description='%s for %s' % (self.course, member),
+        )
         return Attendee.objects.create(
             course=self.course,
             archer=member.archer,
