@@ -62,6 +62,27 @@ class Attendee(models.Model):
         return 'Attendee %s on course %s' % (self.archer, self.course)
 
 
+class Interest(models.Model):
+    course_type = models.CharField(max_length=20)
+    name = models.CharField(max_length=255)
+    contact_email = models.EmailField()
+    contact_number = models.CharField(max_length=20, blank=True, default='')
+    date_of_birth = models.DateField()
+    experience = models.TextField(blank=True, default='')
+    notes = models.TextField(blank=True, default='')
+    gdpr_consent = models.BooleanField(default=False)
+    contact = models.BooleanField(default=False)
+
+    communication_notes = models.TextField(blank=True, default='')
+    processed = models.BooleanField(default=False)
+
+    created = models.DateTimeField(default=timezone.now, editable=False)
+    modified = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.name
+
+
 class CourseSignup(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     email = models.EmailField()

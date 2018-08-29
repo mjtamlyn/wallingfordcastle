@@ -4,14 +4,15 @@ from django.conf import settings
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView
 from django.views.generic.detail import SingleObjectMixin
-from django.urls import reverse
+from django.urls import reverse, reverse_lazy
 
+from braces.views import MessageMixin
 import requests
 import stripe
 
 from wallingford_castle.mixins import FullMemberRequired
 from .models import Course, CourseSignup, Summer2018Signup
-from .forms import CourseSignupForm, MembersBookCourseForm, Summer2018SignupForm
+from .forms import CourseSignupForm, MembersBookCourseForm, MinisInterestForm, Summer2018SignupForm
 
 
 class Summer2018(TemplateView):
@@ -147,3 +148,31 @@ class MembersCourseBooking(FullMemberRequired, SingleObjectMixin, FormView):
 
     def get_success_url(self):
         return reverse('courses:members-course-list')
+
+
+class MinisInterestView(MessageMixin, CreateView):
+    form_class = MinisInterestForm
+    template_name = 'minis_interest_form.html'
+    success_url = reverse_lazy('juniors')
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        self.messages.success('Thanks for your interest! We will be in touch soon.')
+        if settings.SLACK_EVENTS_HREF:
+            data = json.dumps({
+                'icon_emoji': ':wave:',
+                'text': 'New minis course interest received for %s!\n%s' % (
+                    form.cleaned_data['name'],
+                    self.request.build_absolute_uri(
+                        reverse(
+                            'admin:courses_interest_change',
+                            args=(form.instance.pk,),
+                        )
+                    ),
+                )
+            })
+            try:
+                requests.post(settings.SLACK_EVENTS_HREF, data=data)
+            except Exception:
+                pass
+        return response

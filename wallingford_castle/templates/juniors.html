@@ -73,20 +73,14 @@
     </section>
     <section>
         <h2>Book minis</h2>
-        <form class="form page-form">
+        <form class="form page-form" method="POST" action="{% url 'courses:minis-interest' %}">
+            <h3>Register interest</h3>
             <p>
-            <strong>
-            Bookings for our first minis term (Autumn 2018) are coming soon. Keen
-            to have a go? Why not book a <a href="{% url 'courses:summer-2018' %}">
-            summer holiday session</a>.
-            </strong>
+            Register interest in a trial term of minis. Those archers already
+            shooting regularly should <a href="{% url 'join' %}">join as
+            members</a>.
             </p>
-            <h3>Dates for Autumn 2018</h3>
-            <p>
-            All minis sessions will be 10:00-10:45am or 10:45-11:00am depending
-            on age and ability. We will confirm which session we would like you
-            to attend as soon as possible.
-            </p>
+            <h4>Autumn 2018 dates</h4>
             <ul>
                 <li>September 16th</li>
                 <li>September 23rd</li>
@@ -102,6 +96,9 @@
                 <li>December 2nd</li>
                 <li>December 9th</li>
             </ul>
+            {% csrf_token %}
+            {% form minis_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn">
         </form>
     </section>
 </div>

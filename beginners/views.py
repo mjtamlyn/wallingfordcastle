@@ -27,7 +27,7 @@ class BeginnersIndex(TemplateView):
 class BeginnersInterestView(MessageMixin, CreateView):
     form_class = BeginnersInterestForm
     template_name = 'membership_form.html'
-    success_url = reverse_lazy('home')
+    success_url = reverse_lazy('beginners:index')
 
     def form_valid(self, form):
         response = super().form_valid(form)

@@ -3,7 +3,7 @@ import datetime
 from django import forms
 
 from membership.models import Member
-from .models import Attendee, CourseSignup, Summer2018Signup
+from .models import Attendee, CourseSignup, Interest, Summer2018Signup
 
 
 class CourseSignupForm(forms.ModelForm):
@@ -93,6 +93,45 @@ class Summer2018SignupForm(forms.ModelForm):
             'student_date_of_birth', 'group', 'dates', 'experience', 'notes',
             'gdpr_consent', 'contact_consent',
         ]
+
+
+class MinisInterestForm(forms.ModelForm):
+    name = forms.CharField(label='Archer name')
+    contact_email = forms.EmailField()
+    contact_number = forms.CharField()
+    date_of_birth = forms.DateField(widget=forms.DateInput(attrs={'type' :'date'}))
+    experience = forms.CharField(
+        widget=forms.Textarea,
+        label='Tell us about any archery you have done before',
+        help_text='No experience is necessary!',
+        required=False,
+    )
+    notes = forms.CharField(
+        widget=forms.Textarea,
+        label=(
+            'Please tell us about any injuries or health problems, or anything '
+            'else you think we should know'
+        ),
+        required=False,
+    )
+    gdpr_consent = forms.BooleanField(
+            label='I consent that the information here provided will be stored by Wallingford Castle Archers:'
+    )
+    contact = forms.BooleanField(
+        label='Please contact me about future archery courses:',
+        required=False,
+    )
+
+    class Meta:
+        model = Interest
+        fields = [
+            'contact_email', 'contact_number', 'name', 'date_of_birth',
+            'experience', 'notes', 'gdpr_consent', 'contact',
+        ]
+
+    def save(self):
+        self.instance.course_type = 'minis'
+        return super().save()
 
 
 class MembersBookCourseForm(forms.Form):

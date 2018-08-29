@@ -7,7 +7,7 @@ from django.contrib import admin
 from django.views.generic import ListView
 
 from wallingford_castle.admin import ArcherDataMixin
-from .models import Attendee, Course, CourseSignup, Session, Summer2018Signup
+from .models import Attendee, Course, CourseSignup, Interest, Session, Summer2018Signup
 
 
 class Summer2018Summary(ListView):
@@ -108,3 +108,9 @@ class AttendeeAdmin(ArcherDataMixin, admin.ModelAdmin):
         ('paid', 'invoice_id'),
         ('created', 'modified'),
     ]
+
+
+@admin.register(Interest)
+class InterestAdmin(admin.ModelAdmin):
+    list_display = ['name', 'course_type', 'contact_email', 'date_of_birth', 'processed']
+    list_filter = ['processed', 'course_type']

@@ -7,6 +7,7 @@ from django.urls import reverse, reverse_lazy
 from braces.views import MessageMixin
 import requests
 
+from courses.forms import MinisInterestForm
 from .forms import MembershipInterestForm
 
 
@@ -25,6 +26,11 @@ class Join(TemplateView):
 
 class Juniors(TemplateView):
     template_name = 'juniors.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['minis_form'] = MinisInterestForm()
+        return context
 
 
 class MembershipInterestView(MessageMixin, CreateView):
