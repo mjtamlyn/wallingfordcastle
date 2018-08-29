@@ -10,8 +10,15 @@
     {% for course in object_list %}
     <section>
         <h3>{{ course }}</h3>
-        { course.description|linebreaks }
-        <p>Course cost: { course.cost }<br><small>The cost of the course will be added to the next membership invoice</small></p>
+        {{ course.description|linebreaks }}
+        <h4>Dates</h4>
+        <ul>
+            {% for session in course.session_set.all %}
+            <li>{{ session.start_time }}</li>
+            {% endfor %}
+        </ul>
+        <h4>Book</h4>
+        <p>Course cost: £{{ course.members_price }}<br><small>The cost of the course will be added to the next membership invoice</small></p>
         <p><a href="{% url 'courses:members-course-booking' pk=course.id %}" class="btn">Book</a></p>
         {% if course.registered_members %}
             <p>Booked:</p>
@@ -25,7 +32,7 @@
         {% endif %}
     </section>
     {% empty %}
-    There are no courses available for members to book right now.
+    <section>There are no courses available for members to book right now.</section>
     {% endfor %}
 </div>
 {% endblock %}

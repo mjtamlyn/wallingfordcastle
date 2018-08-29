@@ -98,10 +98,7 @@ class MembersCourseList(FullMemberRequired, ListView):
     template_name = 'courses/members_course_list.html'
 
     def get_queryset(self):
-        # TODO
-        # Exclude courses which aren't open, or available to members
-        # Maybe order by start date?
-        bookable_courses = Course.objects.all()
+        bookable_courses = Course.objects.filter(open_for_bookings=True, open_to_members=True)
         for course in bookable_courses:
             user = self.request.user
             course.registered_members = course.attendee_set.filter(archer__user=user) | course.attendee_set.filter(archer__managing_users=user)
@@ -119,9 +116,7 @@ class MembersCourseBooking(FullMemberRequired, SingleObjectMixin, FormView):
         return super().dispatch(request, *args, **kwargs)
 
     def get_queryset(self):
-        # TODO
-        # Exclude courses which aren't open, or available to members
-        return Course.objects.all()
+        return Course.objects.filter(open_for_bookings=True, open_to_members=True)
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()

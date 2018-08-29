@@ -10,15 +10,18 @@ from wallingford_castle.models import Archer
 
 class Course(models.Model):
     name = models.CharField(max_length=255)
-    can_book_individual_sessions = models.BooleanField(default=False)
+    description = models.TextField(blank=True, default='')
 
-    # TODO
-    # course description
-    # price/price per session
-    # members price/price per session
-    # bookable by members
-    # bookable by non-members
-    # open for bookings
+    price = models.IntegerField(blank=True, null=True)
+    members_price = models.IntegerField(blank=True, null=True)
+
+    can_book_individual_sessions = models.BooleanField(default=False)
+    price_per_session = models.IntegerField(blank=True, null=True)
+    members_price_per_session = models.IntegerField(blank=True, null=True)
+
+    open_for_bookings = models.BooleanField(default=False)
+    open_to_members = models.BooleanField(default=False)
+    open_to_non_members = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now_add=True)
@@ -52,9 +55,8 @@ class Attendee(models.Model):
     paid = models.BooleanField(default=False)
     invoice_id = models.CharField(max_length=32, blank=True, default='')
 
-    # TODO: add missing fields
-    # created = models.DateTimeField(default=timezone.now, editable=False)
-    # modified = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(default=timezone.now, editable=False)
+    modified = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return 'Attendee %s on course %s' % (self.archer, self.course)
