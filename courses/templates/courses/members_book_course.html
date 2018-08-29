@@ -3,7 +3,8 @@
 {% load floppyforms %}
 
 {% block content %}
-<p><a href="{% url 'events:event-list' %}">< Back to event list</a></p>
+<p><a href="{% url 'courses:members-course-list' %}">< Back to course list</a></p>
+<h2>{{ course }}</h2>
 {{ course.description|linebreaks }}
 <h4>Dates</h4>
 <ul>
@@ -12,10 +13,11 @@
     {% endfor %}
 </ul>
 <h4>Book</h4>
-<p>Course cost: £{{ course.members_price }}<br><small>The cost of the course will be added to the next membership invoice</small></p>
+<p>Course cost: £{{ course.members_price }}</p>
 <form class="form" method="POST" action=".">
     {% csrf_token %}
     {% form form using 'floppyforms/layouts/p.html' %}
     <input type="submit" class="btn">
 </form>
 {% endblock %}
+

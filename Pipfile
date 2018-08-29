@@ -1,30 +1,23 @@
 [[source]]
-
 verify_ssl = true
-url = "https://pypi.python.org/simple"
+url = "https://pypi.org/simple"
 name = "pypi"
 
-
 [requires]
-
 python_version = "3.6"
-
 
 [dev-packages]
 
-
-
 [packages]
-
-django-templated-email = {editable = true, git = "https://github.com/mjtamlyn/django-templated-email", ref = "cc5a94a2c53455c256e7b6f791df03a9971c3bcb"}
-django-floppyforms = {git = "https://github.com/rtpg/django-floppyforms", editable = true, ref = "e118e79c77664ea08ae72f59ea02412da7d9b3a8"}
-django-sslify = {git = "https://github.com/rdegges/django-sslify", editable = true, ref = "2ee081b009b7f540edaa88584c78f3aa1ff5da65"}
-dj-database-url = "*"
+django-templated-email = {editable = true, ref = "cc5a94a2c53455c256e7b6f791df03a9971c3bcb", git = "https://github.com/mjtamlyn/django-templated-email"}
+django-floppyforms = {editable = true, ref = "e118e79c77664ea08ae72f59ea02412da7d9b3a8", git = "https://github.com/rtpg/django-floppyforms"}
+django-sslify = {editable = true, ref = "2ee081b009b7f540edaa88584c78f3aa1ff5da65", git = "https://github.com/rdegges/django-sslify"}
+"dj-database-url" = ">=0.5.0"
 django-braces = "*"
 django-custom-user = "*"
 django-debug-toolbar = "*"
 django-object-actions = "*"
-django = "*"
+django = ">=2.1"
 gunicorn = "*"
 "psycopg2" = "*"
 python-dateutil = "*"
@@ -32,3 +25,4 @@ requests = "*"
 "static3" = "*"
 stripe = "*"
 whitenoise = "*"
+"psycopg2-binary" = "*"

@@ -1,12 +1,17 @@
+import json
+
 from django.conf import settings
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
-from django.views.generic import CreateView, DetailView, TemplateView
+from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView
+from django.views.generic.detail import SingleObjectMixin
 from django.urls import reverse
 
+import requests
 import stripe
 
-from .models import CourseSignup, Summer2018Signup
-from .forms import CourseSignupForm, Summer2018SignupForm
+from wallingford_castle.mixins import FullMemberRequired
+from .models import Course, CourseSignup, Summer2018Signup
+from .forms import CourseSignupForm, MembersBookCourseForm, Summer2018SignupForm
 
 
 class Summer2018(TemplateView):
@@ -89,3 +94,56 @@ class DGSPayment(DetailView):
         signup.paid = True
         signup.save()
         return HttpResponseRedirect(reverse('courses:dgs-payment', kwargs={'id': signup.id}))
+
+
+class MembersCourseList(FullMemberRequired, ListView):
+    model = Course
+    template_name = 'courses/members_course_list.html'
+
+    def get_queryset(self):
+        bookable_courses = Course.objects.filter(open_for_bookings=True, open_to_members=True)
+        for course in bookable_courses:
+            user = self.request.user
+            course.registered_members = course.attendee_set.filter(archer__user=user) | course.attendee_set.filter(archer__managing_users=user)
+        return bookable_courses
+
+
+class MembersCourseBooking(FullMemberRequired, SingleObjectMixin, FormView):
+    model = Course
+    template_name = 'courses/members_book_course.html'
+    context_object_name = 'course'
+    form_class = MembersBookCourseForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Course.objects.filter(open_for_bookings=True, open_to_members=True)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            'course': self.object,
+            'user': self.request.user,
+        })
+        return kwargs
+
+    def form_valid(self, form):
+        attendee = form.save()
+        if settings.SLACK_EVENTS_HREF:
+            data = json.dumps({
+                'icon_emoji': ':white_check_mark:',
+                'text': '%s has registered for %s!' % (
+                    attendee.archer,
+                    attendee.course,
+                )
+            })
+            try:
+                requests.post(settings.SLACK_EVENTS_HREF, data=data)
+            except Exception:
+                pass
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('courses:members-course-list')

@@ -1,3 +1,4 @@
+import collections
 import datetime
 
 from django.contrib.auth.tokens import default_token_generator
@@ -87,14 +88,9 @@ class MembershipInterest(models.Model):
                 membership_type=self.membership_type,
                 interest=self,
             )
-            if user.customer_id:
-                customer = stripe.Customer.retrieve(user.customer_id)
-                subscription = customer.subscriptions.create(plan=member.plan)
-                member.subscription_id = subscription.id
-                member.save()
-                user.send_welcome_email()
             self.status = STATUS_PROCESSED
             self.save()
+            return member
 
     def send_to_beginners(self):
         from beginners.models import Beginner
@@ -112,6 +108,7 @@ class MembershipInterest(models.Model):
 
 class User(AbstractEmailUser):
     customer_id = models.CharField(max_length=20, blank=True, default='')
+    subscription_id = models.CharField(max_length=20, default='', blank=True)
     tournament_only = models.BooleanField(default=False)
 
     def generate_register_url(self, request=None):
@@ -159,6 +156,45 @@ class User(AbstractEmailUser):
             }
         )
 
+    def update_subscriptions(self):
+        from membership.models import Member
+
+        plans = collections.defaultdict(int)
+        members = Member.objects.filter(archer__user=self)  # Just ones billed by this user
+        for member in members:
+            plans[member.plan] += 1
+
+        if self.subscription_id:
+            new_items = []
+            subscription = stripe.Subscription.retrieve("sub_75kmHQVUIj0D3L")
+            for item in subscription['items']['data']:
+                if item.plan.id not in plans:
+                    new_items.append({'id': item.id, 'deleted': True})
+                else:
+                    new_items.append({'id': item.id, 'quantity': plans.pop(item.plan.id)})
+            for plan, quantity in plans.items():
+                new_items.append({'plan': plan, 'quantity': quantity})
+            subscription.items = new_items
+            subscription.prorate = False
+            subscription.save()
+        else:
+            new_items = []
+            for plan, quantity in plans.items():
+                new_items.append({'plan': plan, 'quantity': quantity})
+            customer = stripe.Customer.retrieve(self.customer_id)
+            customer.subscriptions.create(items=new_items)
+
+    def add_invoice_item(self, amount, description):
+        if not self.customer_id or not self.subscription_id:
+            raise ValueError('User does not have a subscription')
+        stripe.InvoiceItem.create(
+            customer=self.customer_id,
+            subscription=self.subscription_id,
+            amount=amount,
+            currency='gbp',
+            description=description,
+        )
+
 
 class Archer(models.Model):
     """
@@ -190,11 +226,11 @@ class Archer(models.Model):
         years = relativedelta(today, self.date_of_birth).years
         if years >= 25:
             return 'Senior'
-        if years < 8:
+        elif years < 8:
             group = 'U8'
-        if years < 10:
+        elif years < 10:
             group = 'U10'
-        if years < 12:
+        elif years < 12:
             group = 'U12'
         elif years < 14:
             group = 'U14'

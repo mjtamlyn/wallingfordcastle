@@ -6,7 +6,8 @@ from django.conf.urls import url
 from django.contrib import admin
 from django.views.generic import ListView
 
-from .models import CourseSignup, Summer2018Signup
+from wallingford_castle.admin import ArcherDataMixin
+from .models import Attendee, Course, CourseSignup, Session, Summer2018Signup
 
 
 class Summer2018Summary(ListView):
@@ -73,3 +74,37 @@ class Summer2018SignupAdmin(admin.ModelAdmin):
 @admin.register(CourseSignup)
 class CourseSignupAdmin(admin.ModelAdmin):
     list_display = ['student_name', 'email', 'student_date_of_birth', 'paid']
+
+
+class SessionInline(admin.TabularInline):
+    model = Session
+
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ['name', 'course_start_date']
+    readonly_fields = ['created', 'modified']
+    inlines = [SessionInline]
+
+    def course_start_date(self, obj):
+        first_session = obj.session_set.order_by('start_time').first()
+        if first_session:
+            return first_session.start_time.date()
+        return 'No sessions'
+
+
+@admin.register(Attendee)
+class AttendeeAdmin(ArcherDataMixin, admin.ModelAdmin):
+    list_display = ['archer', 'course']
+    list_filter = ['course']
+    readonly_fields = ['created', 'modified', 'archer_age', 'archer_agb_number', 'archer_date_of_birth', 'archer_age_group', 'archer_address', 'archer_contact_number']
+    fields = [
+        ('archer', 'course'),
+        ('archer_agb_number', 'archer_age', 'archer_date_of_birth', 'archer_age_group'),
+        ('archer_address', 'archer_contact_number'),
+        ('contact_name', 'contact_number'),
+        ('experience', 'notes', 'communication_notes'),
+        ('gdpr_consent', 'contact'),
+        ('paid', 'invoice_id'),
+        ('created', 'modified'),
+    ]

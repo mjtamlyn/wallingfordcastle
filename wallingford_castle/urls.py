@@ -1,5 +1,5 @@
 from django.contrib import admin
-from django.contrib.auth.views import password_reset_confirm
+from django.contrib.auth.views import PasswordResetConfirmView
 from django.urls import include, path, reverse_lazy, re_path
 
 from . import views
@@ -23,11 +23,11 @@ urlpatterns = [
     # TODO: Style header links
     re_path(r'^accounts/', include('django.contrib.auth.urls')),
     path('accounts/register/<uidb64>/<token>/',
-        password_reset_confirm, {
-            'set_password_form': RegisterForm,
-            'template_name': 'registration/register.html',
-            'post_reset_redirect': reverse_lazy('membership:overview'),
-        }, name='register'),
+        PasswordResetConfirmView.as_view(
+            form_class=RegisterForm,
+            template_name='registration/register.html',
+            success_url=reverse_lazy('membership:overview'),
+        ), name='register'),
     re_path(r'^admin/', admin.site.urls),
     path('', include('courses.urls', namespace='courses')),
 ]
