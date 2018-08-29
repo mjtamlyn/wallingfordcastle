@@ -1,3 +1,4 @@
+import collections
 import datetime
 
 from django.contrib.auth.tokens import default_token_generator
@@ -87,11 +88,9 @@ class MembershipInterest(models.Model):
                 membership_type=self.membership_type,
                 interest=self,
             )
-            if user.customer_id:
-                user.update_subscriptions()
-                user.send_welcome_email()
             self.status = STATUS_PROCESSED
             self.save()
+            return member
 
     def send_to_beginners(self):
         from beginners.models import Beginner
@@ -156,6 +155,34 @@ class User(AbstractEmailUser):
                 'overview_url': request.build_absolute_uri(reverse('membership:overview'))
             }
         )
+
+    def update_subscriptions(self):
+        from membership.models import Member
+
+        plans = collections.defaultdict(int)
+        members = Member.objects.filter(archer__user=self)  # Just ones billed by this user
+        for member in members:
+            plans[member.plan] += 1
+
+        if self.subscription_id:
+            new_items = []
+            subscription = stripe.Subscription.retrieve("sub_75kmHQVUIj0D3L")
+            for item in subscription['items']['data']:
+                if item.plan.id not in plans:
+                    new_items.append({'id': item.id, 'deleted': True})
+                else:
+                    new_items.append({'id': item.id, 'quantity': plans.pop(item.plan.id)})
+            for plan, quantity in plans.items():
+                new_items.append({'plan': plan, 'quantity': quantity})
+            subscription.items = new_items
+            subscription.prorate = False
+            subscription.save()
+        else:
+            new_items = []
+            for plan, quantity in plans.items():
+                new_items.append({'plan': plan, 'quantity': quantity})
+            customer = stripe.Customer.retrieve(self.customer_id)
+            customer.subscriptions.create(items=new_items)
 
 
 class Archer(models.Model):

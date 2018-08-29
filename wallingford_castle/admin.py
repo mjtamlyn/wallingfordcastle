@@ -55,8 +55,15 @@ class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
 
     @takes_instance_or_queryset
     def make_member(self, request, queryset):
+        users = set()
         for interest in queryset:
-            interest.make_member(request)
+            member = interest.make_member(request)
+            if member:
+                users.add(member.archer.user)
+        for user in users:
+            if user.customer_id:
+                user.update_subscriptions()
+                user.send_welcome_email()
     make_member.short_description = 'Promote to pending member'
     make_member.label = 'Make pending member'
 

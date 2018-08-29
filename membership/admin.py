@@ -29,4 +29,3 @@ class MemberAdmin(DjangoObjectActions, ArcherDataMixin, admin.ModelAdmin):
             member.archer.user.update_subscriptions()
     update_plan.short_description = 'Update plan'
     update_plan.label = 'Update plan'
-

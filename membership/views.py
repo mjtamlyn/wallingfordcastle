@@ -80,6 +80,6 @@ class PaymentDetails(MessageMixin, View):
             self.request.user.customer_id = customer.id
             self.request.user.save()
             self.request.user.send_welcome_email()
-        user.update_subscriptions()
+        self.request.user.update_subscriptions()
         self.messages.success('Thanks! You will receive a confirmation email soon.')
         return HttpResponseRedirect(reverse('membership:overview'))
