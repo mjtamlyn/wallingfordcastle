@@ -24,7 +24,6 @@ class Member(models.Model):
     archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
     membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
     level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default='', blank=True)
-    subscription_id = models.CharField(max_length=20, default='', blank=True, editable=False)
     interest = models.ForeignKey('wallingford_castle.MembershipInterest', blank=True, null=True, on_delete=models.CASCADE)
 
     active = models.BooleanField(default=True)
@@ -51,12 +50,3 @@ class Member(models.Model):
             'concession': 10,
             'non-shooting': 5,
         }[self.plan]
-
-    def update_plan(self):
-        if self.subscription_id:
-            customer = stripe.Customer.retrieve(self.user.customer_id)
-            subscription = customer.subscriptions.retrieve(self.subscription_id)
-            subscription.plan = self.plan
-            subscription.save()
-
-    # TODO: Cancel subscription?

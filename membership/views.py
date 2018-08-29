@@ -43,8 +43,6 @@ class MemberUpdate(FullMemberRequired, MessageMixin, UpdateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        if self.object.plan != self.original_plan:
-            self.object.update_plan()
         self.messages.success('Details successfully updated!')
         if settings.SLACK_MEMBERSHIP_HREF:
             data = json.dumps({
@@ -82,9 +80,6 @@ class PaymentDetails(MessageMixin, View):
             self.request.user.customer_id = customer.id
             self.request.user.save()
             self.request.user.send_welcome_email()
-        for member in self.request.user.members.filter(subscription_id=''):
-            subscription = customer.subscriptions.create(plan=member.plan)
-            member.subscription_id = subscription.id
-            member.save()
+        user.update_subscriptions()
         self.messages.success('Thanks! You will receive a confirmation email soon.')
         return HttpResponseRedirect(reverse('membership:overview'))

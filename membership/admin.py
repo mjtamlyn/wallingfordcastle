@@ -26,7 +26,7 @@ class MemberAdmin(DjangoObjectActions, ArcherDataMixin, admin.ModelAdmin):
     @takes_instance_or_queryset
     def update_plan(self, request, queryset):
         for member in queryset:
-            member.update_plan()
+            member.archer.user.update_subscriptions()
     update_plan.short_description = 'Update plan'
     update_plan.label = 'Update plan'
 

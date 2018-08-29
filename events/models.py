@@ -7,7 +7,7 @@ from membership.models import Member
 class Event(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, default='')
-    guests = ArrayField(models.CharField(max_length=255), blank=True, default=[])
+    guests = ArrayField(models.CharField(max_length=255), blank=True, default=list)
     date = models.DateTimeField()
     duration = models.DurationField()
     bookable = models.BooleanField(default=False)

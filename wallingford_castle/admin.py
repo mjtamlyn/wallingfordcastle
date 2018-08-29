@@ -73,7 +73,7 @@ class UserAdmin(DjangoObjectActions, EmailUserAdmin):
     actions = change_actions = ['send_new_user_email', 'send_welcome_email']
     fieldsets = EmailUserAdmin.fieldsets + (
         ('Internal fields', {
-            'fields': ('customer_id', 'tournament_only', 'generate_register_url')
+            'fields': ('customer_id', 'subscription_id', 'tournament_only', 'generate_register_url')
         }),
     )
     readonly_fields = ['generate_register_url']

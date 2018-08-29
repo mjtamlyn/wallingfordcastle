@@ -88,10 +88,7 @@ class MembershipInterest(models.Model):
                 interest=self,
             )
             if user.customer_id:
-                customer = stripe.Customer.retrieve(user.customer_id)
-                subscription = customer.subscriptions.create(plan=member.plan)
-                member.subscription_id = subscription.id
-                member.save()
+                user.update_subscriptions()
                 user.send_welcome_email()
             self.status = STATUS_PROCESSED
             self.save()
@@ -112,6 +109,7 @@ class MembershipInterest(models.Model):
 
 class User(AbstractEmailUser):
     customer_id = models.CharField(max_length=20, blank=True, default='')
+    subscription_id = models.CharField(max_length=20, default='', blank=True)
     tournament_only = models.BooleanField(default=False)
 
     def generate_register_url(self, request=None):
