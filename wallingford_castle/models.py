@@ -182,7 +182,9 @@ class User(AbstractEmailUser):
             for plan, quantity in plans.items():
                 new_items.append({'plan': plan, 'quantity': quantity})
             customer = stripe.Customer.retrieve(self.customer_id)
-            customer.subscriptions.create(items=new_items)
+            subscription = customer.subscriptions.create(items=new_items)
+            self.subscription_id = subscription.id
+            self.save()
 
     def add_invoice_item(self, amount, description):
         if not self.customer_id or not self.subscription_id:
