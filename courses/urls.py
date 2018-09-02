@@ -14,4 +14,5 @@ urlpatterns = [
     path('juniors/minis/', views.MinisInterestView.as_view(), name='minis-interest'),
     path('members/courses/', views.MembersCourseList.as_view(), name='members-course-list'),
     path('members/courses/<pk>/book/', views.MembersCourseBooking.as_view(), name='members-course-booking'),
+    path('members/courses/pay/', views.NonMembersPayment.as_view(), name='non-members-payment'),
 ]

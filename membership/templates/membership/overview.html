@@ -51,12 +51,61 @@
 {% endif %}
 {% endif %}
 
+<h2>Courses</h2>
+{% if course_attendees %}
+<div class="table-wrapper">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Member</th>
+                <th>Course</th>
+                <th>Fee</th>
+                <th>Paid</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attendee in course_attendees %}
+            <tr>
+                <td>{{ attendee.archer.name }}</td>
+                <td>{{ attendee.member|yesno:"Yes,No" }}</td>
+                <td>{{ attendee.course }}</td>
+                <td>£{{ attendee.fee }}</td>
+                <td>{{ attendee.paid|yesno:"Yes,No" }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endif %}
+
+{% if course_fees_to_pay %}
+<h4>You have £{{ course_fees_to_pay }} outstanding to pay for courses</h4>
+<form action="{% url 'courses:non-members-payment' %}" method="POST">
+    {% csrf_token %}
+    <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="{{ STRIPE_KEY }}"
+        data-email="{{ user.email }}"
+        data-currency="GBP"
+        data-amount="{{ course_fees_to_pay }}00"
+        data-name="Wallingford Castle Archers"
+        data-description="{{ courses_to_pay_description }}"
+        data-locale="auto">
+    </script>
+</form>
+{% endif %}
+
+{% if members %}
+<p>
+<a href="{% url 'courses:members-course-list' %}">Book a club member on a course ></a>
+</p>
+{% endif %}
+
+
 {% if members %}
 <h2>Events</h2>
 <a href="{% url 'events:event-list' %}">Book a club event ></a>
-
-<h2>Courses</h2>
-<a href="{% url 'courses:members-course-list' %}">Book a course ></a>
 
 <h2>Members</h2>
 <p>Monthly charge: £{{ monthly_fee }}</p>

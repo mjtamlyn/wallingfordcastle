@@ -2,11 +2,19 @@ import copy
 import datetime
 import functools
 
+from django import forms
 from django.conf.urls import url
 from django.contrib import admin
-from django.views.generic import ListView
+from django.db import transaction
+from django.http import HttpResponseRedirect
+from django.views.generic import FormView, ListView
+from django.urls import reverse
+
+from dateutil.relativedelta import relativedelta
+from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
 
 from wallingford_castle.admin import ArcherDataMixin
+from wallingford_castle.models import Archer, User
 from .models import Attendee, Course, CourseSignup, Interest, Session, Summer2018Signup
 
 
@@ -111,7 +119,123 @@ class AttendeeAdmin(ArcherDataMixin, admin.ModelAdmin):
     ]
 
 
+class AllocateCourseForm(forms.Form):
+    course = forms.ModelChoiceField(
+        Course.objects,
+        widget=forms.RadioSelect,
+    )
+
+    def __init__(self, interests, request, **kwargs):
+        self.request = request
+        self.interests = interests
+        super().__init__(**kwargs)
+
+    def clean(self):
+        for interest in self.interests:
+            if interest.processed:
+                self.add_error(None, forms.ValidationError('%(interest)s is already processed', params={'interest': interest}))
+
+    def save(self):
+        new_users = set()
+        existing_users = set()
+        for interest in self.interests:
+            user, created = User.objects.get_or_create(
+                email=interest.contact_email,
+                defaults={
+                    'is_active': False,
+                }
+            )
+            if created:
+                new_users.add(user)
+            else:
+                existing_users.add(user)
+            today = datetime.date.today()
+            age = relativedelta(today, interest.date_of_birth).years
+            archer, _ = Archer.objects.get_or_create(
+                name=interest.name,
+                user=user,
+                defaults={
+                    'date_of_birth': interest.date_of_birth,
+                    'age': 'senior' if age >= 18 else 'junior',
+                    'contact_number': interest.contact_number,
+                }
+            )
+            if archer.member_set.exists():
+                self.add_error(None, forms.ValidationError('%(name)s is already a member', params={'name': archer}))
+                raise ValueError('Tried to allocate a member to a non-member course')
+            Attendee.objects.create(
+                course=self.cleaned_data['course'],
+                archer=archer,
+                experience=interest.experience,
+                notes=interest.notes,
+                gdpr_consent=interest.gdpr_consent,
+                contact=interest.contact,
+                member=False,
+            )
+            interest.processed = True
+            interest.save()
+        for user in new_users:
+            user.send_course_email(request=self.request, new_user=True)
+        for user in existing_users:
+            user.send_course_email(request=self.request, new_user=False)
+
+
+class AdminAllocateCourseView(FormView):
+    template_name = 'admin/courses/interest/allocate.html'
+    form_class = AllocateCourseForm
+
+    def get_interests(self):
+        selected = self.request.GET['ids'].split(',')
+        return Interest.objects.filter(id__in=selected)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['opts'] = Interest._meta
+        context['interests'] = self.get_interests()
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['interests'] = self.get_interests()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_valid(self, form):
+        try:
+            with transaction.atomic():
+                form.save()
+        except ValueError:
+            return self.form_invalid(form)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('admin:courses_interest_changelist')
+
+
 @admin.register(Interest)
-class InterestAdmin(admin.ModelAdmin):
+class InterestAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['name', 'course_type', 'contact_email', 'date_of_birth', 'processed']
     list_filter = ['processed', 'course_type']
+    actions = change_actions = ['allocate_to_course']
+
+    def get_urls(self):
+        urls = super().get_urls()
+
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            wrapper.model_admin = self
+            return functools.update_wrapper(wrapper, view)
+
+        info = self.model._meta.app_label, self.model._meta.model_name
+
+        urls.insert(
+            0,
+            url(r'^allocate/$', wrap(AdminAllocateCourseView.as_view()), name='%s_%s_allocate' % info),
+        )
+        return urls
+
+    @takes_instance_or_queryset
+    def allocate_to_course(self, request, queryset):
+        url = reverse('admin:%s_%s_allocate' % (self.model._meta.app_label, self.model._meta.model_name))
+        return HttpResponseRedirect(url + '?ids=%s' % ','.join(str(item.pk) for item in queryset))

@@ -2,7 +2,7 @@ import json
 
 from django.conf import settings
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
-from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView
+from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, View
 from django.views.generic.detail import SingleObjectMixin
 from django.urls import reverse, reverse_lazy
 
@@ -11,7 +11,7 @@ import requests
 import stripe
 
 from wallingford_castle.mixins import FullMemberRequired
-from .models import Course, CourseSignup, Summer2018Signup
+from .models import Attendee, Course, CourseSignup, Summer2018Signup
 from .forms import CourseSignupForm, MembersBookCourseForm, MinisInterestForm, Summer2018SignupForm
 
 
@@ -148,6 +148,35 @@ class MembersCourseBooking(FullMemberRequired, SingleObjectMixin, FormView):
 
     def get_success_url(self):
         return reverse('courses:members-course-list')
+
+
+class NonMembersPayment(MessageMixin, View):
+    def post(self, request, *args, **kwargs):
+        token = request.POST['stripeToken']
+        if self.request.user.customer_id:
+            customer = stripe.Customer.retrieve(self.request.user.customer_id)
+            source = customer.sources.create(source=token)
+            customer.default_source = source.id
+            customer.save()
+        else:
+            customer = stripe.Customer.create(
+                source=token,
+                email=self.request.user.email,
+            )
+            self.request.user.customer_id = customer.id
+            self.request.user.save()
+        attendees = Attendee.objects.filter(archer__user=self.request.user, member=False, paid=False)
+        amount = sum(attendee.fee for attendee in attendees)
+        description = '; '.join('%s - %s' % (attendee.archer, attendee.course) for attendee in attendees)
+        stripe.Charge.create(
+            amount=amount * 100,
+            currency='gbp',
+            customer=customer.id,
+            description=description,
+        )
+        attendees.update(paid=True)
+        self.messages.success('Thanks! You will receive a confirmation email soon.')
+        return HttpResponseRedirect(reverse('membership:overview'))
 
 
 class MinisInterestView(MessageMixin, CreateView):

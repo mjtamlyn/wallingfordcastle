@@ -1,0 +1,34 @@
+{% block subject %}Welcome to Wallingford Castle Archers!{% endblock %}
+
+{% block plain %}
+Hi!
+
+Thanks for your interest in doing a course with Wallingford Castle Archers. We're delighted to have you!
+
+{% if register_url %}
+To register and pay, please click here:
+{{ register_url }}
+{% else %}
+To pay, please click here:
+{% url 'membership:overview' %}
+{% endif %}
+
+Wallingford Castle Archers Committee
+{% endblock %}
+
+{% block html %}
+<p>Hi!</p>
+
+<p>Thanks for your interest in doing a course with Wallingford Castle Archers. We're delighted to have you!</p>
+
+{% if register_url %}
+<a href="{{ register_url }}">Register and pay here</a>
+{% else %}
+<a href="{% url 'membership:overview' %}">Pay on the club website</a>
+{% endif %}
+
+<p>
+Wallingford Castle Archers Committee
+</p>
+{% endblock %}
+

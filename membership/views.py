@@ -9,6 +9,7 @@ from braces.views import MessageMixin
 import requests
 import stripe
 
+from courses.models import Attendee
 from membership.models import Member
 from wallingford_castle.mixins import FullMemberRequired
 from .forms import MemberForm
@@ -23,6 +24,9 @@ class Overview(FullMemberRequired, TemplateView):
         context['monthly_fee'] = sum(member.plan_cost for member in context['members'])
         context['beginners'] = self.request.user.beginner_set.all()
         context['beginners_to_pay'] = sum(beginner.fee for beginner in self.request.user.beginner_set.filter(paid=False))
+        context['course_attendees'] = Attendee.objects.filter(archer__user=self.request.user).order_by('course').select_related('archer', 'course')
+        context['course_fees_to_pay'] = sum(attendee.fee for attendee in context['course_attendees'] if not attendee.paid)
+        context['courses_to_pay_description'] = '; '.join('%s - %s' % (attendee.archer, attendee.course) for attendee in context['course_attendees'] if not attendee.paid)
         context['STRIPE_KEY'] = settings.STRIPE_KEY
         return context
 
