@@ -45,21 +45,27 @@ class Session(models.Model):
 class Attendee(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     archer = models.ForeignKey(Archer, on_delete=models.CASCADE)
+    member = models.BooleanField(default=True)
     contact_name = models.CharField(max_length=255, blank=True, default='')
-    contact_number = models.CharField(max_length=20, blank=True, default='')
     experience = models.TextField(blank=True, default='')
     notes = models.TextField(blank=True, default='')
     communication_notes = models.TextField(blank=True, default='')
     gdpr_consent = models.BooleanField(default=False)
     contact = models.BooleanField(default=False)
     paid = models.BooleanField(default=False)
-    invoice_id = models.CharField(max_length=32, blank=True, default='')
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return 'Attendee %s on course %s' % (self.archer, self.course)
+
+    @property
+    def fee(self):
+        if self.member:
+            return self.course.members_price
+        return self.course.price
+        # TODO: handle by session fees at some point
 
 
 class Interest(models.Model):
