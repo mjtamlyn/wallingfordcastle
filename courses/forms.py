@@ -163,4 +163,5 @@ class MembersBookCourseForm(forms.Form):
         return Attendee.objects.create(
             course=self.course,
             archer=member.archer,
+            paid=True,
         )
