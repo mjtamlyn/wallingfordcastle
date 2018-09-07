@@ -3,29 +3,38 @@
 {% load floppyforms %}
 
 {% block content %}
-<h1>Didcot Girls School</h1>
-<p>Wallingford Castle Archers are pleased to be working with Didcot Girls School to offer an after school archery club.</p>
-<p>Sessions will be running after school on Mondays on the following dates:</p>
-<ul>
-    <li>30th April 2018</li>
-    <li><em>(No session 7th May 2018 due to bank holiday)</em></li>
-    <li>14th May 2018</li>
-    <li>21st May 2018</li>
-    <li><em>(No session 28th May 2018 due to half term)</em></li>
-    <li>4th June 2018</li>
-    <li>11th June 2018</li>
-    <li>18th June 2018</li>
-    <li>25th June 2018</li>
-    <li>2nd July 2018</li>
-    <li>9th July 2018</li>
-    <li>16th July 2018</li>
-    <li>23rd July 2018</li>
-</ul>
-<p>The cost for this term is £55, payable in advance.</p>
-<p>To register for the course, please complete the form below.</p>
-<form class="form" method="POST" action=".">
-    {% csrf_token %}
-    {% form form using 'floppyforms/layouts/p.html' %}
-    <input type="submit" class="btn" value="Register">
-</form>
+<div class="flex-sections">
+    <section>
+        <h2>Didcot Girls School</h2>
+        <p>Wallingford Castle Archers are pleased to be working with Didcot Girls School to offer an after school archery club.</p>
+        <p>Sessions will be running after school on Mondays on the following dates:</p>
+        <ul>
+            <li>10th September (1st session for existing archers)</li>
+            <li>17th September</li>
+            <li>24th September (1st session for new archers)</li>
+            <li>1st October</li>
+            <li>8th October</li>
+            <li>15th October</li>
+            <li><em>No session 22nd October due to half term</em></li>
+            <li>29th October</li>
+            <li>5th November</li>
+            <li>12th November</li>
+            <li>19th November</li>
+            <li>26th November</li>
+            <li>3rd December</li>
+            <li>10th December</li>
+            <li>17th December</li>
+        </ul>
+        <p>The cost for this term is £70 for returning archers, and £60 for new archers, payable in advance.</p>
+    </section>
+    <section>
+        <h3>Book</h3>
+        <form class="form page-form" method="POST" action=".">
+            <p>To register for the course, please complete the form below.</p>
+            {% csrf_token %}
+            {% form form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn" value="Register">
+        </form>
+    </section>
+</div>
 {% endblock %}

@@ -95,7 +95,7 @@ class Summer2018SignupForm(forms.ModelForm):
         ]
 
 
-class MinisInterestForm(forms.ModelForm):
+class CourseInterestForm(forms.ModelForm):
     name = forms.CharField(label='Archer name')
     contact_email = forms.EmailField()
     contact_number = forms.CharField()
@@ -129,8 +129,12 @@ class MinisInterestForm(forms.ModelForm):
             'experience', 'notes', 'gdpr_consent', 'contact',
         ]
 
+    def __init__(self, **kwargs):
+        self.course_type = kwargs.pop('course_type', 'unknown')
+        super().__init__(**kwargs)
+
     def save(self):
-        self.instance.course_type = 'minis'
+        self.instance.course_type = self.course_type
         return super().save()
 
 

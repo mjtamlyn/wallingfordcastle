@@ -12,7 +12,7 @@ import stripe
 
 from wallingford_castle.mixins import FullMemberRequired
 from .models import Attendee, Course, CourseSignup, Summer2018Signup
-from .forms import CourseSignupForm, MembersBookCourseForm, MinisInterestForm, Summer2018SignupForm
+from .forms import CourseSignupForm, MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm
 
 
 class Summer2018(TemplateView):
@@ -60,41 +60,22 @@ class Summer2018Payment(DetailView):
         return HttpResponseRedirect(reverse('courses:summer-2018-payment', kwargs={'id': signup.id}))
 
 
-class DGSSignup(CreateView):
+class DGSSignup(MessageMixin, FormView):
     template_name = 'courses/dgs.html'
-    form_class = CourseSignupForm
-    model = CourseSignup
+    form_class = CourseInterestForm
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['course_type'] = 'dgs'
+        return kwargs
+
+    def form_valid(self, form):
+        form.save()
+        self.messages.success('Thanks for your interest! We will be in touch soon.')
+        return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('courses:dgs-payment', kwargs={'id': self.object.id})
-
-
-class DGSPayment(DetailView):
-    model = CourseSignup
-    template_name = 'courses/payment.html'
-    pk_url_kwarg = 'id'
-    
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data()
-        if not self.object.paid:
-            context['STRIPE_KEY'] = settings.STRIPE_KEY
-        return context
-
-    def post(self, request, *args, **kwargs):
-        token = request.POST['stripeToken']
-        signup = self.get_object()
-        if signup.paid:
-            return HttpResponseNotAllowed()
-        stripe.Charge.create(
-            amount=5500,
-            currency="GBP",
-            description="Didcot Girls School Archery Club",
-            source=token,
-            receipt_email=signup.email,
-        )
-        signup.paid = True
-        signup.save()
-        return HttpResponseRedirect(reverse('courses:dgs-payment', kwargs={'id': signup.id}))
+        return reverse('juniors')
 
 
 class MembersCourseList(FullMemberRequired, ListView):
@@ -180,9 +161,14 @@ class NonMembersPayment(MessageMixin, View):
 
 
 class MinisInterestView(MessageMixin, CreateView):
-    form_class = MinisInterestForm
+    form_class = CourseInterestForm
     template_name = 'minis_interest_form.html'
     success_url = reverse_lazy('juniors')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['course_type'] = 'minis'
+        return kwargs
 
     def form_valid(self, form):
         response = super().form_valid(form)

@@ -7,7 +7,7 @@ from django.urls import reverse, reverse_lazy
 from braces.views import MessageMixin
 import requests
 
-from courses.forms import MinisInterestForm
+from courses.forms import CourseInterestForm
 from .forms import MembershipInterestForm
 
 
@@ -29,7 +29,7 @@ class Juniors(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['minis_form'] = MinisInterestForm()
+        context['minis_form'] = CourseInterestForm(course_type='minis')
         return context
 
 
