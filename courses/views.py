@@ -72,6 +72,23 @@ class DGSSignup(MessageMixin, FormView):
     def form_valid(self, form):
         form.save()
         self.messages.success('Thanks for your interest! We will be in touch soon.')
+        if settings.SLACK_EVENTS_HREF:
+            data = json.dumps({
+                'icon_emoji': ':wave:',
+                'text': 'New DGS course interest received for %s!\n%s' % (
+                    form.cleaned_data['name'],
+                    self.request.build_absolute_uri(
+                        reverse(
+                            'admin:courses_interest_change',
+                            args=(form.instance.pk,),
+                        )
+                    ),
+                )
+            })
+            try:
+                requests.post(settings.SLACK_EVENTS_HREF, data=data)
+            except Exception:
+                pass
         return super().form_valid(form)
 
     def get_success_url(self):
