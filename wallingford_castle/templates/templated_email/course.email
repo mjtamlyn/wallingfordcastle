@@ -24,7 +24,7 @@ Wallingford Castle Archers Committee
 {% if register_url %}
 <a href="{{ register_url }}">Register and pay here</a>
 {% else %}
-<a href="{% url 'membership:overview' %}">Pay on the club website</a>
+<a href="https://www.wallingfordcastle.co.uk{% url 'membership:overview' %}">Pay on the club website</a>
 {% endif %}
 
 <p>
