@@ -10,11 +10,11 @@ from .models import Member
 class MemberAdmin(DjangoObjectActions, ArcherDataMixin, admin.ModelAdmin):
     list_display = ['archer_name', 'archer_age', 'membership_type', 'active', 'archer_agb_number', 'archer_age_group', 'level']
     list_filter = ['active', 'membership_type', 'archer__age', 'level']
-    readonly_fields = ['created', 'modified', 'archer_age', 'archer_agb_number', 'archer_date_of_birth', 'archer_age_group', 'archer_address', 'archer_contact_number']
+    readonly_fields = ['created', 'modified', 'archer_age', 'archer_agb_number', 'archer_date_of_birth', 'archer_age_group', 'archer_address', 'archer_contact_number', 'archer_email']
     fields = [
         'archer',
         ('archer_agb_number', 'archer_age', 'archer_date_of_birth', 'archer_age_group'),
-        ('archer_address', 'archer_contact_number'),
+        ('archer_address', 'archer_contact_number', 'archer_email'),
         'active',
         ('membership_type', 'level'),
         ('interest', 'created', 'modified'),

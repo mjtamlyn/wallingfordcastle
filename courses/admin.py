@@ -105,12 +105,12 @@ class CourseAdmin(admin.ModelAdmin):
 class AttendeeAdmin(ArcherDataMixin, admin.ModelAdmin):
     list_display = ['archer', 'course', 'paid', 'member']
     list_filter = ['course', 'paid', 'member']
-    readonly_fields = ['created', 'modified', 'archer_age', 'archer_agb_number', 'archer_date_of_birth', 'archer_age_group', 'archer_address', 'archer_contact_number']
+    readonly_fields = ['created', 'modified', 'archer_age', 'archer_agb_number', 'archer_date_of_birth', 'archer_age_group', 'archer_address', 'archer_contact_number', 'archer_email']
     fields = [
         ('archer', 'course'),
         'member',
         ('archer_agb_number', 'archer_age', 'archer_date_of_birth', 'archer_age_group'),
-        ('archer_address', 'archer_contact_number'),
+        ('archer_address', 'archer_contact_number', 'archer_email'),
         'contact_name',
         ('experience', 'notes', 'communication_notes'),
         ('gdpr_consent', 'contact'),

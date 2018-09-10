@@ -45,6 +45,10 @@ class ArcherDataMixin(object):
         return obj.archer.contact_number
     archer_contact_number.short_description = 'Contact number'
 
+    def archer_email(self, obj):
+        return obj.archer.user.email
+    archer_contact_number.short_description = 'Contact email'
+
 
 @admin.register(MembershipInterest)
 class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
