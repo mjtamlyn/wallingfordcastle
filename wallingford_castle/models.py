@@ -51,7 +51,7 @@ class MembershipInterest(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -226,7 +226,7 @@ class Archer(models.Model):
     contact_number = models.CharField(max_length=20, blank=True, default='')
 
     created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name

@@ -24,7 +24,7 @@ class Course(models.Model):
     open_to_non_members = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
@@ -36,7 +36,7 @@ class Session(models.Model):
     duration = models.DurationField(default=datetime.timedelta(minutes=90))
 
     created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return 'Session at %s' % self.start_time
@@ -55,7 +55,7 @@ class Attendee(models.Model):
     paid = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return 'Attendee %s on course %s' % (self.archer, self.course)
@@ -83,7 +83,7 @@ class Interest(models.Model):
     processed = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name

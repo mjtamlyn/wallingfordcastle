@@ -22,7 +22,7 @@ class BeginnersCourse(models.Model):
     counter = models.PositiveIntegerField(verbose_name='Beginners course #', unique=True)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     objects = BeginnersCourseManager()
 
@@ -39,7 +39,7 @@ class BeginnersCourseSession(models.Model):
     duration = models.DurationField(default=datetime.timedelta(minutes=90))
 
     created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return 'Beginners course session at %s' % self.start_time
@@ -86,7 +86,7 @@ class Beginner(models.Model):
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_WAITING)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
-    modified = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
 
     @property
     def fee(self):
