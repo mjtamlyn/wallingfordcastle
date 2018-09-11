@@ -60,13 +60,16 @@ class Summer2018Payment(DetailView):
         return HttpResponseRedirect(reverse('courses:summer-2018-payment', kwargs={'id': signup.id}))
 
 
-class DGSSignup(MessageMixin, FormView):
-    template_name = 'courses/dgs.html'
+class SchoolSignup(MessageMixin, FormView):
     form_class = CourseInterestForm
+    school = None
+
+    def get_template_names(self):
+        return ['courses/%s.html' % self.school]
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
-        kwargs['course_type'] = 'dgs'
+        kwargs['course_type'] = self.school
         return kwargs
 
     def form_valid(self, form):
@@ -75,7 +78,8 @@ class DGSSignup(MessageMixin, FormView):
         if settings.SLACK_EVENTS_HREF:
             data = json.dumps({
                 'icon_emoji': ':wave:',
-                'text': 'New DGS course interest received for %s!\n%s' % (
+                'text': 'New %s course interest received for %s!\n%s' % (
+                    self.school,
                     form.cleaned_data['name'],
                     self.request.build_absolute_uri(
                         reverse(
