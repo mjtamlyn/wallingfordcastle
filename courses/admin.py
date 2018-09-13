@@ -3,12 +3,12 @@ import datetime
 import functools
 
 from django import forms
-from django.conf.urls import url
 from django.contrib import admin
 from django.db import transaction
 from django.http import HttpResponseRedirect
-from django.views.generic import FormView, ListView
-from django.urls import reverse
+from django.views.generic import DetailView, FormView, ListView
+from django.urls import path, reverse
+from django.utils import html
 
 from dateutil.relativedelta import relativedelta
 from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
@@ -74,7 +74,7 @@ class Summer2018SignupAdmin(admin.ModelAdmin):
 
         urls.insert(
             0,
-            url(r'^summary/$', wrap(Summer2018Summary.as_view()), name='%s_%s_summary' % info),
+            path('summary/', wrap(Summer2018Summary.as_view()), name='%s_%s_summary' % info),
         )
         return urls
 
@@ -88,17 +88,60 @@ class SessionInline(admin.TabularInline):
     model = Session
 
 
+class CourseReport(DetailView):
+    model = Course
+    template_name = 'admin/courses/course/report.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['opts'] = Course._meta
+        context['attendees'] = self.object.attendee_set.order_by('created').select_related('archer', 'archer__user')
+        return context
+
+
 @admin.register(Course)
-class CourseAdmin(admin.ModelAdmin):
-    list_display = ['name', 'course_start_date']
+class CourseAdmin(DjangoObjectActions, admin.ModelAdmin):
+    list_display = ['name', 'course_start_date', 'report_link']
     readonly_fields = ['created', 'modified']
     inlines = [SessionInline]
+    change_actions = ['view_report']
+
+    def get_urls(self):
+        urls = super().get_urls()
+
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            wrapper.model_admin = self
+            return functools.update_wrapper(wrapper, view)
+
+        info = self.model._meta.app_label, self.model._meta.model_name
+
+        urls.insert(
+            0,
+            path('<pk>/report/', wrap(CourseReport.as_view()), name='%s_%s_report' % info),
+        )
+        return urls
 
     def course_start_date(self, obj):
         first_session = obj.session_set.order_by('start_time').first()
         if first_session:
             return first_session.start_time.date()
         return 'No sessions'
+
+    def report_link(self, obj):
+        return html.format_html('''
+            <a href="{}" title="View report">
+                View report >
+            </a>
+        ''', reverse('admin:%s_%s_report' % (self.model._meta.app_label, self.model._meta.model_name), kwargs={'pk': obj.pk}))
+    report_link.short_description = 'View report'
+
+    def view_report(self, request, instance):
+        url = reverse('admin:%s_%s_report' % (self.model._meta.app_label, self.model._meta.model_name), kwargs={'pk': instance.pk})
+        return HttpResponseRedirect(url)
+    view_report.short_description = 'View report'
+    view_report.label = 'View report'
 
 
 @admin.register(Attendee)
@@ -231,7 +274,7 @@ class InterestAdmin(DjangoObjectActions, admin.ModelAdmin):
 
         urls.insert(
             0,
-            url(r'^allocate/$', wrap(AdminAllocateCourseView.as_view()), name='%s_%s_allocate' % info),
+            path('allocate/', wrap(AdminAllocateCourseView.as_view()), name='%s_%s_allocate' % info),
         )
         return urls
 
@@ -239,3 +282,5 @@ class InterestAdmin(DjangoObjectActions, admin.ModelAdmin):
     def allocate_to_course(self, request, queryset):
         url = reverse('admin:%s_%s_allocate' % (self.model._meta.app_label, self.model._meta.model_name))
         return HttpResponseRedirect(url + '?ids=%s' % ','.join(str(item.pk) for item in queryset))
+    allocate_to_course.short_description = 'Allocate to a course'
+    allocate_to_course.label = 'Allocate to a course'
