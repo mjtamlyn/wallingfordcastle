@@ -47,7 +47,7 @@ class ArcherDataMixin(object):
 
     def archer_email(self, obj):
         return obj.archer.user.email
-    archer_contact_number.short_description = 'Contact email'
+    archer_email.short_description = 'Contact email'
 
 
 @admin.register(MembershipInterest)
