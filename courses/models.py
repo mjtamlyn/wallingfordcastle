@@ -46,6 +46,7 @@ class Attendee(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     archer = models.ForeignKey(Archer, on_delete=models.CASCADE)
     member = models.BooleanField(default=True)
+    group = models.CharField(max_length=30, blank=True, default='')
     contact_name = models.CharField(max_length=255, blank=True, default='')
     experience = models.TextField(blank=True, default='')
     notes = models.TextField(blank=True, default='')

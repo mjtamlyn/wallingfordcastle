@@ -27,6 +27,10 @@
                         <div class="clear"></div>
                     </th>
                     <th scope="col" class="column-course_start_date">
+                        <div class="text"><span>Group</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col" class="column-course_start_date">
                         <div class="text"><span>Date of birth</span></div>
                         <div class="clear"></div>
                     </th>
@@ -56,6 +60,7 @@
                 {% for attendee in attendees %}
                 <tr class="{% cycle 'row1' 'row2' %}">
                     <th><a href="{% url 'admin:courses_attendee_change' attendee.id %}">{{ attendee.archer.name }}</a></th>
+                    <td>{{ attendee.group }}</td>
                     <td>{{ attendee.archer.date_of_birth }}</td>
                     <td>{{ attendee.archer.age_group }}</td>
                     <td>{{ attendee.archer.user.email }}</td>
