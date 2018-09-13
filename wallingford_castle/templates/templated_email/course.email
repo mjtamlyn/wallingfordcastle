@@ -6,7 +6,7 @@ Hi!
 Thanks for your interest in doing a course with Wallingford Castle Archers. We're delighted to have you!
 
 {% if register_url %}
-To register and pay, please click here:
+You can confirm your place and pay here by clicking below, or if you have any questions just reply to this email and we'll be in touch.
 {{ register_url }}
 {% else %}
 To pay, please click here:
@@ -22,7 +22,7 @@ Wallingford Castle Archers Committee
 <p>Thanks for your interest in doing a course with Wallingford Castle Archers. We're delighted to have you!</p>
 
 {% if register_url %}
-<a href="{{ register_url }}">Register and pay here</a>
+You can <a href="{{ register_url }}">confirm your place and pay here</a>, or if you have any questions just reply to this email and we'll be in touch.
 {% else %}
 <a href="https://www.wallingfordcastle.co.uk{% url 'membership:overview' %}">Pay on the club website</a>
 {% endif %}
