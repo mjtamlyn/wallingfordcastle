@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <h2>Home Educated minis</h2>
+        <p>Wallingford Castle Archers are pleased to be offering archery classes for home educated children. The classes will take place at Sutton Courtenay Village Hall, OX14 4BB.</p>
+        <p>Sessions will be running on Mondays at 12:15pm or 13:00pm. We would appreciate the first class arriving to help set up at midday, and the second class helping to pack away before 2pm. This will maximise the shooting time for the children.</p>
+        <p>Our first term is scheduled for the following dates:</p>
+        <ul>
+            <li>24th September</li>
+            <li>1st October</li>
+            <li>8th October</li>
+            <li>15th October</li>
+        </ul>
+        <p>The cost for this term is £28, payable in advance. If everyone enjoys it and wants to carry on shooting, we intend to continue from 29th October.</p>
+        <p>Please specify below if you have any particular preference for the first or second session, and if you have multiple children attending please specify whether you'd rather they were in the same class or different ones. As we will have both 6 and 12 year olds attending, we would prefer to split the group roughly by age so the coaching can be tailored to the maturity of the children.</p>
+    </section>
+    <section>
+        <h3>Book</h3>
+        <form class="form page-form" method="POST" action=".">
+            <p>To register for the course, please complete the form below.</p>
+            {% csrf_token %}
+            {% form form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn" value="Register">
+        </form>
+    </section>
+</div>
+{% endblock %}
+
