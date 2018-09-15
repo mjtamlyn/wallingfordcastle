@@ -215,7 +215,7 @@ class Archer(models.Model):
     tournament visitors etc.
     """
 
-    user = models.ForeignKey(User, related_name='archers', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, related_name='archers', on_delete=models.CASCADE, blank=True, null=True)
     managing_users = models.ManyToManyField(User, related_name='managed_archers', blank=True)
 
     name = models.CharField(max_length=200)

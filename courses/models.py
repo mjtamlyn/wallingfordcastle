@@ -5,6 +5,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 
+from events.models import Event
 from wallingford_castle.models import Archer
 
 
@@ -34,9 +35,13 @@ class Session(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
     duration = models.DurationField(default=datetime.timedelta(minutes=90))
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
+
+    def end_time(self):
+        return self.start_time + self.duration
 
     def __str__(self):
         return 'Session at %s' % self.start_time

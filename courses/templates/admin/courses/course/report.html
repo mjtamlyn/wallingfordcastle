@@ -15,42 +15,54 @@
 
 {% block content %}
 <div id="content-main">
+    <ul class="object-tools">
+        <li>
+            <a href="{% url opts|admin_urlname:'change' object.pk %}">
+                Edit {{ opts.verbose_name }}
+            </a>
+        </li>
+        <li>
+            <a href="{% url opts|admin_urlname:'sessions' object.pk %}">
+                Sessions
+            </a>
+        </li>
+    </ul>
     <h2>Attendees ({{ attendees|length }})</h2>
     <div class="results">
         <table id="result_list">
             <thead>
                 <tr>
-                    <th scope="col" class="column-name">
+                    <th scope="col">
                         <div class="text"><span>Name</span></div>
                         <div class="clear"></div>
                     </th>
                     {% if has_groups %}
-                    <th scope="col" class="column-course_start_date">
+                    <th scope="col">
                         <div class="text"><span>Group</span></div>
                         <div class="clear"></div>
                     </th>
                     {% endif %}
-                    <th scope="col" class="column-course_start_date">
+                    <th scope="col">
                         <div class="text"><span>Date of birth</span></div>
                         <div class="clear"></div>
                     </th>
-                    <th scope="col" class="column-course_start_date">
+                    <th scope="col">
                         <div class="text"><span>Age group</span></div>
                         <div class="clear"></div>
                     </th>
-                    <th scope="col" class="column-report_link">
+                    <th scope="col">
                         <div class="text"><span>Contact email</span></div>
                         <div class="clear"></div>
                     </th>
-                    <th scope="col" class="column-report_link">
+                    <th scope="col">
                         <div class="text"><span>Contact number</span></div>
                         <div class="clear"></div>
                     </th>
-                    <th scope="col" class="column-report_link">
+                    <th scope="col">
                         <div class="text"><span>Paid</span></div>
                         <div class="clear"></div>
                     </th>
-                    <th scope="col" class="column-report_link">
+                    <th scope="col">
                         <div class="text"><span>Member</span></div>
                         <div class="clear"></div>
                     </th>

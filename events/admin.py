@@ -5,7 +5,7 @@ from .models import Attendee, Booking, BookingQuestion, Event
 
 class AttendeeInline(admin.TabularInline):
     model = Attendee
-    autocomplete_fields = ['member']
+    autocomplete_fields = ['archer']
 
 
 class BookingQuestionInline(admin.TabularInline):

@@ -106,6 +106,22 @@ class CourseReport(DetailView):
         return context
 
 
+class CourseSessions(ListView):
+    model = Session
+    template_name = 'admin/courses/course/sessions.html'
+
+    def get_queryset(self):
+        self.object = Course.objects.get(pk=self.kwargs['course_id'])
+        return Session.objects.filter(course=self.object).order_by('start_time')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['opts'] = Course._meta
+        context['title'] = 'Sessions for %s' % self.object
+        context['object'] = self.object
+        return context
+
+
 @admin.register(Course)
 class CourseAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['name', 'course_start_date', 'report_link']
@@ -124,10 +140,10 @@ class CourseAdmin(DjangoObjectActions, admin.ModelAdmin):
 
         info = self.model._meta.app_label, self.model._meta.model_name
 
-        urls.insert(
-            0,
+        urls = [
             path('<pk>/report/', wrap(CourseReport.as_view()), name='%s_%s_report' % info),
-        )
+            path('<course_id>/sessions/', wrap(CourseSessions.as_view()), name='%s_%s_sessions' % info),
+        ] + urls
         return urls
 
     def course_start_date(self, obj):
