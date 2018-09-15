@@ -63,6 +63,7 @@ class AdminAllocateCourseView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['opts'] = Beginner._meta
+        context['title'] = 'Allocate to course'
         context['beginners'] = self.get_beginners()
         return context
 

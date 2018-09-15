@@ -53,6 +53,7 @@ class Summer2018Summary(ListView):
 
         context['summary'] = dates
         context['opts'] = Summer2018Signup._meta
+        context['title'] = 'Summer signups summary'
         return context
 
 
@@ -95,6 +96,7 @@ class CourseReport(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['opts'] = Course._meta
+        context['title'] = 'Report for %s' % self.object
         context['attendees'] = self.object.attendee_set.order_by('created').select_related('archer', 'archer__user')
         return context
 
@@ -235,6 +237,7 @@ class AdminAllocateCourseView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['opts'] = Interest._meta
+        context['title'] = 'Allocate to course'
         context['interests'] = self.get_interests()
         return context
 
