@@ -24,7 +24,7 @@ class Event(models.Model):
         return self.date + self.duration
 
     def attendee_count(self):
-        return self.attendee_set.count() + len(self.guests)
+        return self.attendee_set.count()
 
 
 class Attendee(models.Model):
