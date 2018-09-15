@@ -4,16 +4,19 @@ import functools
 
 from django import forms
 from django.contrib import admin
+from django.contrib.admin.helpers import AdminForm
 from django.db import transaction
 from django.db.models import Count
 from django.http import HttpResponseRedirect
-from django.views.generic import DetailView, FormView, ListView
+from django.views.generic import CreateView, DetailView, FormView, ListView
 from django.urls import path, reverse
 from django.utils import html
 
+from braces.views import MessageMixin
 from dateutil.relativedelta import relativedelta
 from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
 
+from events.models import Event
 from wallingford_castle.admin import ArcherDataMixin
 from wallingford_castle.models import Archer, User
 from .models import Attendee, Course, CourseSignup, Interest, Session, Summer2018Signup
@@ -86,8 +89,77 @@ class CourseSignupAdmin(admin.ModelAdmin):
     list_display = ['student_name', 'email', 'student_date_of_birth', 'paid']
 
 
+class SessionCreateEvent(MessageMixin, CreateView):
+    template_name = 'admin/courses/session/create_event.html'
+    model = Event
+    fields = ['name', 'date', 'duration']
+
+    def dispatch(self, request, *args, **kwargs):
+        self.session = Session.objects.get(pk=self.kwargs['pk'])
+        if self.session.event:
+            self.messages.error('This session already has an event')
+            return HttpResponseRedirect(self.get_success_url())
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        sessions = self.session.course.session_set.order_by('start_time')
+        session_sequence = list(sessions).index(self.session) + 1
+        return {
+            'name': '%s - session #%s' % (self.session.course, session_sequence),
+            'date': self.session.start_time,
+            'duration': self.session.duration,
+        }
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Create event for %s on %s' % (self.session.course, self.session.start_time.date())
+        context['opts'] = Session._meta
+        context['add'] = True
+        context['change'] = False
+        context['is_popup'] = False
+        context['save_as'] = False
+        context['has_add_permission'] = self.request.user.has_perm('events.add_event')
+        context['has_change_permission'] = self.request.user.has_perm('events.change_event')
+        context['has_view_permission'] = self.request.user.has_perm('events.view_event')
+        context['has_delete_permission'] = self.request.user.has_perm('events.delete_event')
+        context['has_editable_inline_admin_formsets'] = False
+        context['adminform'] = AdminForm(context['form'], fieldsets=[(None, {'fields': self.fields})], prepopulated_fields={})
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        self.session.event = form.instance
+        self.session.save(update_fields=['event_id'])
+        return response
+
+    def get_success_url(self):
+        return reverse('admin:courses_course_sessions', kwargs={'course_id': self.session.course_id})
+
+
+@admin.register(Session)
+class SessionAdmin(admin.ModelAdmin):
+
+    def get_urls(self):
+        urls = super().get_urls()
+
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            wrapper.model_admin = self
+            return functools.update_wrapper(wrapper, view)
+
+        info = self.model._meta.app_label, self.model._meta.model_name
+
+        urls = [
+            path('<pk>/create-event/', wrap(SessionCreateEvent.as_view()), name='%s_%s_create_event' % info),
+        ] + urls
+        return urls
+
+
+
 class SessionInline(admin.TabularInline):
     model = Session
+    readonly_fields = ['event']
 
 
 class CourseReport(DetailView):
@@ -117,6 +189,7 @@ class CourseSessions(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['opts'] = Course._meta
+        context['session_opts'] = Session._meta
         context['title'] = 'Sessions for %s' % self.object
         context['object'] = self.object
         return context

@@ -40,6 +40,10 @@
                         <div class="text"><span>Time</span></div>
                         <div class="clear"></div>
                     </th>
+                    <th scope="col">
+                        <div class="text"><span>Attendees</span></div>
+                        <div class="clear"></div>
+                    </th>
                 </tr>
             </thead>
             <tbody>
@@ -47,6 +51,18 @@
                 <tr class="{% cycle 'row1' 'row2' %}">
                     <th>{{ session.start_time.date }}</th>
                     <td>{{ session.start_time.time }} - {{ session.end_time.time }}</td>
+                    <td>
+                        {% if session.event %}
+                            <strong>Attendees ({{ session.event.attendee_count }})</strong>
+                            <ul>
+                                {% for attendee in session.event.attendee_set.all %}
+                                <li>{{ attendee.archer }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <a href="{% url session_opts|admin_urlname:'create_event' session.pk %}">Create event</a>
+                        {% endif %}
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
