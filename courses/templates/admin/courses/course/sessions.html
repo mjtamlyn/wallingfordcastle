@@ -59,6 +59,7 @@
                                 <li>{{ attendee.archer }}</li>
                                 {% endfor %}
                             </ul>
+                            <a href="{% url session_opts|admin_urlname:'set_attendees' session.pk %}">Set attendees</a>
                         {% else %}
                             <a href="{% url session_opts|admin_urlname:'create_event' session.pk %}">Create event</a>
                         {% endif %}

@@ -89,6 +89,73 @@ class CourseSignupAdmin(admin.ModelAdmin):
     list_display = ['student_name', 'email', 'student_date_of_birth', 'paid']
 
 
+class SessionSetAttendeesForm(forms.Form):
+    attendees = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple)
+
+    def __init__(self, session, **kwargs):
+        super().__init__(**kwargs)
+        self.session = session
+        self.fields['attendees'].choices = [
+            (coach.id, coach.name)
+        for coach in session.course.coaches.order_by('name')]
+        self.fields['attendees'].choices += [
+            (attendee.archer_id, attendee.archer.name)
+        for attendee in session.course.attendee_set.order_by('archer__name')]
+        # This is needed to ensure that we don't remove any attendees not in the default list
+        self.form_attendees = [c[0] for c in self.fields['attendees'].choices]
+
+    def save(self):
+        attendees = set(map(int, self.cleaned_data['attendees']))
+        current_attendees = set(self.session.event.attendee_set.values_list('archer_id', flat=True))
+        to_add = attendees - current_attendees
+        to_remove = (set(self.form_attendees) & current_attendees) - attendees
+        for archer in to_add:
+            self.session.event.attendee_set.create(archer_id=archer)
+        for archer in to_remove:
+            self.session.event.attendee_set.get(archer=archer).delete()
+        return self.session
+
+
+class SessionSetAttendees(FormView):
+    template_name = 'admin/courses/session/set_attendees.html'
+    form_class = SessionSetAttendeesForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.session = Session.objects.get(pk=self.kwargs['pk'])
+        if not self.session.event:
+            self.messages.error('This session does not have an event yet')
+            return HttpResponseRedirect(self.get_success_url())
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_initial(self):
+        if self.session.event.attendee_set.exists():
+            attendee_ids = list(self.session.event.attendee_set.values_list('archer_id', flat=True))
+            return {'attendees': attendee_ids}
+        else:
+            coach_ids = list(self.session.course.coaches.values_list('id', flat=True))
+            attendee_ids = list(self.session.course.attendee_set.values_list('archer_id', flat=True))
+            return {'attendees': coach_ids + attendee_ids}
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['session'] = self.session
+        return kwargs
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Set attendees for %s on %s' % (self.session.course, self.session.start_time.date())
+        context['opts'] = Session._meta
+        context['adminform'] = AdminForm(context['form'], fieldsets=[(None, {'fields': ['attendees']})], prepopulated_fields={})
+        return context
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('admin:courses_course_sessions', kwargs={'course_id': self.session.course_id})
+
+
 class SessionCreateEvent(MessageMixin, CreateView):
     template_name = 'admin/courses/session/create_event.html'
     model = Event
@@ -143,6 +210,7 @@ class SessionAdmin(admin.ModelAdmin):
 
         urls = [
             path('<pk>/create-event/', wrap(SessionCreateEvent.as_view()), name='%s_%s_create_event' % info),
+            path('<pk>/set-attendees/', wrap(SessionSetAttendees.as_view()), name='%s_%s_set_attendees' % info),
         ] + urls
         return urls
 
