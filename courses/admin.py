@@ -5,6 +5,7 @@ import functools
 from django import forms
 from django.contrib import admin
 from django.db import transaction
+from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.views.generic import DetailView, FormView, ListView
 from django.urls import path, reverse
@@ -98,6 +99,10 @@ class CourseReport(DetailView):
         context['opts'] = Course._meta
         context['title'] = 'Report for %s' % self.object
         context['attendees'] = self.object.attendee_set.order_by('created').select_related('archer', 'archer__user')
+        context['has_groups'] = self.object.attendee_set.exclude(group='').exists()
+        if context['has_groups']:
+            groups = self.object.attendee_set.exclude(group='').values('group').annotate(attendee_count=Count('id'))
+            context['groups'] = sorted(groups, key=lambda g: g['group'])
         return context
 
 

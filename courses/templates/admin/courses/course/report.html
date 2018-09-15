@@ -24,10 +24,12 @@
                         <div class="text"><span>Name</span></div>
                         <div class="clear"></div>
                     </th>
+                    {% if has_groups %}
                     <th scope="col" class="column-course_start_date">
                         <div class="text"><span>Group</span></div>
                         <div class="clear"></div>
                     </th>
+                    {% endif %}
                     <th scope="col" class="column-course_start_date">
                         <div class="text"><span>Date of birth</span></div>
                         <div class="clear"></div>
@@ -58,7 +60,9 @@
                 {% for attendee in attendees %}
                 <tr class="{% cycle 'row1' 'row2' %}">
                     <th><a href="{% url 'admin:courses_attendee_change' attendee.id %}">{{ attendee.archer.name }}</a></th>
+                    {% if has_groups %}
                     <td>{{ attendee.group }}</td>
+                    {% endif %}
                     <td>{{ attendee.archer.date_of_birth }}</td>
                     <td>{{ attendee.archer.age_group }}</td>
                     <td>{{ attendee.archer.user.email }}</td>
@@ -70,5 +74,34 @@
             </tbody>
         </table>
     </div>
+
+    {% if has_groups %}
+    <h2>Groups ({{ groups|length }})</h2>
+    <div class="results">
+        <table id="result_list">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <div class="text"><span>Group</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col">
+                        <div class="text"><span>Number of archers</span></div>
+                        <div class="clear"></div>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for group in groups %}
+                <tr class="{% cycle 'row1' 'row2' %}">
+                    <td>{{ group.group }}</td>
+                    <td>{{ group.attendee_count }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}
