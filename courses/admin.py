@@ -170,6 +170,7 @@ class CourseReport(DetailView):
         context = super().get_context_data(**kwargs)
         context['opts'] = Course._meta
         context['title'] = 'Report for %s' % self.object
+        context['coaches'] = self.object.coaches.order_by('name')
         context['attendees'] = self.object.attendee_set.order_by('created').select_related('archer', 'archer__user')
         context['has_groups'] = self.object.attendee_set.exclude(group='').exists()
         if context['has_groups']:
@@ -198,6 +199,7 @@ class CourseSessions(ListView):
 @admin.register(Course)
 class CourseAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['name', 'course_start_date', 'report_link']
+    autocomplete_fields = ['coaches']
     readonly_fields = ['created', 'modified']
     inlines = [SessionInline]
     change_actions = ['view_report']

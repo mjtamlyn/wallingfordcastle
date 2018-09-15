@@ -12,6 +12,7 @@ from wallingford_castle.models import Archer
 class Course(models.Model):
     name = models.CharField(max_length=255)
     description = models.TextField(blank=True, default='')
+    coaches = models.ManyToManyField(Archer, blank=True)
 
     price = models.IntegerField(blank=True, null=True)
     members_price = models.IntegerField(blank=True, null=True)

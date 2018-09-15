@@ -27,6 +27,14 @@
             </a>
         </li>
     </ul>
+
+    <h2>Coaches ({{ coaches|length }})</h2>
+    <ul>
+        {% for coach in coaches %}
+        <li>{{ coach }}</li>
+        {% endfor %}
+    </ul>
+
     <h2>Attendees ({{ attendees|length }})</h2>
     <div class="results">
         <table id="result_list">
