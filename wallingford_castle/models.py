@@ -222,7 +222,7 @@ class Archer(models.Model):
     age = models.CharField(max_length=20, choices=AGE_CHOICES)
     date_of_birth = models.DateField(blank=True, null=True)
     agb_number = models.CharField(max_length=10, default='', blank=True)
-    address = models.TextField(default='')
+    address = models.TextField(blank=True, default='')
     contact_number = models.CharField(max_length=20, blank=True, default='')
 
     created = models.DateTimeField(default=timezone.now, editable=False)
