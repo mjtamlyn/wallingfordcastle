@@ -114,15 +114,6 @@ class SessionCreateEvent(MessageMixin, CreateView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Create event for %s on %s' % (self.session.course, self.session.start_time.date())
         context['opts'] = Session._meta
-        context['add'] = True
-        context['change'] = False
-        context['is_popup'] = False
-        context['save_as'] = False
-        context['has_add_permission'] = self.request.user.has_perm('events.add_event')
-        context['has_change_permission'] = self.request.user.has_perm('events.change_event')
-        context['has_view_permission'] = self.request.user.has_perm('events.view_event')
-        context['has_delete_permission'] = self.request.user.has_perm('events.delete_event')
-        context['has_editable_inline_admin_formsets'] = False
         context['adminform'] = AdminForm(context['form'], fieldsets=[(None, {'fields': self.fields})], prepopulated_fields={})
         return context
 
