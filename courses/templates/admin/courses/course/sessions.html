@@ -8,7 +8,7 @@
     &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
     &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
     &rsaquo; <a href="{% url opts|admin_urlname:'change' object.pk %}">{{ object }}</a>
-    &rsaquo; <a href="{% url opts|admin_urlname:'sessions' object.pk %}">Report</a>
+    &rsaquo; <a href="{% url opts|admin_urlname:'report' object.pk %}">Report</a>
     &rsaquo; Sessions
 </div>
 {% endblock %}
