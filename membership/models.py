@@ -8,7 +8,7 @@ from wallingford_castle.models import AGE_CHOICES, MEMBERSHIP_CHOICES
 
 class MemberManager(models.Manager):
     def managed_by(self, user):
-        return self.filter(archer__user=user) | self.filter(archer__managing_users=user)
+        return (self.filter(archer__user=user) | self.filter(archer__managing_users=user)) & self.filter(is_active=True)
 
 
 LEVEL_CHOICES = (
