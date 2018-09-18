@@ -419,6 +419,22 @@ table th {
   text-align: left;
 }
 
+/* line 1, ../../sass/_membership.sass */
+.member-block {
+  background-color: #fafafa;
+  margin: 0 -15px 15px;
+  padding: 15px;
+  border-radius: 5px;
+}
+/* line 7, ../../sass/_membership.sass */
+.member-block > :first-child {
+  margin-top: 0;
+}
+/* line 10, ../../sass/_membership.sass */
+.member-block > :last-child {
+  margin-bottom: 0;
+}
+
 /* line 1, ../../sass/_typography.sass */
 body {
   font-family: "Open Sans", sans-serif;
@@ -478,4 +494,18 @@ p {
 sup {
   vertical-align: top;
   font-size: small;
+}
+
+/* line 39, ../../sass/_typography.sass */
+dt {
+  font-weight: bold;
+}
+/* line 42, ../../sass/_typography.sass */
+dt:not(:first-child) {
+  margin-top: 0.5em;
+}
+
+/* line 45, ../../sass/_typography.sass */
+dd {
+  margin: 0;
 }

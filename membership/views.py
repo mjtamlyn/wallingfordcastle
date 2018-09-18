@@ -11,6 +11,7 @@ import stripe
 
 from courses.models import Attendee
 from membership.models import Member
+from records.models import Achievement
 from wallingford_castle.mixins import FullMemberRequired
 from .forms import MemberForm
 
@@ -21,13 +22,21 @@ class Overview(FullMemberRequired, TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['members'] = Member.objects.managed_by(self.request.user).select_related('archer')
-        context['monthly_fee'] = sum(member.plan_cost for member in context['members'])
+        context['monthly_fee'] = sum(member.plan_cost for member in context['members'] if member.archer.user == self.request.user)
         context['beginners'] = self.request.user.beginner_set.all()
         context['beginners_to_pay'] = sum(beginner.fee for beginner in self.request.user.beginner_set.filter(paid=False))
         context['course_attendees'] = Attendee.objects.filter(archer__user=self.request.user).order_by('course').select_related('archer', 'course')
         context['course_fees_to_pay'] = sum(attendee.fee for attendee in context['course_attendees'] if not attendee.paid)
         context['courses_to_pay_description'] = '; '.join('%s - %s' % (attendee.archer, attendee.course) for attendee in context['course_attendees'] if not attendee.paid)
         context['STRIPE_KEY'] = settings.STRIPE_KEY
+
+        achievements = Achievement.objects.filter(archer__in=[member.archer for member in context['members']]).order_by('-date_awarded')
+        for achievement in achievements:
+            for member in context['members']:
+                if member.archer_id == achievement.archer_id:
+                    if not hasattr(member, 'achievements'):
+                        member.achievements = []
+                    member.achievements.append(achievement)
         return context
 
 

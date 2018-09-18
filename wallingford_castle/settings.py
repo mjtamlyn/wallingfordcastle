@@ -27,6 +27,7 @@ INSTALLED_APPS = (
     'bookings',
     'tournaments',
     'courses',
+    'records',
 
     'custom_user',
     'django_object_actions',
