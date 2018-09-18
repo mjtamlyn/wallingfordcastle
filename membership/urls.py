@@ -1,4 +1,4 @@
-from django.urls import re_path
+from django.urls import path
 
 from . import views
 
@@ -6,7 +6,8 @@ from . import views
 app_name = 'membership'
 
 urlpatterns = [
-    re_path('^$', views.Overview.as_view(), name='overview'),
-    re_path('^update/(?P<member_id>\d+)/$', views.MemberUpdate.as_view(), name='member-update'),
-    re_path('^payment/$', views.PaymentDetails.as_view(), name='payment-details'),
+    path('', views.Overview.as_view(), name='overview'),
+    path('attendance/<member_id>/', views.MemberAttendance.as_view(), name='member-attendance'),
+    path('update/<member_id>/', views.MemberUpdate.as_view(), name='member-update'),
+    path('payment/', views.PaymentDetails.as_view(), name='payment-details'),
 ]

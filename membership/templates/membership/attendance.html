@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p><a href="{% url 'membership:overview' %}">< Back to members list</a></p>
+
+<h2>{{ archer }}</h2>
+<h3>Attendance record</h3>
+
+<ul>
+{% for attendance in attendance_record %}
+    <li>{{ attendance.event.date.date }} - {{ attendance.event }}</li>
+{% endfor %}
+</ul>
+
+<p><small>The club is required by Community Amateur Sports Club rules to record how often club members take part in the sport. Records begin January 2018. If you think there is an error in this data please contact the committee.</small></p>
+{% endblock %}

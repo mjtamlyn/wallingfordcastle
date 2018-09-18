@@ -2,7 +2,7 @@ import json
 
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.views.generic import TemplateView, UpdateView, View
+from django.views.generic import DetailView, TemplateView, UpdateView, View
 from django.urls import reverse, reverse_lazy
 
 from braces.views import MessageMixin
@@ -37,6 +37,21 @@ class Overview(FullMemberRequired, TemplateView):
                     if not hasattr(member, 'achievements'):
                         member.achievements = []
                     member.achievements.append(achievement)
+        return context
+
+
+class MemberAttendance(FullMemberRequired, DetailView):
+    model = Member
+    template_name = 'membership/attendance.html'
+    pk_url_kwarg = 'member_id'
+
+    def get_queryset(self):
+        return Member.objects.managed_by(self.request.user)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['archer'] = self.object.archer
+        context['attendance_record'] = self.object.archer.event_attendance_set.order_by('-event__date').select_related('event')
         return context
 
 
