@@ -305,6 +305,8 @@ class CourseAdmin(DjangoObjectActions, admin.ModelAdmin):
 class AttendeeAdmin(ArcherDataMixin, admin.ModelAdmin):
     list_display = ['archer', 'course', 'group', 'paid', 'member']
     list_filter = ['course', 'paid', 'member']
+    search_fields = ['archer__name']
+    autocomplete_fields = ['archer']
     readonly_fields = ['created', 'modified', 'archer_age', 'archer_agb_number', 'archer_date_of_birth', 'archer_age_group', 'archer_address', 'archer_contact_number', 'archer_email']
     fields = [
         ('archer', 'course'),
