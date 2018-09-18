@@ -19,7 +19,7 @@ from django_object_actions import DjangoObjectActions, takes_instance_or_queryse
 from events.models import Event
 from wallingford_castle.admin import ArcherDataMixin
 from wallingford_castle.models import Archer, User
-from .models import Attendee, Course, CourseSignup, Interest, Session, Summer2018Signup
+from .models import Attendee, Course, Interest, Session, Summer2018Signup
 
 
 class Summer2018Summary(ListView):
@@ -82,11 +82,6 @@ class Summer2018SignupAdmin(admin.ModelAdmin):
             path('summary/', wrap(Summer2018Summary.as_view()), name='%s_%s_summary' % info),
         )
         return urls
-
-
-@admin.register(CourseSignup)
-class CourseSignupAdmin(admin.ModelAdmin):
-    list_display = ['student_name', 'email', 'student_date_of_birth', 'paid']
 
 
 class SessionSetAttendeesForm(forms.Form):

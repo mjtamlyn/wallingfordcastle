@@ -11,8 +11,8 @@ import requests
 import stripe
 
 from wallingford_castle.mixins import FullMemberRequired
-from .models import Attendee, Course, CourseSignup, Summer2018Signup
-from .forms import CourseSignupForm, MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm
+from .models import Attendee, Course, Summer2018Signup
+from .forms import MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm
 
 
 class Summer2018(TemplateView):
