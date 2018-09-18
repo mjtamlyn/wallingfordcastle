@@ -98,6 +98,7 @@ class Interest(models.Model):
 
 class Summer2018Signup(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    archer = models.ForeignKey(Archer, blank=True, null=True, on_delete=models.CASCADE)
     contact_name = models.CharField(max_length=255)
     email = models.EmailField()
     contact_number = models.CharField(max_length=20)
