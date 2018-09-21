@@ -38,6 +38,9 @@ class Session(models.Model):
     duration = models.DurationField(default=datetime.timedelta(minutes=90))
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
 
+    session_plan = models.TextField(blank=True, default='')
+    session_notes = models.TextField(blank=True, default='')
+
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
 
