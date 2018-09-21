@@ -4,6 +4,9 @@ from django.urls import reverse_lazy
 import dj_database_url
 import stripe
 
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -112,6 +115,13 @@ LOGIN_REDIRECT_URL = reverse_lazy('membership:overview')
 PASSWORD_RESET_TIMEOUT_DAYS = 14  # Also used for welcome email
 
 SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')
+
+if os.environ.get('SENTRY_DSN'):
+    sentry_sdk.init(
+        dsn="https://2e73dabd986c446fb77471128a59d91c@sentry.io/1285738",
+        release=SOURCE_VERSION,
+        integrations=[DjangoIntegration()]
+    )
 
 GA_TRACKING = os.environ.get('GA_TRACKING', '')
 
