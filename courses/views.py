@@ -1,6 +1,7 @@
 import json
 
 from django.conf import settings
+from django.db.models import Prefetch
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, View
 from django.views.generic.detail import SingleObjectMixin
@@ -11,7 +12,7 @@ import requests
 import stripe
 
 from wallingford_castle.mixins import FullMemberRequired
-from .models import Attendee, Course, Summer2018Signup
+from .models import Attendee, Course, Session, Summer2018Signup
 from .forms import MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm
 
 
@@ -104,7 +105,9 @@ class MembersCourseList(FullMemberRequired, ListView):
     template_name = 'courses/members_course_list.html'
 
     def get_queryset(self):
-        bookable_courses = Course.objects.filter(open_for_bookings=True, open_to_members=True)
+        bookable_courses = Course.objects.filter(open_for_bookings=True, open_to_members=True).prefetch_related(
+            Prefetch('session_set', queryset=Session.objects.order_by('start_time'), to_attr='sessions')
+        )
         for course in bookable_courses:
             user = self.request.user
             course.registered_members = course.attendee_set.filter(archer__user=user) | course.attendee_set.filter(archer__managing_users=user)
