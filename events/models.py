@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField, HStoreField
 
-from membership.models import Member
 from wallingford_castle.models import Archer
 
 
@@ -51,15 +50,15 @@ class BookingQuestion(models.Model):
 
 
 class Booking(models.Model):
-    member = models.ForeignKey(Member, on_delete=models.CASCADE)
+    archer = models.ForeignKey(Archer, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.CASCADE)
     response_answers = HStoreField()
 
     def __str__(self):
-        return 'Member %s booking in for event %s' % (self.member_id, self.event_id)
+        return 'Archer %s booking in for event %s' % (self.archer_id, self.event_id)
 
     class Meta:
-        unique_together = ['member', 'event']
+        unique_together = ['archer', 'event']
 
     @property
     def responses(self):

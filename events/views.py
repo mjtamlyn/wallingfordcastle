@@ -1,13 +1,13 @@
 import json
 
 from django.conf import settings
+from django.db.models import Q
 from django.views.generic import FormView, ListView
 from django.views.generic.detail import SingleObjectMixin
 from django.urls import reverse
 from django.utils import timezone
 
 import requests
-from membership.models import Member
 from wallingford_castle.mixins import FullMemberRequired
 
 from .forms import BookEventForm
@@ -21,8 +21,9 @@ class EventList(FullMemberRequired, ListView):
 
     def get_queryset(self):
         bookable_events = Event.objects.filter(bookable=True, date__gt=timezone.now()).order_by('date')
+        user = self.request.user
         for event in bookable_events:
-            event.registered_members = event.booking_set.filter(member__in=Member.objects.managed_by(self.request.user))
+            event.registered_members = event.booking_set.filter(Q(archer__user=user) | Q(archer__managing_users=user))
         return bookable_events
 
 

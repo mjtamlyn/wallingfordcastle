@@ -22,5 +22,6 @@ class EventAdmin(admin.ModelAdmin):
 
 @admin.register(Booking)
 class BookingAdmin(admin.ModelAdmin):
-    list_display = ['event', 'member']
+    list_display = ['event', 'archer']
     list_filter = ['event']
+    autocomplete_fields = ['archer']

@@ -18,7 +18,7 @@ class BookEventForm(forms.Form):
 
     def clean_member(self):
         member = self.cleaned_data['member']
-        if member.booking_set.filter(event=self.event).exists():
+        if member.archer.booking_set.filter(event=self.event).exists():
             raise forms.ValidationError('Member is already registered')
         return member
 
@@ -32,6 +32,6 @@ class BookEventForm(forms.Form):
             member = self.members[0]
         return Booking.objects.create(
             event=self.event,
-            member=member,
+            archer=member.archer,
             response_answers=answers,
         )
