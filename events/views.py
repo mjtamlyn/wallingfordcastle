@@ -55,7 +55,7 @@ class BookEvent(FullMemberRequired, SingleObjectMixin, FormView):
             data = json.dumps({
                 'icon_emoji': ':white_check_mark:',
                 'text': '%s has registered for %s!' % (
-                    booking.member,
+                    booking.archer,
                     booking.event,
                 )
             })
