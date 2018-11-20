@@ -1,4 +1,10 @@
-from django.contrib import admin
+import functools
+
+from django import forms
+from django.contrib import admin, messages
+from django.http import HttpResponseRedirect
+from django.views.generic import FormView
+from django.urls import path, reverse
 
 from custom_user.admin import EmailUserAdmin
 from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
@@ -6,11 +12,77 @@ from django_object_actions import DjangoObjectActions, takes_instance_or_queryse
 from .models import Archer, MembershipInterest, User
 
 
+class AddInvoiceItemForm(forms.Form):
+    amount = forms.DecimalField(max_digits=5, decimal_places=2)
+    description = forms.CharField()
+
+
+class AddInvoiceItem(FormView):
+    template_name = 'admin/wallingford_castle/archer/invoice_item.html'
+    form_class = AddInvoiceItemForm
+
+    def get_archers(self):
+        selected = self.request.GET['ids'].split(',')
+        return Archer.objects.filter(id__in=selected)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['opts'] = Archer._meta
+        context['title'] = 'Add invoice item'
+        context['archers'] = self.get_archers()
+        return context
+
+    def form_valid(self, form):
+        archers = self.get_archers()
+        amount = form.cleaned_data['amount']
+        description = form.cleaned_data['description']
+        for archer in archers:
+            archer.user.add_invoice_item(amount, description)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('admin:wallingford_castle_archer_changelist')
+
+
 @admin.register(Archer)
-class ArcherAdmin(admin.ModelAdmin):
+class ArcherAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['name', 'agb_number', 'date_of_birth', 'age_group']
     search_fields = ['name']
     autocomplete_fields = ['user', 'managing_users']
+    actions = change_actions = ['add_invoice_item']
+
+    def get_urls(self):
+        urls = super().get_urls()
+
+        def wrap(view):
+            def wrapper(*args, **kwargs):
+                return self.admin_site.admin_view(view)(*args, **kwargs)
+            wrapper.model_admin = self
+            return functools.update_wrapper(wrapper, view)
+
+        info = self.model._meta.app_label, self.model._meta.model_name
+
+        urls.insert(
+            0,
+            path('invoice/', wrap(AddInvoiceItem.as_view()), name='%s_%s_invoice_item' % info),
+        )
+        return urls
+
+    @takes_instance_or_queryset
+    def add_invoice_item(self, request, queryset):
+        errors = []
+        for archer in queryset:
+            if not archer.user.customer_id or not archer.user.subscription_id:
+                errors.append(archer.name)
+        if errors:
+            for archer in errors:
+                messages.error(request, '%s does not have an active subscription' % archer)
+            return
+
+        url = reverse('admin:%s_%s_invoice_item' % (self.model._meta.app_label, self.model._meta.model_name))
+        return HttpResponseRedirect(url + '?ids=%s' % ','.join(str(item.pk) for item in queryset))
+    add_invoice_item.short_description = 'Add invoice item'
+    add_invoice_item.label = 'Add invoice item'
 
 
 class ArcherDataMixin(object):
