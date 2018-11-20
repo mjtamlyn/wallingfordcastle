@@ -37,7 +37,7 @@ class AddInvoiceItem(FormView):
         amount = form.cleaned_data['amount']
         description = form.cleaned_data['description']
         for archer in archers:
-            archer.user.add_invoice_item(amount, description)
+            archer.user.add_invoice_item(amount * 100, description)
         return super().form_valid(form)
 
     def get_success_url(self):
