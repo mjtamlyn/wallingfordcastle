@@ -13,7 +13,7 @@ import stripe
 
 from wallingford_castle.mixins import FullMemberRequired
 from .models import Attendee, Course, Session, Summer2018Signup
-from .forms import MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm
+from .forms import MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm, NonMembersBookCourseForm
 
 
 class Summer2018(TemplateView):
@@ -153,6 +153,61 @@ class MembersCourseBooking(FullMemberRequired, SingleObjectMixin, FormView):
 
     def get_success_url(self):
         return reverse('courses:members-course-list')
+
+
+class NonMembersCourseList(FullMemberRequired, ListView):
+    model = Course
+    template_name = 'courses/non_members_course_list.html'
+
+    def get_queryset(self):
+        bookable_courses = Course.objects.filter(open_for_bookings=True, open_to_non_members=True).prefetch_related(
+            Prefetch('session_set', queryset=Session.objects.order_by('start_time'), to_attr='sessions')
+        )
+        for course in bookable_courses:
+            user = self.request.user
+            course.registered_archers = course.attendee_set.filter(archer__user=user) | course.attendee_set.filter(archer__managing_users=user)
+        return bookable_courses
+
+
+class NonMembersCourseBooking(FullMemberRequired, SingleObjectMixin, FormView):
+    model = Course
+    template_name = 'courses/non_members_book_course.html'
+    context_object_name = 'course'
+    form_class = NonMembersBookCourseForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return Course.objects.filter(open_for_bookings=True, open_to_non_members=True)
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs.update({
+            'course': self.object,
+            'user': self.request.user,
+        })
+        return kwargs
+
+    def form_valid(self, form):
+        attendee = form.save()
+        if settings.SLACK_EVENTS_HREF:
+            data = json.dumps({
+                'icon_emoji': ':white_check_mark:',
+                'text': '%s has registered for %s!' % (
+                    attendee.archer,
+                    attendee.course,
+                )
+            })
+            try:
+                requests.post(settings.SLACK_EVENTS_HREF, data=data)
+            except Exception:
+                pass
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('courses:non-members-course-list')
 
 
 class NonMembersPayment(MessageMixin, View):

@@ -3,6 +3,7 @@ import datetime
 from django import forms
 
 from membership.models import Member
+from wallingford_castle.models import Archer
 from .models import Attendee, Interest, Summer2018Signup
 
 
@@ -137,4 +138,27 @@ class MembersBookCourseForm(forms.Form):
             course=self.course,
             archer=member.archer,
             paid=True,
+        )
+
+
+class NonMembersBookCourseForm(forms.Form):
+    def __init__(self, user, course, **kwargs):
+        self.user = user
+        self.course = course
+        super().__init__(**kwargs)
+        self.archers = Archer.objects.filter(user=user)
+        self.fields['archer'] = forms.ModelChoiceField(queryset=self.archers)
+
+    def clean_archer(self):
+        archer = self.cleaned_data['archer']
+        if archer.attendee_set.filter(course=self.course).exists():
+            raise forms.ValidationError('%s is already registered' % archer)
+        return archer
+
+    def save(self):
+        return Attendee.objects.create(
+            course=self.course,
+            archer=self.cleaned_data['archer'],
+            paid=False,
+            member=False,
         )

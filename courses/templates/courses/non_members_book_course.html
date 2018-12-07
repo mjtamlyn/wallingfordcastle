@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<p><a href="{% url 'courses:non-members-course-list' %}">< Back to course list</a></p>
+<h2>{{ course }}</h2>
+{{ course.description|linebreaks }}
+<h4>Dates</h4>
+<ul>
+    {% for session in course.session_set.all %}
+    <li>{{ session.start_time }}</li>
+    {% endfor %}
+</ul>
+<h4>Book</h4>
+<p>Course cost: £{{ course.members_price }}</p>
+<form class="form" method="POST" action=".">
+    {% csrf_token %}
+    {% form form using 'floppyforms/layouts/p.html' %}
+    <input type="submit" class="btn">
+</form>
+{% endblock %}
+
+
