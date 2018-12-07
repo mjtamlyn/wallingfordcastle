@@ -18,7 +18,7 @@
             {% endfor %}
         </ul>
         <h4>Book</h4>
-        <p>Course cost: £{{ course.members_price }}<br><small>The cost of the course will be added to the next membership invoice</small></p>
+        <p>Course cost: £{{ course.members_price }}</p>
         <p><a href="{% url 'courses:non-members-course-booking' pk=course.id %}" class="btn">Book</a></p>
         {% if course.registered_archers %}
             <p>Booked:</p>
