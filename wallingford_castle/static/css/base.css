@@ -20,6 +20,7 @@
 
 /* line 1, ../../sass/_footer.sass */
 .footer {
+  color: #303236;
   display: flex;
   justify-content: space-between;
 }
@@ -29,27 +30,27 @@
     flex-wrap: wrap;
   }
 }
-/* line 8, ../../sass/_footer.sass */
+/* line 9, ../../sass/_footer.sass */
 .footer__on-target {
   background-color: #303236;
   padding: 7px 5px;
   max-width: 250px;
   border-radius: 5px;
 }
-/* line 14, ../../sass/_footer.sass */
+/* line 15, ../../sass/_footer.sass */
 .footer__col--links {
   font-size: 14px;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
 }
-/* line 20, ../../sass/_footer.sass */
+/* line 21, ../../sass/_footer.sass */
 .footer__specialisms {
   display: flex;
   flex-wrap: wrap;
   margin: 0 -5px;
 }
-/* line 25, ../../sass/_footer.sass */
+/* line 26, ../../sass/_footer.sass */
 .footer__specialism {
   width: 100px;
   height: 112px;
@@ -127,23 +128,23 @@ body {
 /* line 11, ../../sass/_layout.sass */
 header,
 footer {
-  color: #CA4984;
   margin: 0 auto;
 }
-/* line 16, ../../sass/_layout.sass */
+/* line 15, ../../sass/_layout.sass */
 header a,
 footer a {
   color: #CA4984;
 }
-/* line 18, ../../sass/_layout.sass */
+/* line 17, ../../sass/_layout.sass */
 header a:hover,
 footer a:hover {
   color: #CA4984;
 }
 
-/* line 21, ../../sass/_layout.sass */
+/* line 20, ../../sass/_layout.sass */
 header {
   background-color: #303236;
+  color: #CA4984;
   padding: 15px 0;
 }
 /* line 25, ../../sass/_layout.sass */
