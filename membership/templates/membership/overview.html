@@ -109,7 +109,9 @@
 
 {% if members %}
     <h2>Events</h2>
-    <a href="{% url 'events:event-list' %}">Book a club event ></a>
+    <p>
+        <a href="{% url 'events:event-list' %}">Book a club event ></a>
+    </p>
 
     <h2>Members</h2>
     <div class="flex-sections">
@@ -143,6 +145,10 @@
         </section>
         {% endfor %}
     </div>
+
+    <p>
+        <a href="https://goo.gl/forms/ONbSdBXwgpzdTSbm1">Order club clothing</a>
+    </p>
 
     {% if monthly_fee %}
     {% if user.customer_id %}
