@@ -63,3 +63,8 @@ class Booking(models.Model):
     @property
     def responses(self):
         return '\n'.join(['%s - %s' % (question, answer) for question, answer in self.response_answers.items()])
+
+    def answers(self):
+        questions = self.event.bookingquestion_set.order_by('order')
+        for q in questions:
+            yield self.response_answers.get(q.text, '')

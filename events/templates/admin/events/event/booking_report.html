@@ -1,0 +1,85 @@
+{% extends 'admin/base_site.html' %}
+
+{% load i18n admin_urls %}
+
+{% block title %}{{ object }} booking report {{ block.super }}{% endblock %}
+
+{% block breadcrumbs %}
+<div class="breadcrumbs">
+    <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
+    &rsaquo; <a href="{% url 'admin:app_list' app_label=opts.app_label %}">{{ opts.app_config.verbose_name }}</a>
+    &rsaquo; <a href="{% url opts|admin_urlname:'changelist' %}">{{ opts.verbose_name_plural|capfirst }}</a>
+    &rsaquo; <a href="{% url opts|admin_urlname:'change' object.pk %}">{{ object }}</a>
+    &rsaquo; Booking Report
+</div>
+{% endblock %}
+
+
+{% block content %}
+<div id="content-main">
+    <ul class="object-tools">
+        <li>
+            <a href="{% url opts|admin_urlname:'change' object.pk %}">
+                Edit {{ opts.verbose_name }}
+            </a>
+        </li>
+    </ul>
+
+    {% if object.bookable %}
+    <h2>{{ object }} Bookings ({{ bookings|length }})</h2>
+    <div class="results">
+        <table id="result_list">
+            <thead>
+                <tr>
+                    <th scope="col">
+                        <div class="text"><span>Name</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col">
+                        <div class="text"><span>Date of birth</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col">
+                        <div class="text"><span>Age group</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col">
+                        <div class="text"><span>AGB number</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col">
+                        <div class="text"><span>Contact email</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    {% for question in questions %}
+                    <th scope="col">
+                        <div class="text"><span>{{ question }}</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for booking in bookings %}
+                <tr class="{% cycle 'row1' 'row2' %}">
+                    <th><a href="{% url 'admin:events_booking_change' booking.id %}">{{ booking.archer.name }}</a></th>
+                    <td>{{ booking.archer.date_of_birth }}</td>
+                    <td>{{ booking.archer.age_group }}</td>
+                    <td>{{ booking.archer.agb_number }}</td>
+                    <td>{{ booking.archer.user.email }}</td>
+                    {% for answer in booking.answers %}
+                        <td>{{ answer }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <h2>{{ object }}</h2>
+    <p>This event is not bookable</p>
+    {% endif %}
+
+</div>
+{% endblock %}
+
