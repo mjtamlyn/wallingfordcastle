@@ -13,6 +13,7 @@ from .models import Attendee, Booking, BookingQuestion, Event
 class AttendeeInline(admin.TabularInline):
     model = Attendee
     autocomplete_fields = ['archer']
+    min_num = 20
 
 
 class BookingQuestionInline(admin.TabularInline):
