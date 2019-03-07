@@ -51,6 +51,14 @@ class ArcherAdmin(DjangoObjectActions, admin.ModelAdmin):
     autocomplete_fields = ['user', 'managing_users']
     actions = change_actions = ['add_invoice_item']
 
+    def get_search_results(self, request, queryset, search_term):
+        terms = search_term.split('|')
+        result = queryset.none()
+        for term in terms:
+            next_result, use_distinct = super().get_search_results(request, queryset, term)
+            result = result | next_result
+        return result, use_distinct
+
     def get_urls(self):
         urls = super().get_urls()
 
