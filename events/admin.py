@@ -13,7 +13,11 @@ from .models import Attendee, Booking, BookingQuestion, Event
 class AttendeeInline(admin.TabularInline):
     model = Attendee
     autocomplete_fields = ['archer']
-    min_num = 20
+
+    def get_extra(self, request, obj=None, **kwargs):
+        if obj is None:
+            return 20
+        return 3
 
 
 class BookingQuestionInline(admin.TabularInline):
