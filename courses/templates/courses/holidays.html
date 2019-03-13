@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block hero %}
+<div class="hero hero--targets">
+    <h1>Holiday archery</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <h2>About</h2>
+        <p>
+        Over the easter and summer holidays we will be offering a range of
+        archery classes for children aged 6-11. Whether you've never held a bow
+        before, shoot regularly at minis, school or a leisure centre and want
+        to keep practicing over the holidays, or are wanting an opportunity to
+        progress your skills, we have the classes for you.
+        </p>
+        <p>
+        All sessions will be run in small groups of up to 12 children with an
+        experienced coach. Equipment is provided, but if you have your own
+        equipment you can bring it along.
+        </p>
+        <h3>Venue, weather and attire</h3>
+        <p>
+        All sessions will take place at our outdoor venue -
+        <a href="{% url 'venues' %}">Wallingford Sports Park</a>. We do of
+        course hope for wonderful sunny days, but archery is an all weather
+        sport and sessions will continue in light rain. It is important that
+        children bring appropriate attire for the conditions - sun cream, coats
+        etc. Most imporantly, long hair must be tied back and closed toed shoes
+        must be worn. We reserve the right to stop children participating if
+        their clothing does not allow them to take part safely.
+        </p>
+        <p><a class="btn" href="{% url 'courses:holidays-book' %}">Book now</a></p>
+    </section>
+    <section>
+        <h2>Groups</h2>
+        <p>
+        Sessions are aimed at archers aged 6-11. Older children should look at
+        attending a <a href="{% url 'beginners:index' %}">beginners
+        course</a>.
+        </p>
+        <h3>Beginner sessions</h3>
+        <p>
+        These classes are ideal for children with no or very little previous
+        experience of archery. We will cover how to shoot the bow, how to be
+        safe on the archery range, and how to score your arrows. Each session
+        is self contained and new archers are welcome at any session, but we
+        will also be progressing repeat visitors towards their first World
+        Archery beginners awards.
+        </p>
+        <h3>Intermediate sessions</h3>
+        <p>
+        These classes are ideal for children with some regular recent
+        experience of archery. This may be at the club, at their school or at a
+        local leisure centre. These coach led sessions will cover a range of
+        technique, skills and knowledge about the sport. There will be an
+        opportunity to attain World Archery beginners awards.
+        </p>
+        <p><a class="btn" href="{% url 'courses:holidays-book' %}">Book now</a></p>
+    </section>
+    <section>
+        <h2>Booking</h2>
+        <p>
+        We understand that many children go on holiday during school breaks,
+        and as such every session is self contained. You can book onto as many
+        or as few sessions as you like!
+        </p>
+        <h3>Dates and times</h3>
+        <p>
+        We plan to follow the same session times each day, and run sessions
+        every Tuesday and Thursday throughout the easter and summer holidays.
+        </p>
+        <p>Session times:</p>
+        <ul>
+            <li>3-4pm: Beginners session</li>
+            <li>4-5pm: Intermediates session</li>
+        </ul>
+        <p>Additional sessions will be put on earlier in the day if these
+        sessions fill.<p>
+        <h3>Cost</h3>
+        <p>
+        Sessions are priced at £6 for non-members and £4 for members. Please
+        note that there is a maximum allowance of six sessions as a non-member
+        in a year before you have to join the club. This is for insurance
+        reasons. <a href="{% url 'join' %}">Find out more about membership</a>.
+        </p>
+        <p><a class="btn" href="{% url 'courses:holidays-book' %}">Book now</a></p>
+    </section>
+</div>
+{% endblock %}
