@@ -171,7 +171,7 @@ class User(AbstractEmailUser):
         from membership.models import Member
 
         plans = collections.defaultdict(int)
-        members = Member.objects.filter(archer__user=self)  # Just ones billed by this user
+        members = Member.objects.filter(archer__user=self, active=True)  # Just ones billed by this user
         for member in members:
             plans[member.plan] += 1
 
