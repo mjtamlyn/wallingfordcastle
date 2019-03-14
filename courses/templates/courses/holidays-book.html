@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block hero %}
+<div class="hero hero--targets">
+    <h1>Holiday archery</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+{% if user.is_anonymous %}
+<p><a href="{% url 'courses:holidays' %}">< Back to information</a></p>
+<div class="flex-sections">
+    <section>
+        <h2>Log into existing account</h2>
+        <form class="form page-form" method="POST" action="{% url 'courses:holidays-book' %}">
+            <input type="hidden" name="form" value="login" />
+            {% csrf_token %}
+            {% form login_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn">
+        </form>
+    </section>
+    <section>
+        <h2>Create new account</h2>
+        <form class="form page-form" method="POST" action="{% url 'courses:holidays-book' %}">
+            <input type="hidden" name="form" value="register" />
+            {% csrf_token %}
+            {% form register_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn">
+        </form>
+    </section>
+</div>
+{% endif %}
+{% endblock %}

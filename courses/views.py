@@ -1,6 +1,8 @@
 import json
 
 from django.conf import settings
+from django.contrib.auth import login
+from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Prefetch
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, View
@@ -11,6 +13,7 @@ from braces.views import MessageMixin
 import requests
 import stripe
 
+from wallingford_castle.forms import DirectRegisterForm
 from wallingford_castle.mixins import FullMemberRequired
 from .models import Attendee, Course, Session, Summer2018Signup
 from .forms import MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm, NonMembersBookCourseForm
@@ -21,7 +24,34 @@ class Holidays(TemplateView):
 
 
 class HolidaysBook(TemplateView):
-    template_name = 'courses/holidays.html'
+    template_name = 'courses/holidays-book.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_anonymous:
+            context.setdefault('login_form', AuthenticationForm())
+            context.setdefault('register_form', DirectRegisterForm())
+        return context
+
+    def post(self, request, *args, **kwargs):
+        context = {}
+        form = request.POST.get('form')
+        if form == 'login':
+            form = AuthenticationForm(data=request.POST)
+            if form.is_valid():
+                login(request, form.user_cache)
+                return self.get(request, *args, **kwargs)
+            else:
+                context['login_form'] = form
+        elif form == 'register':
+            form = DirectRegisterForm(data=request.POST)
+            if form.is_valid():
+                user = form.save()
+                login(request, user)
+                return self.get(request, *args, **kwargs)
+            else:
+                context['register_form'] = form
+        return self.render_to_response(context=self.get_context_data(**context))
 
 
 class SchoolSignup(MessageMixin, FormView):

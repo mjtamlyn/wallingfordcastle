@@ -1,6 +1,8 @@
 from django import forms
 
 from wallingford_castle.models import User
+from wallingford_castle.forms import DirectRegisterForm
+
 from .models import Entry
 
 
@@ -15,14 +17,10 @@ class EntryForm(forms.ModelForm):
         fields = ['name', 'agb_number', 'club', 'date_of_birth', 'gender', 'bowstyle', 'notes', 'drugs_consent', 'gdpr_consent', 'future_event_consent']
 
 
-class RegisterForm(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput)
+class RegisterForm(DirectRegisterForm):
 
     def save(self):
-        email = self.cleaned_data['email']
-        password = self.cleaned_data['password']
-        user = User.objects.create_user(email=email, password=password)
+        user = super().save()
         user.tournament_only = True
         user.save()
         return user
