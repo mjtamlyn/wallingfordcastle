@@ -5,6 +5,8 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 
+from dateutil.relativedelta import relativedelta
+
 from events.models import Event
 from wallingford_castle.models import Archer
 
@@ -97,6 +99,20 @@ class Interest(models.Model):
 
     def __str__(self):
         return self.name
+
+    def convert_to_archer(self, user):
+        today = datetime.date.today()
+        age = relativedelta(today, self.date_of_birth).years
+        archer, _ = Archer.objects.get_or_create(
+            name=self.name,
+            user=user,
+            defaults={
+                'date_of_birth': self.date_of_birth,
+                'age': 'senior' if age >= 18 else 'junior',
+                'contact_number': self.contact_number,
+            }
+        )
+        return archer
 
 
 class Summer2018Signup(models.Model):

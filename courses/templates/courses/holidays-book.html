@@ -9,8 +9,8 @@
 {% endblock %}
 
 {% block content %}
-{% if user.is_anonymous %}
 <p><a href="{% url 'courses:holidays' %}">< Back to information</a></p>
+{% if user.is_anonymous %}
 <div class="flex-sections">
     <section>
         <h2>Log into existing account</h2>
@@ -27,6 +27,40 @@
             <input type="hidden" name="form" value="register" />
             {% csrf_token %}
             {% form register_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn">
+        </form>
+    </section>
+</div>
+{% else %}
+<div class="flex-sections">
+    {% if archers %}
+    <section>
+        <h2>Book an archer</h2>
+        <ul>
+            {% for archer in archers %}
+            <li>{{ archer }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    {% if members %}
+    <section>
+        <h2>Book a club member</h2>
+        <ul>
+            {% for member in members %}
+            <li>{{ member }}</li>
+            {% endfor %}
+        </ul>
+    </section>
+    {% endif %}
+
+    <section>
+        <h2>Add a new archer</h2>
+        <form class="form page-form" method="POST" action="{% url 'courses:holidays-book' %}">
+            <input type="hidden" name="form" value="new-archer" />
+            {% csrf_token %}
+            {% form new_archer_form using 'floppyforms/layouts/p.html' %}
             <input type="submit" class="btn">
         </form>
     </section>

@@ -3,7 +3,7 @@ import json
 from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
-from django.db.models import Prefetch
+from django.db.models import Prefetch, Q
 from django.http import HttpResponseNotAllowed, HttpResponseRedirect
 from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, View
 from django.views.generic.detail import SingleObjectMixin
@@ -15,6 +15,8 @@ import stripe
 
 from wallingford_castle.forms import DirectRegisterForm
 from wallingford_castle.mixins import FullMemberRequired
+from wallingford_castle.models import Archer
+from membership.models import Member
 from .models import Attendee, Course, Session, Summer2018Signup
 from .forms import MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm, NonMembersBookCourseForm
 
@@ -31,6 +33,15 @@ class HolidaysBook(TemplateView):
         if self.request.user.is_anonymous:
             context.setdefault('login_form', AuthenticationForm())
             context.setdefault('register_form', DirectRegisterForm())
+        else:
+            context['members'] = Member.objects.managed_by(self.request.user).filter(archer__age='junior').select_related('archer')
+            member_archers = [member.archer_id for member in context['members']]
+            other_archers = Archer.objects.filter(
+                Q(user=self.request.user) | Q(managing_users=self.request.user),
+                age='junior',
+            ).exclude(id__in=member_archers)
+            context['archers'] = other_archers
+            context.setdefault('new_archer_form', CourseInterestForm(initial={'contact_email': self.request.user.email}, course_type='holidays'))
         return context
 
     def post(self, request, *args, **kwargs):
@@ -51,6 +62,14 @@ class HolidaysBook(TemplateView):
                 return self.get(request, *args, **kwargs)
             else:
                 context['register_form'] = form
+        elif form == 'new-archer':
+            form = CourseInterestForm(data=request.POST, course_type='holidays')
+            if form.is_valid():
+                interest = form.save()
+                interest.convert_to_archer(self.request.user)
+                return self.get(request, *args, **kwargs)
+            else:
+                context['new_archer_form'] = form
         return self.render_to_response(context=self.get_context_data(**context))
 
 

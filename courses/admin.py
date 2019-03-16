@@ -347,17 +347,7 @@ class AllocateCourseForm(forms.Form):
                 new_users.add(user)
             else:
                 existing_users.add(user)
-            today = datetime.date.today()
-            age = relativedelta(today, interest.date_of_birth).years
-            archer, _ = Archer.objects.get_or_create(
-                name=interest.name,
-                user=user,
-                defaults={
-                    'date_of_birth': interest.date_of_birth,
-                    'age': 'senior' if age >= 18 else 'junior',
-                    'contact_number': interest.contact_number,
-                }
-            )
+            archer = interest.convert_to_archer(user)
             if archer.member_set.exists():
                 self.add_error(None, forms.ValidationError('%(name)s is already a member', params={'name': archer}))
                 raise ValueError('Tried to allocate a member to a non-member course')
