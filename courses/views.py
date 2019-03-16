@@ -45,6 +45,16 @@ class HolidaysBook(MessageMixin, TemplateView):
             context['members'] = Member.objects.managed_by(self.request.user).filter(archer__age='junior').select_related('archer')
             member_archers = [member.archer_id for member in context['members']]
 
+            for member in context['members']:
+                archer = member.archer
+                try:
+                    member.archer.attendee = archer.attendee_set.get(course=self.course)
+                    member.archer.sessions_booked = archer.attendee.session_set.order_by('session__start_time')
+                    member.archer.booking_form = SessionBookingForm(course=self.course, booked=archer.sessions_booked, prefix=archer.pk)
+                except Attendee.DoesNotExist:
+                    member.archer.attendee = None
+                    member.archer.booking_form = SessionBookingForm(course=self.course, prefix=archer.pk)
+
             other_archers = Archer.objects.filter(
                 Q(user=self.request.user) | Q(managing_users=self.request.user),
                 age='junior',
@@ -58,8 +68,8 @@ class HolidaysBook(MessageMixin, TemplateView):
                     archer.booking_form = SessionBookingForm(course=self.course, booked=archer.sessions_booked, prefix=archer.pk)
                 except Attendee.DoesNotExist:
                     archer.attendee = None
+                    archer.booking_form = SessionBookingForm(course=self.course, prefix=archer.pk)
 
-            context['blank_booking_form'] = SessionBookingForm(course=self.course)
             context.setdefault('new_archer_form', CourseInterestForm(initial={'contact_email': self.request.user.email}, course_type='holidays'))
         return context
 
@@ -90,9 +100,10 @@ class HolidaysBook(MessageMixin, TemplateView):
             else:
                 context['new_archer_form'] = form
         elif form == 'booking':
-            form = SessionBookingForm(data=request.POST, course=self.course)
+            archer_id = request.POST['archer']
+            form = SessionBookingForm(data=request.POST, course=self.course, prefix=archer_id)
             if form.is_valid():
-                form.save(archer_id=request.POST['archer'])
+                form.save(archer_id=archer_id)
                 return self.get(request, *args, **kwargs)
         return self.render_to_response(context=self.get_context_data(**context))
 

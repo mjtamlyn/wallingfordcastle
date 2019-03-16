@@ -33,6 +33,43 @@
 </div>
 {% else %}
 <div class="flex-sections">
+    {% if members %}
+    <section>
+        <h2>Book a club member</h2>
+        {% for member in members %}
+        {% with member.archer as archer %}
+        <h3>{{ archer }}</h3>
+        {% if archer.attendee %}
+        <p>Currently booked for:</p>
+        <ul>
+            {% for booking in archer.sessions_booked %}
+            <li>{{ booking.session.label }}</li>
+            {% endfor %}
+        </ul>
+        <form class="form page-form page-form--checkbox" method="POST" action="{% url 'courses:holidays-book' %}">
+            <h3>Amend booking</h3>
+            <input type="hidden" name="form" value="booking" />
+            <input type="hidden" name="archer" value="{{ archer.id }}" />
+            {% csrf_token %}
+            {% form archer.booking_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn">
+        </form>
+        {% else %}
+        <p>Not currently booked for any sessions</p>
+        <form class="form page-form page-form--checkbox" method="POST" action="{% url 'courses:holidays-book' %}">
+            <h3>Make a booking</h3>
+            <input type="hidden" name="form" value="booking" />
+            <input type="hidden" name="archer" value="{{ archer.id }}" />
+            {% csrf_token %}
+            {% form archer.booking_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn">
+        </form>
+        {% endif %}
+        {% endwith %}
+        {% endfor %}
+    </section>
+    {% endif %}
+
     {% if archers %}
     <section>
         <h2>Book an archer</h2>
@@ -56,25 +93,15 @@
         {% else %}
         <p>Not currently booked for any sessions</p>
         <form class="form page-form page-form--checkbox" method="POST" action="{% url 'courses:holidays-book' %}">
+            <h3>Make a booking</h3>
             <input type="hidden" name="form" value="booking" />
             <input type="hidden" name="archer" value="{{ archer.id }}" />
             {% csrf_token %}
-            {% form blank_booking_form using 'floppyforms/layouts/p.html' %}
+            {% form archer.booking_form using 'floppyforms/layouts/p.html' %}
             <input type="submit" class="btn">
         </form>
         {% endif %}
         {% endfor %}
-    </section>
-    {% endif %}
-
-    {% if members %}
-    <section>
-        <h2>Book a club member</h2>
-        <ul>
-            {% for member in members %}
-            <li>{{ member }}</li>
-            {% endfor %}
-        </ul>
     </section>
     {% endif %}
 
