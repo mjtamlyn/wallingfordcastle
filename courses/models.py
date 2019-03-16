@@ -40,6 +40,7 @@ class Session(models.Model):
     duration = models.DurationField(default=datetime.timedelta(minutes=90))
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
 
+    public_label = models.CharField(max_length=100, blank=True, default='')
     session_plan = models.TextField(blank=True, default='')
     session_notes = models.TextField(blank=True, default='')
 
@@ -48,6 +49,13 @@ class Session(models.Model):
 
     def end_time(self):
         return self.start_time + self.duration
+
+    @property
+    def label(self):
+        label = self.start_time.strftime('%d %b %Y, %-I:%M%p')
+        if self.public_label:
+            label += ' (%s)' % self.public_label
+        return label
 
     def __str__(self):
         return 'Session at %s' % self.start_time
@@ -74,10 +82,28 @@ class Attendee(models.Model):
 
     @property
     def fee(self):
+        # Note: By session courses are marked as paid on the AttendeeSession.
         if self.member:
             return self.course.members_price
         return self.course.price
-        # TODO: handle by session fees at some point
+
+
+class AttendeeSession(models.Model):
+    attendee = models.ForeignKey(Attendee, on_delete=models.CASCADE, related_name='session_set')
+    session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    paid = models.BooleanField(default=False)
+
+    created = models.DateTimeField(default=timezone.now, editable=False)
+    modified = models.DateTimeField(auto_now=True)
+
+    @property
+    def fee(self):
+        if self.member:
+            return self.attendee.course.members_price_per_session
+        return self.attendee.course.price_per_session
+
+    def __str__(self):
+        return 'Attendee %s attending session %s' % (self.attendee, self.session)
 
 
 class Interest(models.Model):
