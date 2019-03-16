@@ -18,15 +18,23 @@ from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer
 from membership.models import Member
 from .models import Attendee, Course, Session, Summer2018Signup
-from .forms import MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm, NonMembersBookCourseForm
+from .forms import MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm, NonMembersBookCourseForm, SessionBookingForm
 
 
 class Holidays(TemplateView):
     template_name = 'courses/holidays.html'
 
 
-class HolidaysBook(TemplateView):
+class HolidaysBook(MessageMixin, TemplateView):
     template_name = 'courses/holidays-book.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        try:
+            self.course = Course.objects.get(can_book_individual_sessions=True, open_for_bookings=True)
+        except Course.DoesNotExist:
+            self.messages.error('Bookings are not currently open, sorry. Please contact us for more information.')
+            return HttpResponseRedirect(reverse('courses:holidays'))
+        return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -36,11 +44,22 @@ class HolidaysBook(TemplateView):
         else:
             context['members'] = Member.objects.managed_by(self.request.user).filter(archer__age='junior').select_related('archer')
             member_archers = [member.archer_id for member in context['members']]
+
             other_archers = Archer.objects.filter(
                 Q(user=self.request.user) | Q(managing_users=self.request.user),
                 age='junior',
             ).exclude(id__in=member_archers)
             context['archers'] = other_archers
+
+            for archer in context['archers']:
+                try:
+                    archer.attendee = archer.attendee_set.get(course=self.course)
+                    archer.sessions_booked = archer.attendee.session_set.order_by('session__start_time')
+                    archer.booking_form = SessionBookingForm(course=self.course, booked=archer.sessions_booked, prefix=archer.pk)
+                except Attendee.DoesNotExist:
+                    archer.attendee = None
+
+            context['blank_booking_form'] = SessionBookingForm(course=self.course)
             context.setdefault('new_archer_form', CourseInterestForm(initial={'contact_email': self.request.user.email}, course_type='holidays'))
         return context
 
@@ -70,6 +89,11 @@ class HolidaysBook(TemplateView):
                 return self.get(request, *args, **kwargs)
             else:
                 context['new_archer_form'] = form
+        elif form == 'booking':
+            form = SessionBookingForm(data=request.POST, course=self.course)
+            if form.is_valid():
+                form.save(archer_id=request.POST['archer'])
+                return self.get(request, *args, **kwargs)
         return self.render_to_response(context=self.get_context_data(**context))
 
 

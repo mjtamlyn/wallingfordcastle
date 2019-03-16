@@ -36,11 +36,34 @@
     {% if archers %}
     <section>
         <h2>Book an archer</h2>
+        {% for archer in archers %}
+        <h3>{{ archer }}</h3>
+        {% if archer.attendee %}
+        <p>Currently booked for:</p>
         <ul>
-            {% for archer in archers %}
-            <li>{{ archer }}</li>
+            {% for booking in archer.sessions_booked %}
+            <li>{{ booking.session.label }}</li>
             {% endfor %}
         </ul>
+        <form class="form page-form page-form--checkbox" method="POST" action="{% url 'courses:holidays-book' %}">
+            <h3>Amend booking</h3>
+            <input type="hidden" name="form" value="booking" />
+            <input type="hidden" name="archer" value="{{ archer.id }}" />
+            {% csrf_token %}
+            {% form archer.booking_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn">
+        </form>
+        {% else %}
+        <p>Not currently booked for any sessions</p>
+        <form class="form page-form page-form--checkbox" method="POST" action="{% url 'courses:holidays-book' %}">
+            <input type="hidden" name="form" value="booking" />
+            <input type="hidden" name="archer" value="{{ archer.id }}" />
+            {% csrf_token %}
+            {% form blank_booking_form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn">
+        </form>
+        {% endif %}
+        {% endfor %}
     </section>
     {% endif %}
 

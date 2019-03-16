@@ -162,3 +162,37 @@ class NonMembersBookCourseForm(forms.Form):
             paid=False,
             member=False,
         )
+
+
+class SessionBookingForm(forms.Form):
+    def __init__(self, course, booked=None, **kwargs):
+        self.course = course
+        super().__init__(**kwargs)
+        if booked:
+            booked_dict = {session.session_id: session for session in booked}
+        else:
+            booked_dict = {}
+        for session in course.session_set.all():
+            self.fields['session_%s' % session.pk] = forms.BooleanField(
+                label=session.label,
+                label_suffix='',
+                required=False,
+                initial=session.pk in booked_dict,
+            )
+
+    def save(self, archer_id):
+        archer = Archer.objects.get(pk=archer_id)
+        try:
+            attendee = archer.attendee_set.get(course=self.course)
+        except Attendee.DoesNotExist:
+            attendee = Attendee.objects.create(archer=archer, course=self.course)
+        sessions_booked = attendee.session_set.all()
+        session_dict = {session.session_id: session for session in sessions_booked}
+        for session in self.course.session_set.all():
+            if session.pk in session_dict:
+                if not self.cleaned_data['session_%s' % session.pk]:
+                    session_dict[session.pk].delete()
+                    # TODO: Handle if this has been paid for?
+            else:
+                if self.cleaned_data['session_%s' % session.pk]:
+                    attendee.session_set.create(session=session)
