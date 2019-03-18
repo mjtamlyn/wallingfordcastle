@@ -33,6 +33,27 @@
 </div>
 {% else %}
 <div class="flex-sections">
+    {% if to_pay %}
+    <section>
+        <h2>Pay for outstanding sessions</h2>
+        <p>You have a total of £{{ to_pay }} to pay</p>
+        <form action="{% url 'courses:holidays-book' %}" method="POST">
+            <input type="hidden" name="form" value="payment" />
+            {% csrf_token %}
+            <script
+                src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+                data-key="{{ STRIPE_KEY }}"
+                data-email="{{ user.email }}"
+                data-currency="GBP"
+                data-amount="{{ to_pay }}00"
+                data-name="Wallingford Castle Archers"
+                data-description="Holiday Archery"
+                data-locale="auto">
+            </script>
+        </form>
+    </section>
+    {% endif %}
+
     {% if members %}
     <section>
         <h2>Book a club member</h2>

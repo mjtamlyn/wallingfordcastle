@@ -98,7 +98,7 @@ class AttendeeSession(models.Model):
 
     @property
     def fee(self):
-        if self.member:
+        if self.attendee.member:
             return self.attendee.course.members_price_per_session
         return self.attendee.course.price_per_session
 

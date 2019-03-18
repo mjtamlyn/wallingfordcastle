@@ -1,6 +1,7 @@
 import datetime
 
 from django import forms
+from django.db import transaction
 
 from membership.models import Member
 from wallingford_castle.models import Archer
@@ -165,6 +166,9 @@ class NonMembersBookCourseForm(forms.Form):
 
 
 class SessionBookingForm(forms.Form):
+    class CancellationException(Exception):
+        pass
+
     def __init__(self, course, booked=None, **kwargs):
         self.course = course
         super().__init__(**kwargs)
@@ -185,14 +189,18 @@ class SessionBookingForm(forms.Form):
         try:
             attendee = archer.attendee_set.get(course=self.course)
         except Attendee.DoesNotExist:
-            attendee = Attendee.objects.create(archer=archer, course=self.course)
+            is_member = archer.member_set.filter(active=True).exists()
+            attendee = Attendee.objects.create(archer=archer, course=self.course, member=is_member)
         sessions_booked = attendee.session_set.all()
         session_dict = {session.session_id: session for session in sessions_booked}
-        for session in self.course.session_set.all():
-            if session.pk in session_dict:
-                if not self.cleaned_data['session_%s' % session.pk]:
-                    session_dict[session.pk].delete()
-                    # TODO: Handle if this has been paid for?
-            else:
-                if self.cleaned_data['session_%s' % session.pk]:
-                    attendee.session_set.create(session=session)
+        with transaction.atomic():
+            for session in self.course.session_set.all():
+                if session.pk in session_dict:
+                    if not self.cleaned_data['session_%s' % session.pk]:
+                        if session_dict[session.pk].paid:
+                            raise self.CancellationException
+                        else:
+                            session_dict[session.pk].delete()
+                else:
+                    if self.cleaned_data['session_%s' % session.pk]:
+                        attendee.session_set.create(session=session)

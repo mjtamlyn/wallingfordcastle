@@ -42,36 +42,60 @@ class HolidaysBook(MessageMixin, TemplateView):
             context.setdefault('login_form', AuthenticationForm())
             context.setdefault('register_form', DirectRegisterForm())
         else:
-            context['members'] = Member.objects.managed_by(self.request.user).filter(archer__age='junior').select_related('archer')
-            member_archers = [member.archer_id for member in context['members']]
+            context['members'] = self.get_members()
+            context['archers'] = self.get_archers(context['members'])
 
             for member in context['members']:
-                archer = member.archer
-                try:
-                    member.archer.attendee = archer.attendee_set.get(course=self.course)
-                    member.archer.sessions_booked = archer.attendee.session_set.order_by('session__start_time')
-                    member.archer.booking_form = SessionBookingForm(course=self.course, booked=archer.sessions_booked, prefix=archer.pk)
-                except Attendee.DoesNotExist:
-                    member.archer.attendee = None
-                    member.archer.booking_form = SessionBookingForm(course=self.course, prefix=archer.pk)
-
-            other_archers = Archer.objects.filter(
-                Q(user=self.request.user) | Q(managing_users=self.request.user),
-                age='junior',
-            ).exclude(id__in=member_archers)
-            context['archers'] = other_archers
-
+                member.archer = self.annotate_with_details(member.archer, context.get('errored_booking_forms'))
             for archer in context['archers']:
-                try:
-                    archer.attendee = archer.attendee_set.get(course=self.course)
-                    archer.sessions_booked = archer.attendee.session_set.order_by('session__start_time')
-                    archer.booking_form = SessionBookingForm(course=self.course, booked=archer.sessions_booked, prefix=archer.pk)
-                except Attendee.DoesNotExist:
-                    archer.attendee = None
-                    archer.booking_form = SessionBookingForm(course=self.course, prefix=archer.pk)
+                self.annotate_with_details(archer, context.get('errored_booking_forms'))
 
             context.setdefault('new_archer_form', CourseInterestForm(initial={'contact_email': self.request.user.email}, course_type='holidays'))
+
+            context['to_pay'] = self.get_to_pay(context['archers'], context['members'])
+            context['STRIPE_KEY'] = settings.STRIPE_KEY
+
         return context
+
+    def get_members(self):
+        return Member.objects.managed_by(self.request.user).filter(archer__age='junior').select_related('archer')
+
+    def get_archers(self, members):
+        member_archers = [member.archer for member in members]
+        other_archers = Archer.objects.filter(
+            Q(user=self.request.user) | Q(managing_users=self.request.user),
+            age='junior',
+        ).exclude(id__in=[archer.pk for archer in member_archers])
+        return other_archers
+
+    def annotate_with_details(self, archer, errored_booking_forms=None):
+        if errored_booking_forms is None:
+            errored_booking_forms = {}
+        try:
+            archer.attendee = archer.attendee_set.get(course=self.course)
+            archer.sessions_booked = archer.attendee.session_set.order_by('session__start_time')
+            archer.booking_form = errored_booking_forms.get(
+                str(archer.pk),
+                SessionBookingForm(course=self.course, booked=archer.sessions_booked, prefix=archer.pk),
+            )
+        except Attendee.DoesNotExist:
+            archer.attendee = None
+            archer.booking_form = SessionBookingForm(course=self.course, prefix=archer.pk)
+        return archer
+
+    def get_to_pay(self, archers, members):
+        to_pay = 0
+        for archer in archers:
+            if archer.attendee:
+                for session in archer.sessions_booked:
+                    if not session.paid:
+                        to_pay += session.fee
+        for member in members:
+            if member.archer.attendee:
+                for session in member.archer.sessions_booked:
+                    if not session.paid:
+                        to_pay += session.fee
+        return to_pay
 
     def post(self, request, *args, **kwargs):
         context = {}
@@ -103,8 +127,49 @@ class HolidaysBook(MessageMixin, TemplateView):
             archer_id = request.POST['archer']
             form = SessionBookingForm(data=request.POST, course=self.course, prefix=archer_id)
             if form.is_valid():
-                form.save(archer_id=archer_id)
-                return self.get(request, *args, **kwargs)
+                try:
+                    form.save(archer_id=archer_id)
+                    return self.get(request, *args, **kwargs)
+                except SessionBookingForm.CancellationException:
+                    form.add_error(None, 'To cancel a session which has been paid for, please email us at hello@wallingfordcastle.co.uk')
+                    context['errored_booking_forms'] = {archer_id: form}
+        elif form == 'payment':
+            token = request.POST['stripeToken']
+            if self.request.user.customer_id:
+                customer = stripe.Customer.retrieve(self.request.user.customer_id)
+                source = customer.sources.create(source=token)
+                customer.default_source = source.id
+                customer.save()
+            else:
+                customer = stripe.Customer.create(
+                    source=token,
+                    email=self.request.user.email,
+                )
+                self.request.user.customer_id = customer.id
+                self.request.user.save()
+            members = self.get_members()
+            archers = self.get_archers(members)
+            for member in members:
+                member.archer = self.annotate_with_details(member.archer)
+            for archer in archers:
+                self.annotate_with_details(archer)
+            amount = self.get_to_pay(archers, members)
+            description = 'Holiday archery'
+            stripe.Charge.create(
+                amount=amount * 100,
+                currency='gbp',
+                customer=customer.id,
+                description=description,
+            )
+            for member in members:
+                for session in member.archer.sessions_booked:
+                    session.paid = True
+                    session.save()
+            for archer in archers:
+                for session in archer.sessions_booked:
+                    session.paid = True
+                    session.save()
+            self.messages.success('Thanks! You will receive a confirmation email soon.')
         return self.render_to_response(context=self.get_context_data(**context))
 
 
