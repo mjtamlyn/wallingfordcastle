@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.conf import settings
@@ -10,6 +11,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.urls import reverse, reverse_lazy
 
 from braces.views import MessageMixin
+from dateutil.relativedelta import relativedelta
 import requests
 import stripe
 
@@ -118,9 +120,15 @@ class HolidaysBook(MessageMixin, TemplateView):
         elif form == 'new-archer':
             form = CourseInterestForm(data=request.POST, course_type='holidays')
             if form.is_valid():
-                interest = form.save()
-                interest.convert_to_archer(self.request.user)
-                return self.get(request, *args, **kwargs)
+                today = datetime.date.today()
+                age = relativedelta(today, form.instance.date_of_birth).years
+                if age >= 13:
+                    form.add_error(None, 'Holiday archery is only available for under 13s. For older children, please book a beginners course.')
+                    context['new_archer_form'] = form
+                else:
+                    interest = form.save()
+                    interest.convert_to_archer(self.request.user)
+                    return self.get(request, *args, **kwargs)
             else:
                 context['new_archer_form'] = form
         elif form == 'booking':
@@ -169,7 +177,7 @@ class HolidaysBook(MessageMixin, TemplateView):
                 for session in archer.sessions_booked:
                     session.paid = True
                     session.save()
-            self.messages.success('Thanks! You will receive a confirmation email soon.')
+            self.messages.success('Thanks for booking your holiday session! We will contact you soon with more details.')
         return self.render_to_response(context=self.get_context_data(**context))
 
 

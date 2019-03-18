@@ -10,6 +10,7 @@
 
 {% block content %}
 <p><a href="{% url 'courses:holidays' %}">< Back to information</a></p>
+<p>To book holiday sessions, please first register a new participant. You can then select sessions and pay for them.</p>
 {% if user.is_anonymous %}
 <div class="flex-sections">
     <section>
@@ -100,7 +101,7 @@
         <p>Currently booked for:</p>
         <ul>
             {% for booking in archer.sessions_booked %}
-            <li>{{ booking.session.label }}</li>
+            <li>{{ booking.session.label }} {% if booking.paid %}<small>PAID</small>{% endif %}</li>
             {% endfor %}
         </ul>
         <form class="form page-form page-form--checkbox" method="POST" action="{% url 'courses:holidays-book' %}">
