@@ -67,7 +67,7 @@
                         <div class="clear"></div>
                     </th>
                     <th scope="col">
-                        <div class="text"><span>Paid</span></div>
+                        <div class="text"><span>{% if object.can_book_individual_sessions %}Sessions{% else %}Paid{% endif %}</span></div>
                         <div class="clear"></div>
                     </th>
                     <th scope="col">
@@ -87,7 +87,15 @@
                     <td>{{ attendee.archer.age_group }}</td>
                     <td>{{ attendee.archer.user.email }}</td>
                     <td>{{ attendee.archer.contact_number }}</td>
-                    <td>{{ attendee.paid }}</td>
+                    <td>
+                        {% if object.can_book_individual_sessions %}
+                        {% for session in attendee.session_set.all %}
+                        {{ session.session.label }} <small>{{ session.paid|yesno:"PAID," }}</small><br>
+                        {% endfor %}
+                        {% else %}
+                        {{ attendee.paid }}
+                        {% endif %}
+                    </td>
                     <td>{{ attendee.member }}</td>
                 </tr>
                 {% endfor %}
