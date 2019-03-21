@@ -62,12 +62,16 @@
         {% with member.archer as archer %}
         <h3>{{ archer }}</h3>
         {% if archer.attendee %}
-        <p>Currently booked for:</p>
-        <ul>
-            {% for booking in archer.sessions_booked %}
-            <li>{{ booking.session.label }}</li>
-            {% endfor %}
-        </ul>
+            {% if archer.sessions_booked %}
+            <p>Currently booked for:</p>
+            <ul>
+                {% for booking in archer.sessions_booked %}
+                <li>{{ booking.session.label }}</li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p>Not currently booked for any sessions</p>
+            {% endif %}
         <form class="form page-form page-form--checkbox" method="POST" action="{% url 'courses:holidays-book' %}">
             <h3>Amend booking</h3>
             <input type="hidden" name="form" value="booking" />

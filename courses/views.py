@@ -170,11 +170,11 @@ class HolidaysBook(MessageMixin, TemplateView):
                 description=description,
             )
             for member in members:
-                for session in member.archer.sessions_booked:
+                for session in getattr(member.archer, 'sessions_booked', []):
                     session.paid = True
                     session.save()
             for archer in archers:
-                for session in archer.sessions_booked:
+                for session in getattr(archer, 'sessions_booked', []):
                     session.paid = True
                     session.save()
             self.messages.success('Thanks for booking your holiday session! We will contact you soon with more details.')
