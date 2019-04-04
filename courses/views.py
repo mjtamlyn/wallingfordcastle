@@ -227,7 +227,7 @@ class MembersCourseList(FullMemberRequired, ListView):
     def get_queryset(self):
         bookable_courses = Course.objects.filter(open_for_bookings=True, open_to_members=True).prefetch_related(
             Prefetch('session_set', queryset=Session.objects.order_by('start_time'), to_attr='sessions')
-        )
+        ).order_by('id')
         for course in bookable_courses:
             user = self.request.user
             course.registered_members = course.attendee_set.filter(archer__user=user) | course.attendee_set.filter(archer__managing_users=user)
