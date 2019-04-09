@@ -19,7 +19,7 @@ from django_object_actions import DjangoObjectActions, takes_instance_or_queryse
 from events.models import Event
 from wallingford_castle.admin import ArcherDataMixin
 from wallingford_castle.models import Archer, User
-from .models import Attendee, Course, Interest, Session, Summer2018Signup
+from .models import Attendee, AttendeeSession, Course, Interest, Session, Summer2018Signup
 
 
 class Summer2018Summary(ListView):
@@ -93,9 +93,14 @@ class SessionSetAttendeesForm(forms.Form):
         self.fields['attendees'].choices = [
             (coach.id, coach.name)
         for coach in session.course.coaches.order_by('name')]
-        self.fields['attendees'].choices += [
-            (attendee.archer_id, attendee.archer.name)
-        for attendee in session.course.attendee_set.order_by('archer__name')]
+        if session.course.can_book_individual_sessions:
+            self.fields['attendees'].choices += [
+                (booking.attendee.archer_id, booking.attendee.archer.name)
+            for booking in session.attendeesession_set.order_by('attendee__archer__name')]
+        else:
+            self.fields['attendees'].choices += [
+                (attendee.archer_id, attendee.archer.name)
+            for attendee in session.course.attendee_set.order_by('archer__name')]
         # This is needed to ensure that we don't remove any attendees not in the default list
         self.form_attendees = [c[0] for c in self.fields['attendees'].choices]
 
@@ -126,6 +131,10 @@ class SessionSetAttendees(FormView):
         if self.session.event.attendee_set.exists():
             attendee_ids = list(self.session.event.attendee_set.values_list('archer_id', flat=True))
             return {'attendees': attendee_ids}
+        elif self.session.course.can_book_individual_sessions:
+            coach_ids = list(self.session.course.coaches.values_list('id', flat=True))
+            attendee_ids = list(self.session.attendeesession_set.values_list('attendee__archer_id', flat=True))
+            return {'attendees': coach_ids + attendee_ids}
         else:
             coach_ids = list(self.session.course.coaches.values_list('id', flat=True))
             attendee_ids = list(self.session.course.attendee_set.values_list('archer_id', flat=True))
@@ -430,3 +439,8 @@ class InterestAdmin(DjangoObjectActions, admin.ModelAdmin):
         return HttpResponseRedirect(url + '?ids=%s' % ','.join(str(item.pk) for item in queryset))
     allocate_to_course.short_description = 'Allocate to a course'
     allocate_to_course.label = 'Allocate to a course'
+
+
+@admin.register(AttendeeSession)
+class AttendeeSessionAdmin(admin.ModelAdmin):
+    list_display = ['attendee', 'session']
