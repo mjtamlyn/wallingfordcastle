@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+    <h2>Welcome to Wallingford Castle Archers!</h2>
+    <p>Set a password to activate your account</p>
+    <form class="form" method="POST" action=".">
+        {% csrf_token %}
+        {% form form using 'floppyforms/layouts/p.html' %}
+        <input type="submit" class="btn">
+    </form>
+{% endblock %}
+
+

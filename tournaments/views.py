@@ -59,7 +59,7 @@ class TournamentDetail(TournamentMixin, TemplateView):
 
 
 class TournamentRegistration(TournamentMixin, FormView):
-    template_name = 'register.html'
+    template_name = 'tournaments/register.html'
     form_class = RegisterForm
 
     def form_valid(self, form):

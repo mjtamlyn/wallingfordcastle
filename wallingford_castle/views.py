@@ -1,6 +1,7 @@
 import json
 
 from django.conf import settings
+from django.contrib.auth.views import LoginView
 from django.views.generic import TemplateView, CreateView
 from django.urls import reverse, reverse_lazy
 
@@ -63,3 +64,11 @@ class MembershipInterestView(MessageMixin, CreateView):
 
 class Venues(TemplateView):
     template_name = 'venues.html'
+
+
+class Login(LoginView):
+    def get_redirect_url(self):
+        user = self.request.user
+        if user.tournament_only:
+            return reverse('tournaments:home')
+        return reverse('membership:overview')

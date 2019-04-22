@@ -21,6 +21,7 @@ urlpatterns = [
     re_path(r'^events/', include('bookings.urls', namespace='bookings')),
     re_path(r'^venues/$', views.Venues.as_view(), name='venues'),
     # TODO: Style header links
+    path('accounts/login/', views.Login.as_view(), name='login'),
     re_path(r'^accounts/', include('django.contrib.auth.urls')),
     path('accounts/register/<uidb64>/<token>/',
         PasswordResetConfirmView.as_view(
