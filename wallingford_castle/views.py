@@ -69,6 +69,6 @@ class Venues(TemplateView):
 class Login(LoginView):
     def get_redirect_url(self):
         user = self.request.user
-        if user.tournament_only:
+        if user.is_authenticated and user.tournament_only:
             return reverse('tournaments:home')
         return reverse('membership:overview')
