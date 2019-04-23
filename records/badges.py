@@ -58,6 +58,7 @@ BADGE_GROUPS = [
     WA_BEGINNERS,
     CLUB_PORTSMOUTH,
     CLUB_WA_18,
+    CLUB_OUTDOOR_250,
 ]
 BADGE_GROUP_CHOICES = [(group.slug, group.name) for group in BADGE_GROUPS]
 BADGE_CHOICES = [(badge.slug, badge.name) for badge in BADGES]
