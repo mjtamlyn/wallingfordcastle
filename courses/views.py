@@ -345,7 +345,7 @@ class NonMembersPayment(MessageMixin, View):
             )
             self.request.user.customer_id = customer.id
             self.request.user.save()
-        attendees = Attendee.objects.filter(archer__user=self.request.user, member=False, paid=False)
+        attendees = Attendee.objects.filter(archer__user=self.request.user, member=False, paid=False, course__can_book_individual_sessions=False)
         amount = sum(attendee.fee for attendee in attendees)
         description = '; '.join('%s - %s' % (attendee.archer, attendee.course) for attendee in attendees)
         stripe.Charge.create(
