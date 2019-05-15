@@ -5,7 +5,6 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib import messages
 from django.db import models, transaction
 from django.utils import timezone
-from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.urls import reverse
 
@@ -113,7 +112,7 @@ class User(AbstractEmailUser):
 
     def generate_register_url(self, request=None):
         url = reverse('register', kwargs={
-            'uidb64': urlsafe_base64_encode(force_bytes(self.pk)).decode('utf-8'),
+            'uidb64': urlsafe_base64_encode(str(self.pk).encode()),
             'token': default_token_generator.make_token(self),
         })
         if request is not None:
