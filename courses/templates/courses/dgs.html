@@ -6,39 +6,29 @@
 <div class="flex-sections">
     <section>
         <h2>Didcot Girls School</h2>
-        <p>Wallingford Castle Archers are pleased to be working with Didcot Girls School to offer an after school archery club.</p>
+        <p>Wallingford Castle Archers are pleased to be working with Didcot Girls School to offer an after school archery club. We meet on Monday after school, on the school field when weather permits, and then in Frids Gym during the winter.</p>
         <p>Sessions will be running after school on Mondays on the following dates:</p>
         <ul>
-            <li><em>No session 7th January due to inset day</em></li>
-            <li>14th January</li>
-            <li>21st January</li>
-            <li>28th January</li>
-            <li>4th February</li>
-            <li>11th February</li>
-            <li><em>No session 18th February due to half term</em></li>
-            <li>25th February</li>
-            <li>4th March</li>
-            <li>11th March</li>
-            <li>18th March</li>
-            <li>25th March</li>
-            <li><em>1st April - South Oxfordshire secondary school competition</em></li>
+            <li>9th September - Archers with prior experience only</li>
+            <li>16th September - First session for new archers</li>
+            <li>23rd September</li>
+            <li>30th September</li>
+            <li>7th October</li>
+            <li>14th October</li>
+            <li>21st October</li>
+            <li><em>No session half term - 28th October</em></li>
+            <li>4th November</li>
+            <li>11th November</li>
+            <li>18th November</li>
+            <li>25th November</li>
+            <li>2nd December</li>
+            <li>9th December</li>
+            <li>16th December</li>
         </ul>
-        <p>The cost for this term is £50 for new archers, payable in advance.</p>
+        <p>The cost for this term is £65 for new archers, £70 for existing archers, payable in advance.</p>
     </section>
     <section>
-        <h3>Book</h3>
-        <p>
-            <strong>
-                The Didcot Girls School club is oversubscribed. Please sign up
-                below to be added to the waiting list for any spaces which
-                become available during the school year.
-            </strong>
-        </p>
-        <p>
-            If you are keen to start archery, you may wish to book a
-            <a href="{% url 'beginners:index' %}">Beginners course</a> with the
-            club.
-        </p>
+        <h3>Sign up</h3>
         <form class="form page-form" method="POST" action=".">
             {% csrf_token %}
             {% form form using 'floppyforms/layouts/p.html' %}
