@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.contrib import messages
 
 from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
 
