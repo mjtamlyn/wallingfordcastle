@@ -444,3 +444,4 @@ class InterestAdmin(DjangoObjectActions, admin.ModelAdmin):
 @admin.register(AttendeeSession)
 class AttendeeSessionAdmin(admin.ModelAdmin):
     list_display = ['attendee', 'session']
+    autocomplete_fields = ['attendee', 'session']
