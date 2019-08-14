@@ -28,7 +28,7 @@ class AchievementAdmin(DjangoObjectActions, admin.ModelAdmin):
             return
 
         for achievement in queryset:
-            achievement.archer.user.add_invoice_item(3, '%s %s badge on %s' % (
+            achievement.archer.user.add_invoice_item(300, '%s %s badge on %s' % (
                 achievement.archer,
                 achievement.get_badge_display(),
                 achievement.date_awarded.strftime('%d/%m/%Y'),
