@@ -200,6 +200,7 @@ class SessionCreateEvent(MessageMixin, CreateView):
 
 @admin.register(Session)
 class SessionAdmin(admin.ModelAdmin):
+    search_fields = ['course__name', 'start_time']
 
     def get_urls(self):
         urls = super().get_urls()
