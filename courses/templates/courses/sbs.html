@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% load floppyforms %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <h2>St Birinus School</h2>
+        <p>Wallingford Castle Archers are pleased to be working with St Birinus School to offer an after school archery club. We meet on Tuesday after school, on the school field when weather permits, and then in the Gym during the winter.</p>
+        <p>Sessions will be running after school on Tuesdays on the following dates:</p>
+        <ul>
+            <li>17th September</li>
+            <li>24th September</li>
+            <li>1st October</li>
+            <li>8th October</li>
+            <li>15th October</li>
+            <li>22nd October</li>
+            <li><em>No session half term - 29th October</em></li>
+            <li>5th November</li>
+            <li>12th November</li>
+            <li>19th November</li>
+            <li>26th November</li>
+            <li>3rd December</li>
+            <li>10th December</li>
+            <li>17th December</li>
+        </ul>
+        <p>The cost for this term is £65, payable in advance.</p>
+    </section>
+    <section>
+        <h3>Sign up</h3>
+        <form class="form page-form" method="POST" action=".">
+            {% csrf_token %}
+            {% form form using 'floppyforms/layouts/p.html' %}
+            <input type="submit" class="btn" value="Register">
+        </form>
+    </section>
+</div>
+{% endblock %}
