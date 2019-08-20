@@ -9,6 +9,7 @@ urlpatterns = [
     path('holidays/', views.Holidays.as_view(), name='holidays'),
     path('holidays/book/', views.HolidaysBook.as_view(), name='holidays-book'),
     path('dgs/', views.SchoolSignup.as_view(school='dgs'), name='dgs'),
+    path('sbs/', views.SchoolSignup.as_view(school='sbs'), name='sbs'),
     path('icknield/', views.SchoolSignup.as_view(school='icknield'), name='icknield'),
     path('home-ed/', views.SchoolSignup.as_view(school='home-ed'), name='home-ed'),
     path('juniors/minis/', views.MinisInterestView.as_view(), name='minis-interest'),
