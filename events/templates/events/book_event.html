@@ -4,6 +4,7 @@
 
 {% block content %}
 <p><a href="{% url 'events:event-list' %}">< Back to event list</a></p>
+<h2>{{ event }}</h2>
 {{ event.description|linebreaks }}
 <form class="form" method="POST" action=".">
     {% csrf_token %}
