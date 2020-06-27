@@ -1,7 +1,13 @@
+import datetime
+
 from django.db import models
 from django.contrib.postgres.fields import ArrayField, HStoreField
+from django.utils import timezone
+from django.utils.functional import cached_property
 
 from wallingford_castle.models import Archer
+
+from .lanes import Slot, Template
 
 
 class Event(models.Model):
@@ -68,3 +74,50 @@ class Booking(models.Model):
         questions = self.event.bookingquestion_set.order_by('order')
         for q in questions:
             yield self.response_answers.get(q.text, '')
+
+
+class BookedSlot(models.Model):
+    start = models.DateTimeField()
+    duration = models.DurationField()
+    target = models.PositiveIntegerField()
+    distance = models.CharField(max_length=100, default='', blank=True)
+    archers = models.ManyToManyField(Archer)
+
+    def __str__(self):
+        return 'Slot booked on target %s at %s' % (self.target, self.start)
+
+    @cached_property
+    def slot(self):
+        return Slot(
+            start=self.start,
+            duration=self.duration,
+            target=self.target,
+            booked=True,
+        )
+
+
+class BookingTemplate(models.Model):
+    date = models.DateField()
+    start_times = ArrayField(models.TimeField())
+    targets = models.PositiveIntegerField()
+    booking_duration = models.DurationField()
+
+    def __str__(self):
+        return 'Booking template for %s' % self.date
+
+    @cached_property
+    def template(self):
+        midnight = datetime.datetime.combine(self.date, datetime.time(0), timezone.utc)
+        slots = [slot.slot for slot in BookedSlot.objects.filter(
+            start__gte=midnight,
+            start__lt=midnight + datetime.timedelta(days=1),
+        )]
+        start_times = [
+            datetime.datetime.combine(self.date, time, timezone.utc)
+        for time in self.start_times]
+        return Template(
+            start_times=start_times,
+            targets=self.targets,
+            slot_duration=self.booking_duration,
+            booked_slots=slots,
+        )
