@@ -25,6 +25,17 @@ class Slot:
             return False
         return True
 
+    def serialize(self):
+        return {
+            '__type': 'Slot',
+            'start': self.start.isoformat(),
+            'end': self.start.isoformat(),
+            'duration': self.duration.seconds // 60,
+            'target': self.target,
+            'booked': self.booked,
+            'details': 'TODO',
+        }
+
 
 @attr.s
 class Template:
@@ -69,3 +80,9 @@ class Template:
                 'slots': slots,
             })
         return schedule
+
+    def serialize(self):
+        return [{
+            'start_time': row['start_time'].isoformat(),
+            'slots': [slot.serialize() if slot else None for slot in row['slots']],
+        } for row in self.slots]
