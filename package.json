@@ -18,6 +18,11 @@
     "url": "https://github.com/mjtamlyn/wallingfordcastle/issues"
   },
   "dependencies": {
+    "@babel/core": "^7.10.3",
+    "@babel/preset-react": "^7.10.1",
+    "babel-loader": "^8.1.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
     "webpack": "^4.43.0",
     "webpack-bundle-tracker": "0.4.3",
     "webpack-dev-server": "^3.11.0"

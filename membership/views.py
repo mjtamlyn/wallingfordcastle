@@ -111,3 +111,7 @@ class PaymentDetails(MessageMixin, View):
         self.request.user.update_subscriptions()
         self.messages.success('Thanks! You will receive a confirmation email soon.')
         return HttpResponseRedirect(reverse('membership:overview'))
+
+
+class RangeBooking(TemplateView):
+    template_name = 'membership/range_booking.html'

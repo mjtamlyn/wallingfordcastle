@@ -18,6 +18,18 @@ module.exports = {
         global: './js_src/entry',
     },
     mode: devMode ? 'development' : 'production',
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                use: [
+                    {
+                        loader: 'babel-loader',
+                    },
+                ],
+            },
+        ],
+    },
     optimization: {
         minimize: !devMode, // true, // Always enabled to allow for splitChunks
     },
