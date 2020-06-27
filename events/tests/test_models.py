@@ -3,6 +3,8 @@ import datetime
 from django.test import TestCase
 from django.utils import timezone
 
+import pytz
+
 from ..lanes import Slot, Template
 from ..models import BookedSlot, BookingTemplate
 
@@ -19,7 +21,8 @@ class TestBookedSlot(TestCase):
 class TestBookingTemplate(TestCase):
     def test_simple_template(self):
         now = timezone.now()
-        midday = now.replace(hour=12, minute=0, second=0, microsecond=0)
+        tz = pytz.timezone('Europe/London')
+        midday = now.replace(hour=12, minute=0, second=0, microsecond=0, tzinfo=tz)
         today = midday.date()
         midday_time = midday.time()
         hour = datetime.timedelta(hours=1)
@@ -39,7 +42,8 @@ class TestBookingTemplate(TestCase):
 
     def test_has_bookings(self):
         now = timezone.now()
-        midday = now.replace(hour=12, minute=0, second=0, microsecond=0)
+        tz = pytz.timezone('Europe/London')
+        midday = now.replace(hour=12, minute=0, second=0, microsecond=0, tzinfo=tz)
         today = midday.date()
         midday_time = midday.time()
         hour = datetime.timedelta(hours=1)

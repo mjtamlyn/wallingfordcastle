@@ -2,8 +2,9 @@ import datetime
 
 from django.db import models
 from django.contrib.postgres.fields import ArrayField, HStoreField
-from django.utils import timezone
 from django.utils.functional import cached_property
+
+import pytz
 
 from wallingford_castle.models import Archer
 
@@ -93,6 +94,7 @@ class BookedSlot(models.Model):
             duration=self.duration,
             target=self.target,
             booked=True,
+            details=self,
         )
 
 
@@ -107,13 +109,14 @@ class BookingTemplate(models.Model):
 
     @cached_property
     def template(self):
-        midnight = datetime.datetime.combine(self.date, datetime.time(0), timezone.utc)
+        tz = pytz.timezone('Europe/London')
+        midnight = datetime.datetime.combine(self.date, datetime.time(0), tz)
         slots = [slot.slot for slot in BookedSlot.objects.filter(
             start__gte=midnight,
             start__lt=midnight + datetime.timedelta(days=1),
         )]
         start_times = [
-            datetime.datetime.combine(self.date, time, timezone.utc)
+            datetime.datetime.combine(self.date, time, tz)
         for time in self.start_times]
         return Template(
             start_times=start_times,

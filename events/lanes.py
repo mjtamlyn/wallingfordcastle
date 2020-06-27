@@ -12,6 +12,7 @@ class Slot:
     duration = attr.ib()
     target = attr.ib()
     booked = attr.ib(default=False)
+    details = attr.ib(default=None, cmp=False)
 
     @property
     def end(self):
