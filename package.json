@@ -1,0 +1,25 @@
+{
+  "name": "wallingfordcastle",
+  "version": "1.0.0",
+  "description": "WCA website",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "watch": "node tools/WebpackServer.js",
+    "build": "npm run clean && NODE_ENV=production webpack --display-error-details --config webpack.config.js"
+  },
+  "private": true,
+  "repository": "git+https://github.com/mjtamlyn/wallingfordcastle.git",
+  "author": "Marc Tamlyn & WCA Ltd",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/mjtamlyn/wallingfordcastle/issues"
+  },
+  "dependencies": {
+    "webpack": "^4.43.0",
+    "webpack-bundle-tracker": "0.4.3",
+    "webpack-dev-server": "^3.11.0"
+  }
+}
