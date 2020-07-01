@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
 import NoMatch from 'utils/NoMatch';
 import DateSelectorView from 'range/DateSelectorView';
@@ -17,7 +17,7 @@ class RangeBookingApp extends React.Component {
                     <Route exact path="/">
                         <DateSelectorView />
                     </Route>
-                    <Route exact path="/:date(\d{4}-\d{2}-\d{2})/" component={ DateView } />
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/" component={ DateView } />
                     <Route component={ NoMatch } />
                 </Switch>
             </BrowserRouter>

@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 import moment from 'moment';
 
 class Schedule extends React.Component {
@@ -38,9 +38,12 @@ class Schedule extends React.Component {
                 let slots = schedule[index].slots;
                 slots.forEach((slot) => {
                     let duration = slot.duration / 15;
+                    const linkTarget = `/${ this.props.date }/book/${ time.format('HH:mm') }/${ slot.target }/`;
                     columns.push(
                         <td key={ slot.target } rowSpan={ duration }>
                             Free slot
+                            <br />
+                            <Link to={ linkTarget }>Book</Link>
                         </td>
                     );
                     overlaps[slot.target - 1] = duration - 1;
