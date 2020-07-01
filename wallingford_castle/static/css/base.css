@@ -514,3 +514,13 @@ dt:not(:first-child) {
 dd {
   margin: 0;
 }
+
+/* line 1, ../../sass/_range.sass */
+table.range-schedule {
+  border-collapse: collapse;
+}
+/* line 4, ../../sass/_range.sass */
+table.range-schedule th, table.range-schedule td {
+  border: 1px solid black;
+  text-align: center;
+}
