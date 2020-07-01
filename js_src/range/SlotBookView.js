@@ -1,11 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
 
 class SlotBookView extends React.Component {
     constructor(props) {
         super(props);
+        const { date, target, time } = props.match.params;
+        this.submitData = { date, target, time };
         this.state = {
             archers: [],
             distance: null,
@@ -26,14 +29,28 @@ class SlotBookView extends React.Component {
     }
 
     submit() {
-        console.log('Time to submit!', this.state);
+        let data = {
+            archers: this.state.archers,
+            distance: this.state.distance,
+            ...this.submitData,
+        }
+        this.setState({
+            submitting: true,
+        }, () => {
+            store.send('/api/range/book/', data).then((data) => {
+                this.setState({ submitting: false });
+            }).catch((data) => {
+                console.error('error', data);
+            });
+        });
+        console.log('Time to submit!', data);
     }
 
     render() {
         const { date, target, time } = this.props.match.params;
         const dateUrl = `/${date}/`;
 
-        let submitDisabled = !this.isValid(this.state);
+        let submitDisabled = !this.isValid(this.state) && !this.state.submitting;
 
         return (
             <div className="booking-modal">

@@ -1,4 +1,5 @@
 import models from 'range/models';
+import Cookies from 'cookies-js';
 import deepForEach from 'deep-for-each';
 
 class Store {
@@ -26,6 +27,23 @@ class Store {
                 this.cache[url] = data;
                 return data;
             });
+    }
+
+    send(url, data) {
+        let csrf = Cookies.get('csrftoken');
+        return fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrf,
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify(data),
+        }).then((response) => response.json());
     }
 }
 

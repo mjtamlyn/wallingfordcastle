@@ -87,6 +87,10 @@ class BookedSlot(models.Model):
     def __str__(self):
         return 'Slot booked on target %s at %s' % (self.target, self.start)
 
+    @property
+    def end(self):
+        return self.start + self.duration
+
     @cached_property
     def slot(self):
         return Slot(

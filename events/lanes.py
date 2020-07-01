@@ -26,6 +26,10 @@ class Slot:
         return True
 
     def serialize(self):
+        details = None
+        if self.details:
+            details = ', '.join(self.details.archers.values_list('name', flat=True))
+            print(details)
         return {
             '__type': 'Slot',
             'start': self.start.strftime('%Y-%m-%dT%H:%M'),
@@ -33,7 +37,7 @@ class Slot:
             'duration': self.duration.seconds // 60,
             'target': self.target,
             'booked': self.booked,
-            'details': 'TODO',
+            'details': details,
         }
 
 

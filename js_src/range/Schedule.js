@@ -39,13 +39,22 @@ class Schedule extends React.Component {
                 slots.forEach((slot) => {
                     let duration = slot.duration / 15;
                     const linkTarget = `/${ this.props.date }/book/${ time.format('HH:mm') }/${ slot.target }/`;
-                    columns.push(
-                        <td key={ slot.target } rowSpan={ duration }>
-                            Free slot
-                            <br />
-                            <Link to={ linkTarget }>Book</Link>
-                        </td>
-                    );
+                    if (slot.booked) {
+                        console.log(slot);
+                        columns.push(
+                            <td key={ slot.target } rowSpan={ duration }>
+                                { slot.details }
+                            </td>
+                        );
+                    } else {
+                        columns.push(
+                            <td key={ slot.target } rowSpan={ duration }>
+                                Free slot
+                                <br />
+                                <Link to={ linkTarget }>Book</Link>
+                            </td>
+                        );
+                    }
                     overlaps[slot.target - 1] = duration - 1;
                 });
             } else {

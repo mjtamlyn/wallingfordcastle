@@ -1,9 +1,11 @@
 import datetime
+import json
 
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 from membership.models import Member
+from .forms import BookSlotForm
 from .models import BookingTemplate
 
 
@@ -58,5 +60,17 @@ def bookable_archers(request):
             'name': member.archer.name,
             'id': member.id,
         } for member in members],
+    }
+    return JsonResponse(response)
+
+
+def book_slot(request):
+    data = json.loads(request.body)
+    form = BookSlotForm(data=data, user=request.user)
+    if form.is_valid():
+        form.save()
+    # TODO: some sort of helpful error cases!
+    response = {
+        'status': 'OK',
     }
     return JsonResponse(response)

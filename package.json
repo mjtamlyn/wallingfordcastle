@@ -23,6 +23,7 @@
     "@babel/plugin-proposal-function-bind": "^7.10.4",
     "@babel/preset-react": "^7.10.1",
     "babel-loader": "^8.1.0",
+    "cookies-js": "^1.2.3",
     "deep-for-each": "^3.0.0",
     "moment": "^2.27.0",
     "react": "^16.13.1",
