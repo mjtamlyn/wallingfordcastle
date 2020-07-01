@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 
 import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
@@ -13,6 +13,7 @@ class SlotBookView extends React.Component {
             archers: [],
             distance: null,
             submitting: false,
+            done: false,
         };
     }
 
@@ -41,7 +42,7 @@ class SlotBookView extends React.Component {
                 if (response.ok) {
                     store.invalidate(`/api/range/${data.date}/`);
                 }
-                this.setState({ submitting: false });
+                this.setState({ submitting: false, done: true });
             }).catch((error) => {
                 console.error('error', error);
             });
@@ -51,6 +52,10 @@ class SlotBookView extends React.Component {
     render() {
         const { date, target, time } = this.props.match.params;
         const dateUrl = `/${date}/`;
+
+        if (this.state.done) {
+            return <Redirect to={ dateUrl } />;
+        }
 
         let submitDisabled = !this.isValid(this.state) && !this.state.submitting;
 
