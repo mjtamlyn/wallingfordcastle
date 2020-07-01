@@ -16,7 +16,7 @@ class ArcherMultiSelect extends Loader {
         return (e) => {
             let archers = [].concat(this.state.selected);
             if (this.state.selected.includes(id)) {
-                archers.pop(id);
+                archers = archers.filter(item => item !== id)
             } else {
                 archers.push(id);
             }
@@ -31,13 +31,13 @@ class ArcherMultiSelect extends Loader {
     renderLoaded(data) {
         const archers = [];
         data.archers.forEach((archer) => {
-            let className = 'archer';
+            let className = 'selector__link';
             if (this.state.selected.includes(archer.id)) {
-                className += ' archer--selected';
+                className += ' selector__link--selected';
             }
             archers.push(
-                <div className={ className } key={ archer.id }>
-                    <a onClick={ ::this.toggle(archer.id) }>
+                <div className="selector__item" key={ archer.id }>
+                    <a className={ className } onClick={ ::this.toggle(archer.id) }>
                         { archer.name }
                     </a>
                 </div>
@@ -45,8 +45,10 @@ class ArcherMultiSelect extends Loader {
         });
         return (
             <div className="archer-multi-select">
-                <label>* Archer(s):</label>
-                { archers }
+                <label>Archer(s):</label>
+                <div className="selector">
+                    { archers }
+                </div>
             </div>
         );
     }

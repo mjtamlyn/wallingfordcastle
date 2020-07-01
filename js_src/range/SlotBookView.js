@@ -61,15 +61,16 @@ class SlotBookView extends React.Component {
 
         return (
             <div className="booking-modal">
-                <Link to={ dateUrl }>Close</Link>
-                <h3>Book</h3>
-                <p>Booking target { target } at { time }</p>
-                <ArcherMultiSelect onChange={ ::this.setArchers } />
-                <div>
-                    <label htmlFor="id-distance">* Distance:</label>
-                    <input id="id-distance" onChange={ ::this.setDistance } />
+                <div className="booking-modal__content">
+                    <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
+                    <h4 className="booking-modal__title">Booking target { target } at { time }</h4>
+                    <ArcherMultiSelect onChange={ ::this.setArchers } />
+                    <div className="booking-modal__row">
+                        <label htmlFor="id-distance">Distance:</label>
+                        <input id="id-distance" onChange={ ::this.setDistance } />
+                    </div>
+                    <input type="submit" value="Book" disabled={ submitDisabled } onClick={ ::this.submit } />
                 </div>
-                <input type="submit" value="Book" disabled={ submitDisabled } onClick={ ::this.submit } />
             </div>
         );
     }
