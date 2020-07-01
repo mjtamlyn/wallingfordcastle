@@ -45,6 +45,7 @@ class ArcherMultiSelect extends Loader {
         });
         return (
             <div className="archer-multi-select">
+                <label>* Archer(s):</label>
                 { archers }
             </div>
         );

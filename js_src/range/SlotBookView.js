@@ -8,6 +8,8 @@ class SlotBookView extends React.Component {
         super(props);
         this.state = {
             archers: [],
+            distance: null,
+            submitting: false,
         };
     }
 
@@ -15,9 +17,23 @@ class SlotBookView extends React.Component {
         this.setState({ archers });
     }
 
+    setDistance(e) {
+        this.setState({ distance: e.target.value });
+    }
+
+    isValid(state) {
+        return (state.archers.length && state.distance);
+    }
+
+    submit() {
+        console.log('Time to submit!', this.state);
+    }
+
     render() {
         const { date, target, time } = this.props.match.params;
         const dateUrl = `/${date}/`;
+
+        let submitDisabled = !this.isValid(this.state);
 
         return (
             <div className="booking-modal">
@@ -25,6 +41,11 @@ class SlotBookView extends React.Component {
                 <h3>Book</h3>
                 <p>Booking target { target } at { time }</p>
                 <ArcherMultiSelect onChange={ ::this.setArchers } />
+                <div>
+                    <label htmlFor="id-distance">* Distance:</label>
+                    <input id="id-distance" onChange={ ::this.setDistance } />
+                </div>
+                <input type="submit" value="Book" disabled={ submitDisabled } onClick={ ::this.submit } />
             </div>
         );
     }
