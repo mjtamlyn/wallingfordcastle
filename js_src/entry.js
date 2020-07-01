@@ -13,10 +13,9 @@ class RangeBookingApp extends React.Component {
     render() {
         return (
             <BrowserRouter basename={ 'members/range' }>
+                <DateSelectorView />
                 <Switch>
-                    <Route exact path="/">
-                        <DateSelectorView />
-                    </Route>
+                    <Route exact path="/"></Route>
                     <Route path="/:date(\d{4}-\d{2}-\d{2})/" component={ DateView } />
                     <Route component={ NoMatch } />
                 </Switch>

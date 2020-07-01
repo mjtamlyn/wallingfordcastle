@@ -23,10 +23,18 @@ class Loader extends React.Component {
     }
 
     componentDidMount() {
-        const url = this.getApiEndpoint();
+        const url = this.getApiEndpoint(this.props);
         store.load(url).then(::this.setData);
         if (this.subscribe) {
             store.subscribe(url, this.subscriptionFn);
+        }
+    }
+
+    componentDidUpdate(prevProps) {
+        const oldUrl = this.getApiEndpoint(prevProps);
+        const url = this.getApiEndpoint(this.props);
+        if (oldUrl !== url) {
+            store.load(url).then(::this.setData);
         }
     }
 
