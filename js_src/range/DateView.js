@@ -8,6 +8,8 @@ import Schedule from 'range/Schedule';
 import SlotBookView from 'range/SlotBookView';
 
 class DateView extends Loader {
+    subscribe = true
+
     getApiEndpoint() {
         const date = this.props.match.params.date;
         return `/api/range/${date}/`;

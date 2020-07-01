@@ -5,6 +5,7 @@ import deepForEach from 'deep-for-each';
 class Store {
     constructor() {
         this.cache = {};
+        this.subscriptions = {};
     }
 
     load(url) {
@@ -44,6 +45,32 @@ class Store {
             referrerPolicy: 'no-referrer',
             body: JSON.stringify(data),
         }).then((response) => response.json());
+    }
+
+    subscribe(url, callback) {
+        if (this.subscriptions[url]) {
+            this.subscriptions[url].push(callback);
+        } else {
+            this.subscriptions[url] = [callback];
+        }
+    }
+
+    unsubscribe(url, callback) {
+        if (this.subscriptions[url] && this.subscriptions[url].includes(callback)) {
+            this.subscriptions[url].pop(callback);
+            if (!this.subscriptions[url].length) {
+                delete this.subscriptions[url];
+            }
+        }
+    }
+
+    invalidate(url) {
+        delete this.cache[url];
+        this.load(url).then((data) => {
+            if (this.subscriptions[url]) {
+                this.subscriptions[url].forEach((callback) => callback(data));
+            }
+        });
     }
 }
 

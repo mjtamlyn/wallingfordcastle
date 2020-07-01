@@ -5,20 +5,36 @@ import Loading from 'utils/Loading';
 
 
 class Loader extends React.Component {
+    subscribe = false
+
     constructor(props) {
         super(props);
-        this.state = { loaded: false };
+        this.state = { loaded: null };
+        this.subscriptionFn = ::this.setData;
     }
 
     getApiEndpoint() {
         return this.apiEndpoint;
     }
 
+    setData(data) {
+        this.store = data;
+        this.setState({ loaded: new Date() });
+    }
+
     componentDidMount() {
-        store.load(this.getApiEndpoint()).then((data) => {
-            this.store = data;
-            this.setState({ loaded: true });
-        });
+        const url = this.getApiEndpoint();
+        store.load(url).then(::this.setData);
+        if (this.subscribe) {
+            store.subscribe(url, this.subscriptionFn);
+        }
+    }
+
+    componentWillUnmount() {
+        if (this.subscribe) {
+            const url = this.getApiEndpoint();
+            store.unsubscribe(url, this.subscriptionFn);
+        }
     }
 
     renderLoaded(data) {

@@ -37,13 +37,15 @@ class SlotBookView extends React.Component {
         this.setState({
             submitting: true,
         }, () => {
-            store.send('/api/range/book/', data).then((data) => {
+            store.send('/api/range/book/', data).then((response) => {
+                if (response.ok) {
+                    store.invalidate(`/api/range/${data.date}/`);
+                }
                 this.setState({ submitting: false });
-            }).catch((data) => {
-                console.error('error', data);
+            }).catch((error) => {
+                console.error('error', error);
             });
         });
-        console.log('Time to submit!', data);
     }
 
     render() {

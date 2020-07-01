@@ -65,12 +65,14 @@ def bookable_archers(request):
 
 
 def book_slot(request):
+    ok = False
     data = json.loads(request.body)
     form = BookSlotForm(data=data, user=request.user)
     if form.is_valid():
         form.save()
+        ok = True
     # TODO: some sort of helpful error cases!
     response = {
-        'status': 'OK',
+        'ok': ok,
     }
     return JsonResponse(response)

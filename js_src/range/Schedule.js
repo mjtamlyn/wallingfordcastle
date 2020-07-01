@@ -40,7 +40,6 @@ class Schedule extends React.Component {
                     let duration = slot.duration / 15;
                     const linkTarget = `/${ this.props.date }/book/${ time.format('HH:mm') }/${ slot.target }/`;
                     if (slot.booked) {
-                        console.log(slot);
                         columns.push(
                             <td key={ slot.target } rowSpan={ duration }>
                                 { slot.details }
