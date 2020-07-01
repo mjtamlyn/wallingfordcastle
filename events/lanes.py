@@ -28,8 +28,8 @@ class Slot:
     def serialize(self):
         return {
             '__type': 'Slot',
-            'start': self.start.isoformat(),
-            'end': self.start.isoformat(),
+            'start': self.start.strftime('%Y-%m-%dT%H:%M'),
+            'end': self.end.strftime('%Y-%m-%dT%H:%M'),
             'duration': self.duration.seconds // 60,
             'target': self.target,
             'booked': self.booked,
@@ -83,6 +83,6 @@ class Template:
 
     def serialize(self):
         return [{
-            'start_time': row['start_time'].isoformat(),
+            'startTime': row['start_time'].strftime('%Y-%m-%dT%H:%M'),
             'slots': [slot.serialize() if slot else None for slot in row['slots']],
         } for row in self.slots]
