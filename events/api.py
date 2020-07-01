@@ -3,6 +3,7 @@ import datetime
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
+from membership.models import Member
 from .models import BookingTemplate
 
 
@@ -45,5 +46,17 @@ def date_slots(request, date):
             'pretty': template.date.strftime('%A %-d %B'),
         },
         'schedule': template.template.serialize(),
+    }
+    return JsonResponse(response)
+
+
+def bookable_archers(request):
+    members = Member.objects.managed_by(request.user)
+    response = {
+        'archers': [{
+            '__type': 'Archer',
+            'name': member.archer.name,
+            'id': member.id,
+        } for member in members],
     }
     return JsonResponse(response)

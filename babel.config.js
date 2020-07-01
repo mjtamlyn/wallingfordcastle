@@ -4,6 +4,7 @@ module.exports = function(api) {
     return {
         plugins: [
             '@babel/plugin-proposal-class-properties',
+            '@babel/plugin-proposal-function-bind',
         ],
         presets: [
             '@babel/preset-react',

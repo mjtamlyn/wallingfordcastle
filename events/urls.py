@@ -13,4 +13,5 @@ urlpatterns = [
 range_api_urlpatterns = [
     path('', api.date_list, name='date-list'),
     re_path('^(?P<date>\d{4}-\d{2}-\d{2})/$', api.date_slots, name='date-slots'),
+    path('archers/', api.bookable_archers, name='bookable-archers'),
 ]

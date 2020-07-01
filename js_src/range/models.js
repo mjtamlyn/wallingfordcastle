@@ -16,4 +16,11 @@ class Slot {
     }
 }
 
-export default { BookableDate, Slot };
+class Archer {
+    constructor({ id, name }) {
+        this.id = id;
+        this.name = name;
+    }
+}
+
+export default { Archer, BookableDate, Slot };
