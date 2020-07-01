@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
 import Loader from 'utils/Loader';
 import Loading from 'utils/Loading';
