@@ -37,6 +37,7 @@ INSTALLED_APPS = (
     'floppyforms',
 
     'debug_toolbar',
+    'webpack_loader',
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -71,8 +72,17 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': not DEBUG,
+        'BUNDLE_DIR_NAME': 'bundles/',
+        'STATS_FILE': os.path.join(BASE_DIR, 'build', 'webpack-stats.json'),
+    },
+}
 
 if not DEBUG:
     SESSION_COOKIE_SECURE = True

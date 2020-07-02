@@ -7,7 +7,7 @@ from django.urls import path, reverse
 
 from django_object_actions import DjangoObjectActions
 
-from .models import Attendee, Booking, BookingQuestion, Event
+from .models import Attendee, BookedSlot, Booking, BookingQuestion, BookingTemplate, Event
 
 
 class AttendeeInline(admin.TabularInline):
@@ -74,3 +74,16 @@ class BookingAdmin(admin.ModelAdmin):
     list_display = ['event', 'archer']
     list_filter = ['event']
     autocomplete_fields = ['archer']
+
+
+@admin.register(BookedSlot)
+class BookedSlotAdmin(admin.ModelAdmin):
+    list_display = ['start', 'end', 'target', 'distance']
+
+    def end(self, instance):
+        return instance.end
+
+
+@admin.register(BookingTemplate)
+class BookingTemplateAdmin(admin.ModelAdmin):
+    list_display = ['date', 'start_times', 'targets']

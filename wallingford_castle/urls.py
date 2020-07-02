@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.views import PasswordResetConfirmView
 from django.urls import include, path, reverse_lazy, re_path
 
+from events.urls import range_api_urlpatterns
+
 from . import views
 from .forms import RegisterForm
 
@@ -17,6 +19,7 @@ urlpatterns = [
     re_path(r'^beginners/', include('beginners.urls', namespace='beginners')),
     re_path(r'^members/', include('membership.urls', namespace='membership')),
     re_path(r'^members/events/', include('events.urls', namespace='events')),
+    re_path(r'^api/range/', include(range_api_urlpatterns)),
     re_path(r'^tournaments/', include('tournaments.urls', namespace='tournaments')),
     re_path(r'^events/', include('bookings.urls', namespace='bookings')),
     re_path(r'^venues/$', views.Venues.as_view(), name='venues'),
