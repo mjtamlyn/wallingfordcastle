@@ -113,5 +113,5 @@ class PaymentDetails(MessageMixin, View):
         return HttpResponseRedirect(reverse('membership:overview'))
 
 
-class RangeBooking(TemplateView):
+class RangeBooking(FullMemberRequired, TemplateView):
     template_name = 'membership/range_booking.html'
