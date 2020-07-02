@@ -18,6 +18,10 @@ class SlotBookView extends React.Component {
         };
     }
 
+    close() {
+        this.setState({ done: true });
+    }
+
     setArchers(archers) {
         this.setState({ archers });
     }
@@ -62,6 +66,7 @@ class SlotBookView extends React.Component {
 
         return (
             <div className="booking-modal">
+                <div className="booking-modal__background" onClick={ ::this.close } />
                 <div className="booking-modal__content">
                     <h4 className="booking-modal__title">Booking target { target } at { time }</h4>
                     <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
