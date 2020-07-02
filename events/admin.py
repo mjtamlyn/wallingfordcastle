@@ -79,6 +79,7 @@ class BookingAdmin(admin.ModelAdmin):
 @admin.register(BookedSlot)
 class BookedSlotAdmin(admin.ModelAdmin):
     list_display = ['start', 'end', 'target', 'distance']
+    autocomplete_fields = ['archers']
 
     def end(self, instance):
         return instance.end
