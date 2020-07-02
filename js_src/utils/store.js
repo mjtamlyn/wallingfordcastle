@@ -18,7 +18,7 @@ class Store {
             .then(response => response.json())
             .then((rawData) => {
                 deepForEach(rawData, (value, key, subject) => {
-                    if (value.__type) {
+                    if (value && value.__type) {
                         subject[key] = new models[value.__type](value);
                     }
                 });

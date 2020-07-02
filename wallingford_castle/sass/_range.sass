@@ -39,13 +39,50 @@
 .date-view
   padding: 20px 0
   position: relative
+  width: 100%
+  overflow-x: scroll
 
-table.range-schedule
+.range-schedule
   border-collapse: collapse
 
   th, td
     border: 1px solid black
     text-align: center
+    padding: 2px
+    width: 9%
+
+  &__slot
+    font-size: 14px
+    position: relative
+    &--free
+      background-color: #f0fff0
+    &--booked
+      background-color: #fcfcfc
+    &--unavailable
+      background-color: #777
+
+  &__description
+    font-size: 14px
+    margin: 5px 0
+
+  &__book
+    position: absolute
+    top: 0
+    left: 0
+    height: 100%
+    width: 100%
+    font-weight: bold
+    cursor: pointer
+    color: black
+    display: flex
+    align-items: center
+
+    &:hover
+      background-color: #e0eee0
+      text-decoration: none
+
+    &__inner
+      flex-grow: 1
 
 .booking-modal
   position: absolute

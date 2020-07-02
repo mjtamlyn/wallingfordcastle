@@ -28,8 +28,11 @@ class Slot:
     def serialize(self):
         details = None
         if self.details:
-            details = ', '.join(self.details.archers.values_list('name', flat=True))
-            print(details)
+            names = ', '.join(self.details.archers.values_list('name', flat=True))
+            details = {
+                'names': names,
+                'distance': self.details.distance,
+            }
         return {
             '__type': 'Slot',
             'start': self.start.strftime('%Y-%m-%dT%H:%M'),

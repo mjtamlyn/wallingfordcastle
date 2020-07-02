@@ -37,20 +37,32 @@ class Schedule extends React.Component {
                 let index = startTimes.indexOf(time.format(time._f));
                 let slots = schedule[index].slots;
                 slots.forEach((slot) => {
+                    if (!slot) {
+                        return; // TODO: there's an issue with missing boxes with odd sessions here
+                    }
                     let duration = slot.duration / 15;
                     const linkTarget = `/${ this.props.date }/book/${ time.format('HH:mm') }/${ slot.target }/`;
                     if (slot.booked) {
                         columns.push(
-                            <td key={ slot.target } rowSpan={ duration }>
-                                { slot.details }
+                            <td
+                                className="range-schedule__slot range-schedule__slot--booked"
+                                key={ slot.target }
+                                rowSpan={ duration }
+                            >
+                                <p className="range-schedule__description">{ slot.details.names }</p>
+                                <p className="range-schedule__description">{ slot.details.distance }</p>
                             </td>
                         );
                     } else {
                         columns.push(
-                            <td key={ slot.target } rowSpan={ duration }>
-                                Free slot
-                                <br />
-                                <Link to={ linkTarget }>Book</Link>
+                            <td
+                                className="range-schedule__slot range-schedule__slot--free"
+                                key={ slot.target }
+                                rowSpan={ duration }
+                            >
+                                <Link className="range-schedule__book" to={ linkTarget }>
+                                    <span className="range-schedule__book__inner">Book</span>
+                                </Link>
                             </td>
                         );
                     }
@@ -60,7 +72,10 @@ class Schedule extends React.Component {
                 for (let i=0; i<targets; i++) {
                     if (overlaps[i] === 0) {
                         columns.push(
-                            <td key={ i + 1 }></td>
+                            <td
+                                className="range-schedule__slot range-schedule__slot--unavailable"
+                                key={ i + 1 }
+                            ></td>
                         );
                     }
                     overlaps[i] -= 1;
