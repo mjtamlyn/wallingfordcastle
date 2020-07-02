@@ -74,7 +74,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE ='whitenoise.storage.CompressedStaticFilesStorage'
 
 WEBPACK_LOADER = {
     'DEFAULT': {

@@ -42,7 +42,6 @@ class Store {
                 'X-CSRFToken': csrf,
             },
             redirect: 'follow',
-            referrerPolicy: 'no-referrer',
             body: JSON.stringify(data),
         }).then((response) => response.json());
     }

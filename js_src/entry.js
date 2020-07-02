@@ -25,4 +25,6 @@ class RangeBookingApp extends React.Component {
 }
 
 
-ReactDOM.render(<RangeBookingApp />, app);
+if (app) {
+    ReactDOM.render(<RangeBookingApp />, app);
+}
