@@ -3,12 +3,15 @@
   border: 1px solid black
   border-radius: 4px
   display: inline-flex
+  flex-wrap: wrap
+  white-space: nowrap
   overflow: hidden
   box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2)
 
   &__item
-    border: 1px solid #bbb
-    margin: -1px
+    flex-grow: 1
+    border-right: 1px solid #bbb
+    border-bottom: 1px solid #bbb
     background-color: #fcfcfc
     &:hover
       background-color: #f5f5f5
@@ -27,6 +30,11 @@
       text-decoration: none
     &:active
       box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.6)
+
+  &--distance-selector
+    flex-wrap: wrap
+  &--distance-selector &__item
+    flex-basis: 25%
 
 .date-view
   padding: 20px 0
@@ -55,6 +63,12 @@ table.range-schedule
     border-radius: 20px
     padding: 20px
     position: relative
+    
+    & > :first-child
+      margin-top: 0
+    
+    & > :last-child
+      margin-bottom: 0
 
   &__close
     font-size: 12px
@@ -63,15 +77,39 @@ table.range-schedule
     top: 10px
 
   &__title
-    margin: 0
+    margin: 10px 0
 
   &__row
-    margin: 8px 0
+    margin: 10px 0
+
+  &__button
+    font-size: 14px
+    padding: 4px 8px
+    color: black
+    border: 1px solid black
+    border-radius: 4px
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.2)
+    background-color: #fcfcfc
+    cursor: pointer
+    outline: none
+    &:hover
+      background-color: #f5f5f5
+    &:active
+      box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.6)
+
+    &[disabled]
+      cursor: auto
+      border-color: #777
+      color: #777
+      background-color: white
+      box-shadow: none
+      &:hover
+        background-color: white
+      &:active
+        box-shadow: none
 
   label
     font-size: 14px
     font-weight: bold
-    margin-right: 8px
-
-.archer-multi-select
-  margin: 8px 0
+    margin: 5px 0
+    display: block

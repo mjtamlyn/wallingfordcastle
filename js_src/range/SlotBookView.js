@@ -3,6 +3,7 @@ import { Link, Redirect } from 'react-router-dom';
 
 import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
+import DistanceSelector from 'range/DistanceSelector';
 
 class SlotBookView extends React.Component {
     constructor(props) {
@@ -21,8 +22,8 @@ class SlotBookView extends React.Component {
         this.setState({ archers });
     }
 
-    setDistance(e) {
-        this.setState({ distance: e.target.value });
+    setDistance(distance) {
+        this.setState({ distance });
     }
 
     isValid(state) {
@@ -62,14 +63,17 @@ class SlotBookView extends React.Component {
         return (
             <div className="booking-modal">
                 <div className="booking-modal__content">
-                    <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
                     <h4 className="booking-modal__title">Booking target { target } at { time }</h4>
-                    <ArcherMultiSelect onChange={ ::this.setArchers } />
+                    <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
                     <div className="booking-modal__row">
-                        <label htmlFor="id-distance">Distance:</label>
-                        <input id="id-distance" onChange={ ::this.setDistance } />
+                        <ArcherMultiSelect onChange={ ::this.setArchers } />
                     </div>
-                    <input type="submit" value="Book" disabled={ submitDisabled } onClick={ ::this.submit } />
+                    <div className="booking-modal__row">
+                        <DistanceSelector onChange={ ::this.setDistance } />
+                    </div>
+                    <div className="booking-modal__row">
+                        <input className="booking-modal__button" type="submit" value="Book" disabled={ submitDisabled } onClick={ ::this.submit } />
+                    </div>
                 </div>
             </div>
         );
