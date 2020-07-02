@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+set -eo pipefail
+
+puts-step() {
+  echo "-----> $@"
+}
+
+indent() {
+    RE="s/^/       /"
+    [ $(uname) == "Darwin" ] && sed -l "$RE" || sed -u "$RE"
+}
+
+MANAGE_FILE=$(find . -maxdepth 3 -type f -name 'manage.py' | head -1)
+MANAGE_FILE=${MANAGE_FILE:2}
+
+echo "export SOURCE_VERSION=$SOURCE_VERSION" > $BUILD_DIR/.profile.d/source_version.sh
+
+puts-step "Collecting static files"
+python $MANAGE_FILE collectstatic --noinput  2>&1 | sed '/^Copying/d;/^$/d;/^ /d' | indent
+
+puts-step "Migrating main database"
+python $MANAGE_FILE migrate --noinput | indent
