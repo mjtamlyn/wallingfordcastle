@@ -2,8 +2,14 @@ import copy
 from collections import defaultdict
 
 import attr
+import pytz
 
 from django.utils.functional import cached_property
+
+
+def serialize_time(time):
+    local = time.astimezone(pytz.timezone('Europe/London'))
+    return local.strftime('%Y-%m-%dT%H:%M')
 
 
 @attr.s
@@ -49,8 +55,8 @@ class Slot:
             }
         return {
             '__type': 'Slot',
-            'start': self.start.strftime('%Y-%m-%dT%H:%M'),
-            'end': self.end.strftime('%Y-%m-%dT%H:%M'),
+            'start': serialize_time(self.start),
+            'end': serialize_time(self.end),
             'duration': self.duration.seconds // 60,
             'target': self.target,
             'booked': self.booked,
@@ -74,9 +80,10 @@ class Template:
         exact_lookup = {}
         target_lookup = defaultdict(list)
         for booking in self.booked_slots:
-            if booking.start not in start_times:
-                start_times.append(booking.start)
-            exact_lookup[(booking.start, booking.target)] = booking
+            start = booking.start.astimezone(pytz.timezone('Europe/London'))
+            if start not in start_times:
+                start_times.append(start)
+            exact_lookup[(start, booking.target)] = booking
             target_lookup[booking.target].append(booking)
         start_times.sort()
 
@@ -105,6 +112,6 @@ class Template:
 
     def serialize(self, user=None):
         return [{
-            'startTime': row['start_time'].strftime('%Y-%m-%dT%H:%M'),
+            'startTime': serialize_time(row['start_time']),
             'slots': [slot.personalize(user=user).serialize() if slot else None for slot in row['slots']],
         } for row in self.slots]

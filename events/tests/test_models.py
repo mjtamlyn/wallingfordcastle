@@ -22,7 +22,8 @@ class TestBookingTemplate(TestCase):
     def test_simple_template(self):
         now = timezone.now()
         tz = pytz.timezone('Europe/London')
-        midday = now.replace(hour=12, minute=0, second=0, microsecond=0, tzinfo=tz)
+        midday = now.replace(hour=12, minute=0, second=0, microsecond=0)
+        midday = tz.localize(midday)
         today = midday.date()
         midday_time = midday.time()
         hour = datetime.timedelta(hours=1)
@@ -43,7 +44,8 @@ class TestBookingTemplate(TestCase):
     def test_has_bookings(self):
         now = timezone.now()
         tz = pytz.timezone('Europe/London')
-        midday = now.replace(hour=12, minute=0, second=0, microsecond=0, tzinfo=tz)
+        midday = now.replace(hour=12, minute=0, second=0, microsecond=0)
+        midday = tz.localize(midday)
         today = midday.date()
         midday_time = midday.time()
         hour = datetime.timedelta(hours=1)

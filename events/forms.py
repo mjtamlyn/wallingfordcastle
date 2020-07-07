@@ -61,7 +61,8 @@ class BookSlotForm(forms.Form):
     def save(self):
         data = self.cleaned_data
         tz = pytz.timezone('Europe/London')
-        start = datetime.datetime.combine(data['date'], data['time'], tz)
+        start = datetime.datetime.combine(data['date'], data['time'])
+        start = tz.localize(start)
         duration = datetime.timedelta(minutes=90)  # TODO: submit this somehow?
         target = data['target']
         distance = data['distance']
