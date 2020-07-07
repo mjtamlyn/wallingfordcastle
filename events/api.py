@@ -49,7 +49,7 @@ def date_slots(request, date):
             'api': template.date.strftime('%Y-%m-%d'),
             'pretty': template.date.strftime('%A %-d %B'),
         },
-        'schedule': template.template.serialize(),
+        'schedule': template.template.serialize(user=request.user),
     }
     return JsonResponse(response)
 

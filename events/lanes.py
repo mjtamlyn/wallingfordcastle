@@ -25,10 +25,24 @@ class Slot:
             return False
         return True
 
+    def personalize(self, user):
+        self.editable = False
+        if user is None:
+            return self
+        if user.manages_any(self.booked_archers):
+            self.editable = True
+        return self
+
+    @cached_property
+    def booked_archers(self):
+        if self.details is None:
+            return []
+        return list(self.details.archers.order_by('name'))
+
     def serialize(self):
         details = None
         if self.details:
-            names = ', '.join(self.details.archers.values_list('name', flat=True))
+            names = ', '.join(a.name for a in self.booked_archers)
             details = {
                 'names': names,
                 'distance': self.details.distance,
@@ -41,6 +55,7 @@ class Slot:
             'target': self.target,
             'booked': self.booked,
             'details': details,
+            'editable': self.editable,
         }
 
 
@@ -88,8 +103,8 @@ class Template:
             })
         return schedule
 
-    def serialize(self):
+    def serialize(self, user=None):
         return [{
             'startTime': row['start_time'].strftime('%Y-%m-%dT%H:%M'),
-            'slots': [slot.serialize() if slot else None for slot in row['slots']],
+            'slots': [slot.personalize(user=user).serialize() if slot else None for slot in row['slots']],
         } for row in self.slots]
