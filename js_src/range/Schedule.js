@@ -2,6 +2,28 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import moment from 'moment';
 
+class BookedSlot extends React.Component {
+    render() {
+        const { duration, names, distance, editable } = this.props;
+
+        let cancelLink = null;
+        if (editable) {
+            cancelLink = <a className="range-schedule__cancel">Cancel</a>;
+        }
+
+        return (
+            <td
+                className="range-schedule__slot range-schedule__slot--booked"
+                rowSpan={ duration }
+            >
+                <p className="range-schedule__description">{ names }</p>
+                <p className="range-schedule__description">{ distance }</p>
+                { cancelLink }
+            </td>
+        );
+    }
+}
+
 class Schedule extends React.Component {
     formatTime(dateString) {
         return moment(dateString).format('HH:mm');
@@ -44,14 +66,13 @@ class Schedule extends React.Component {
                     const linkTarget = `/${ this.props.date }/book/${ time.format('HH:mm') }/${ slot.target }/`;
                     if (slot.booked) {
                         columns.push(
-                            <td
-                                className="range-schedule__slot range-schedule__slot--booked"
+                            <BookedSlot
                                 key={ slot.target }
-                                rowSpan={ duration }
-                            >
-                                <p className="range-schedule__description">{ slot.details.names }</p>
-                                <p className="range-schedule__description">{ slot.details.distance }</p>
-                            </td>
+                                duration={ duration }
+                                distance={ slot.details.distance }
+                                names={ slot.details.names }
+                                editable={ slot.editable }
+                            />
                         );
                     } else {
                         columns.push(
