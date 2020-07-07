@@ -13,10 +13,9 @@ def date_list(request):
     today = timezone.now().date()
     prebooking_limit = today + datetime.timedelta(days=7)
 
-    if request.user.is_superuser:
-        templates = BookingTemplate.objects.order_by('date')
-    else:
-        templates = BookingTemplate.objects.order_by('date').filter(date__lte=prebooking_limit)
+    templates = BookingTemplate.objects.order_by('date').filter(date__gte=today)
+    if not request.user.is_superuser:
+        templates = templates.filter(date__lte=prebooking_limit)
     response = {
         'dates': [{
             '__type': 'BookableDate',
