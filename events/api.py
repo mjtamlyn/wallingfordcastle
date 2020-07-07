@@ -1,6 +1,7 @@
 import datetime
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
@@ -9,6 +10,7 @@ from .forms import BookSlotForm
 from .models import BookingTemplate
 
 
+@login_required
 def date_list(request):
     today = timezone.now().date()
     prebooking_limit = today + datetime.timedelta(days=7)
@@ -26,6 +28,7 @@ def date_list(request):
     return JsonResponse(response)
 
 
+@login_required
 def date_slots(request, date):
     today = timezone.now().date()
     prebooking_limit = today + datetime.timedelta(days=7)
@@ -51,6 +54,7 @@ def date_slots(request, date):
     return JsonResponse(response)
 
 
+@login_required
 def bookable_archers(request):
     members = Member.objects.managed_by(request.user)
     response = {
@@ -63,6 +67,7 @@ def bookable_archers(request):
     return JsonResponse(response)
 
 
+@login_required
 def book_slot(request):
     ok = False
     data = json.loads(request.body)
