@@ -1,28 +1,39 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
 
-class BookedSlot extends React.Component {
+class BaseBookedSlot extends React.Component {
     render() {
-        const { duration, names, distance, editable } = this.props;
+        const { slot, rowSpan } = this.props;
 
         let cancelLink = null;
-        if (editable) {
-            cancelLink = <a className="range-schedule__cancel">Cancel</a>;
+        if (slot.editable) {
+            const date = this.props.match.params.date;
+            const linkTarget = `/${date}/cancel/${slot.reference()}/`;
+            cancelLink = (
+                <Link
+                    className="range-schedule__cancel"
+                    to={ linkTarget }
+                >
+                    Cancel
+                </Link>
+            );
         }
 
         return (
             <td
                 className="range-schedule__slot range-schedule__slot--booked"
-                rowSpan={ duration }
+                rowSpan={ rowSpan }
             >
-                <p className="range-schedule__description">{ names }</p>
-                <p className="range-schedule__description">{ distance }</p>
+                <p className="range-schedule__description">{ slot.details.names }</p>
+                <p className="range-schedule__description">{ slot.details.distance }</p>
                 { cancelLink }
             </td>
         );
     }
 }
+
+const BookedSlot = withRouter(BaseBookedSlot);
 
 class Schedule extends React.Component {
     formatTime(dateString) {
@@ -68,10 +79,8 @@ class Schedule extends React.Component {
                         columns.push(
                             <BookedSlot
                                 key={ slot.target }
-                                duration={ duration }
-                                distance={ slot.details.distance }
-                                names={ slot.details.names }
-                                editable={ slot.editable }
+                                rowSpan={ duration }
+                                slot={ slot }
                             />
                         );
                     } else {

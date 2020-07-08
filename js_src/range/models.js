@@ -15,6 +15,10 @@ class Slot {
         this.details = details;
         this.editable = editable;
     }
+
+    reference() {
+        return `${this.start.split('T')[1]}/${this.target}`;
+    }
 }
 
 class Archer {

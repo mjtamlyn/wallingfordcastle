@@ -695,6 +695,10 @@ dd {
   margin: 10px 0;
 }
 /* line 140, ../../sass/_range.sass */
+.booking-modal__text {
+  font-size: 16px;
+}
+/* line 143, ../../sass/_range.sass */
 .booking-modal__button {
   font-size: 14px;
   padding: 4px 8px;
@@ -706,15 +710,15 @@ dd {
   cursor: pointer;
   outline: none;
 }
-/* line 150, ../../sass/_range.sass */
+/* line 153, ../../sass/_range.sass */
 .booking-modal__button:hover {
   background-color: #f5f5f5;
 }
-/* line 152, ../../sass/_range.sass */
+/* line 155, ../../sass/_range.sass */
 .booking-modal__button:active {
   box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.6);
 }
-/* line 155, ../../sass/_range.sass */
+/* line 158, ../../sass/_range.sass */
 .booking-modal__button[disabled] {
   cursor: auto;
   border-color: #777;
@@ -722,15 +726,15 @@ dd {
   background-color: white;
   box-shadow: none;
 }
-/* line 161, ../../sass/_range.sass */
+/* line 164, ../../sass/_range.sass */
 .booking-modal__button[disabled]:hover {
   background-color: white;
 }
-/* line 163, ../../sass/_range.sass */
+/* line 166, ../../sass/_range.sass */
 .booking-modal__button[disabled]:active {
   box-shadow: none;
 }
-/* line 166, ../../sass/_range.sass */
+/* line 169, ../../sass/_range.sass */
 .booking-modal label {
   font-size: 14px;
   font-weight: bold;

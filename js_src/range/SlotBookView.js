@@ -62,7 +62,7 @@ class SlotBookView extends React.Component {
             return <Redirect to={ dateUrl } />;
         }
 
-        let submitDisabled = !this.isValid(this.state) && !this.state.submitting;
+        const submitDisabled = !this.isValid(this.state) || this.state.submitting;
 
         return (
             <div className="booking-modal">
