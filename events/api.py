@@ -6,7 +6,7 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 from membership.models import Member
-from .forms import BookSlotForm
+from .forms import BookSlotForm, CancelSlotForm
 from .models import BookingTemplate
 
 
@@ -72,6 +72,21 @@ def book_slot(request):
     ok = False
     data = json.loads(request.body)
     form = BookSlotForm(data=data, user=request.user)
+    if form.is_valid():
+        form.save()
+        ok = True
+    # TODO: some sort of helpful error cases!
+    response = {
+        'ok': ok,
+    }
+    return JsonResponse(response)
+
+
+@login_required
+def cancel_slot(request):
+    ok = False
+    data = json.loads(request.body)
+    form = CancelSlotForm(data=data, user=request.user)
     if form.is_valid():
         form.save()
         ok = True

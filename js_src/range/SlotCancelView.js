@@ -19,8 +19,21 @@ class SlotCancelView extends React.Component {
     }
 
     submit() {
-        this.setState({ submitting: true });
-        console.log('cancel the session!');
+        let data = {
+            ...this.submitData,
+        }
+        this.setState({
+            submitting: true,
+        }, () => {
+            store.send('/api/range/cancel/', data).then((response) => {
+                if (response.ok) {
+                    store.invalidate(`/api/range/${data.date}/`);
+                }
+                this.setState({ submitting: false, done: true });
+            }).catch((error) => {
+                console.error('error', error);
+            });
+        });
     }
 
     render() {
