@@ -61,7 +61,8 @@ class BookSlotForm(forms.Form):
     def save(self):
         data = self.cleaned_data
         tz = pytz.timezone('Europe/London')
-        start = datetime.datetime.combine(data['date'], data['time'], tz)
+        start = datetime.datetime.combine(data['date'], data['time'])
+        start = tz.localize(start)
         duration = datetime.timedelta(minutes=90)  # TODO: submit this somehow?
         target = data['target']
         distance = data['distance']
@@ -74,3 +75,29 @@ class BookSlotForm(forms.Form):
         )
         slot.archers.set(a.archer for a in archers)
         return slot
+
+
+class CancelSlotForm(forms.Form):
+    date = forms.DateField()
+    time = forms.TimeField()
+    target = forms.IntegerField()
+
+    def __init__(self, user, **kwargs):
+        self.user = user
+        super().__init__(**kwargs)
+
+    def clean(self):
+        data = self.cleaned_data
+        tz = pytz.timezone('Europe/London')
+        start = datetime.datetime.combine(data['date'], data['time'])
+        start = tz.localize(start)
+        slot = BookedSlot.objects.get(
+            start=start,
+            target=data['target'],
+        )
+        # TODO: check I have the right to delete this
+        data['slot'] = slot
+        return data
+
+    def save(self):
+        self.cleaned_data['slot'].delete()

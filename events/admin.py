@@ -78,11 +78,15 @@ class BookingAdmin(admin.ModelAdmin):
 
 @admin.register(BookedSlot)
 class BookedSlotAdmin(admin.ModelAdmin):
-    list_display = ['start', 'end', 'target', 'distance']
+    list_display = ['start', 'end', 'target', 'distance', 'archer_names']
+    list_filter = ['start', 'target']
     autocomplete_fields = ['archers']
 
     def end(self, instance):
         return instance.end
+
+    def archer_names(self, instance):
+        return ', '.join(a.name for a in instance.archers.order_by('name'))
 
 
 @admin.register(BookingTemplate)

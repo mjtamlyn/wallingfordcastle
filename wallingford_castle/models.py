@@ -5,6 +5,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib import messages
 from django.db import models, transaction
 from django.utils import timezone
+from django.utils.functional import cached_property
 from django.utils.http import urlsafe_base64_encode
 from django.urls import reverse
 
@@ -206,6 +207,14 @@ class User(AbstractEmailUser):
             currency='gbp',
             description=description,
         )
+
+    @cached_property
+    def managed_members(self):
+        from membership.models import Member
+        return list(Member.objects.managed_by(self).select_related('archer').order_by('archer__name'))
+
+    def manages_any(self, archers):
+        return any(map(lambda m: m.archer in archers, self.managed_members))
 
 
 class Archer(models.Model):

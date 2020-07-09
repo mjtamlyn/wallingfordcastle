@@ -114,13 +114,14 @@ class BookingTemplate(models.Model):
     @cached_property
     def template(self):
         tz = pytz.timezone('Europe/London')
-        midnight = datetime.datetime.combine(self.date, datetime.time(0), tz)
+        midnight = datetime.datetime.combine(self.date, datetime.time(0))
+        midnight = tz.localize(midnight)
         slots = [slot.slot for slot in BookedSlot.objects.filter(
             start__gte=midnight,
             start__lt=midnight + datetime.timedelta(days=1),
         )]
         start_times = [
-            datetime.datetime.combine(self.date, time, tz)
+            tz.localize(datetime.datetime.combine(self.date, time))
         for time in self.start_times]
         return Template(
             start_times=start_times,

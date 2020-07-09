@@ -1,22 +1,23 @@
 import datetime
 import json
 
+from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 from membership.models import Member
-from .forms import BookSlotForm
+from .forms import BookSlotForm, CancelSlotForm
 from .models import BookingTemplate
 
 
+@login_required
 def date_list(request):
     today = timezone.now().date()
     prebooking_limit = today + datetime.timedelta(days=7)
 
-    if request.user.is_superuser:
-        templates = BookingTemplate.objects.order_by('date')
-    else:
-        templates = BookingTemplate.objects.order_by('date').filter(date__lte=prebooking_limit)
+    templates = BookingTemplate.objects.order_by('date').filter(date__gte=today)
+    if not request.user.is_superuser:
+        templates = templates.filter(date__lte=prebooking_limit)
     response = {
         'dates': [{
             '__type': 'BookableDate',
@@ -27,6 +28,7 @@ def date_list(request):
     return JsonResponse(response)
 
 
+@login_required
 def date_slots(request, date):
     today = timezone.now().date()
     prebooking_limit = today + datetime.timedelta(days=7)
@@ -47,11 +49,12 @@ def date_slots(request, date):
             'api': template.date.strftime('%Y-%m-%d'),
             'pretty': template.date.strftime('%A %-d %B'),
         },
-        'schedule': template.template.serialize(),
+        'schedule': template.template.serialize(user=request.user),
     }
     return JsonResponse(response)
 
 
+@login_required
 def bookable_archers(request):
     members = Member.objects.managed_by(request.user)
     response = {
@@ -64,10 +67,26 @@ def bookable_archers(request):
     return JsonResponse(response)
 
 
+@login_required
 def book_slot(request):
     ok = False
     data = json.loads(request.body)
     form = BookSlotForm(data=data, user=request.user)
+    if form.is_valid():
+        form.save()
+        ok = True
+    # TODO: some sort of helpful error cases!
+    response = {
+        'ok': ok,
+    }
+    return JsonResponse(response)
+
+
+@login_required
+def cancel_slot(request):
+    ok = False
+    data = json.loads(request.body)
+    form = CancelSlotForm(data=data, user=request.user)
     if form.is_valid():
         form.save()
         ok = True

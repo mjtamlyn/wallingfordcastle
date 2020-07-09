@@ -1,11 +1,12 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 
 import Loader from 'utils/Loader';
 import Loading from 'utils/Loading';
 
 import Schedule from 'range/Schedule';
 import SlotBookView from 'range/SlotBookView';
+import SlotCancelView from 'range/SlotCancelView';
 
 class DateView extends Loader {
     subscribe = true
@@ -30,7 +31,12 @@ class DateView extends Loader {
         return (
             <div className="date-view">
                 <Schedule schedule={ data.schedule } date={ date } />
-                <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:target(\d+)/" component={ SlotBookView } />
+                <Switch>
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:target(\d+)/" component={ SlotBookView } />
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/cancel/:time(\d{2}:\d{2})/:target(\d+)/">
+                        <SlotCancelView schedule={ data.schedule } />
+                    </Route>
+                </Switch>
             </div>
         );
     }

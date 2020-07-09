@@ -1,6 +1,39 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import moment from 'moment';
+
+class BaseBookedSlot extends React.Component {
+    render() {
+        const { slot, rowSpan } = this.props;
+
+        let cancelLink = null;
+        if (slot.editable) {
+            const date = this.props.match.params.date;
+            const linkTarget = `/${date}/cancel/${slot.reference()}/`;
+            cancelLink = (
+                <Link
+                    className="range-schedule__cancel"
+                    to={ linkTarget }
+                >
+                    Cancel
+                </Link>
+            );
+        }
+
+        return (
+            <td
+                className="range-schedule__slot range-schedule__slot--booked"
+                rowSpan={ rowSpan }
+            >
+                <p className="range-schedule__description">{ slot.details.names }</p>
+                <p className="range-schedule__description">{ slot.details.distance }</p>
+                { cancelLink }
+            </td>
+        );
+    }
+}
+
+const BookedSlot = withRouter(BaseBookedSlot);
 
 class Schedule extends React.Component {
     formatTime(dateString) {
@@ -44,14 +77,11 @@ class Schedule extends React.Component {
                     const linkTarget = `/${ this.props.date }/book/${ time.format('HH:mm') }/${ slot.target }/`;
                     if (slot.booked) {
                         columns.push(
-                            <td
-                                className="range-schedule__slot range-schedule__slot--booked"
+                            <BookedSlot
                                 key={ slot.target }
                                 rowSpan={ duration }
-                            >
-                                <p className="range-schedule__description">{ slot.details.names }</p>
-                                <p className="range-schedule__description">{ slot.details.distance }</p>
-                            </td>
+                                slot={ slot }
+                            />
                         );
                     } else {
                         columns.push(
