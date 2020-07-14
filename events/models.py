@@ -84,6 +84,9 @@ class BookedSlot(models.Model):
     distance = models.CharField(max_length=100, default='', blank=True)
     archers = models.ManyToManyField(Archer)
 
+    class Meta:
+        unique_together = ('start', 'target')
+
     def __str__(self):
         return 'Slot booked on target %s at %s' % (self.target, self.start)
 
