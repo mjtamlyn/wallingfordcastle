@@ -15,9 +15,9 @@ Your fast track course dates will be arranged with your coach.
 {% endif %}
 
 {% if course %}
-The course costs £50 for adults and £30 for under 18s.
+The course costs £80 for adults and £50 for under 18s.
 {% else %}
-The course costs £100 for adults and £60 for under 18s.
+The course costs £160 for adults and £100 for under 18s.
 {% endif %}
 To pay, please click here:
 {% if register_url %}{{ register_url }}{% else %}{{ overview_url }}{% endif %}
@@ -49,9 +49,9 @@ We have now finalised the dates and they will be as follows:
 
 <p>
 {% if course %}
-The course costs £50 for adults and £30 for under 18s.
+The course costs £80 for adults and £50 for under 18s.
 {% else %}
-The course costs £100.
+The course costs £160 for adults and £100 for under 18s.
 {% endif %}
 <a href="{% if register_url %}{{ register_url }}{% else %}{{ overview_url }}{% endif %}">Please pay here.</a>
 </p>
