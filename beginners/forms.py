@@ -19,6 +19,10 @@ class BeginnersInterestForm(forms.ModelForm):
         if self.cleaned_data.get('age') == 'junior' and not self.cleaned_data.get('date_of_birth'):
             raise forms.ValidationError('Please provide age for Juniors.')
 
+    def save(self):
+        self.instance.fee = self.instance.get_2020_fee()
+        return super().save()
+
     class Meta:
         model = Beginner
         fields = ['name', 'contact_email', 'contact_number', 'age', 'date_of_birth', 'experience', 'notes']

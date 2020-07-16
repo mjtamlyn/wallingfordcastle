@@ -77,6 +77,7 @@ class AdminAllocateCourseView(FormView):
                 beginner.status = STATUS_ON_COURSE
             else:
                 beginner.status = STATUS_FAST_TRACK
+                beginner.fee = beginner.get_2020_fee()
             by_user[beginner.contact_email].append(beginner)
         for email, begs in by_user.items():
             user, created = User.objects.get_or_create(email=email, defaults={'is_active': False})
@@ -92,7 +93,7 @@ class AdminAllocateCourseView(FormView):
 
 @admin.register(Beginner)
 class BeginnerAdmin(DjangoObjectActions, admin.ModelAdmin):
-    list_display = ['name', 'age', 'contact_email', 'course', 'status', 'paid']
+    list_display = ['name', 'age', 'contact_email', 'course', 'status', 'fee', 'paid']
     list_filter = ['course', 'status']
     readonly_fields = ['created', 'modified']
     actions = change_actions = ['allocate_to_course']

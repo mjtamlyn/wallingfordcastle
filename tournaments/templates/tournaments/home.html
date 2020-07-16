@@ -42,17 +42,5 @@
             {% endfor %}
         </ul>
     </section>
-    <section>
-        <h2>Other tournaments</h2>
-        <p>
-        Watch out for the pink shirts of WCA at some of these upcoming events
-        in the local area!
-        </p>
-        <ul>
-            {% for event in bookable_events %}
-            <li>{{ event }} - {{ event.date|date:"jS F Y" }}</li>
-            {% endfor %}
-        </ul>
-    </section>
 </div>
 {% endblock %}

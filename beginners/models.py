@@ -76,6 +76,7 @@ class Beginner(models.Model):
     date_of_birth = models.DateField(blank=True, null=True)
     experience = models.TextField(blank=True, default='')
     notes = models.TextField(blank=True, default='')
+    fee = models.IntegerField()
 
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
@@ -88,8 +89,7 @@ class Beginner(models.Model):
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
 
-    @property
-    def fee(self):
+    def get_2015_fee(self):
         if self.status == STATUS_FAST_TRACK:
             if self.age == 'junior':
                 return 60
@@ -98,6 +98,16 @@ class Beginner(models.Model):
         if self.age == 'junior':
             return 30
         return 50
+
+    def get_2020_fee(self):
+        if self.status == STATUS_FAST_TRACK:
+            if self.age == 'junior':
+                return 80
+            else:
+                return 160
+        if self.age == 'junior':
+            return 50
+        return 80
 
     def __str__(self):
         return self.name
