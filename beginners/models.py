@@ -102,7 +102,7 @@ class Beginner(models.Model):
     def get_2020_fee(self):
         if self.status == STATUS_FAST_TRACK:
             if self.age == 'junior':
-                return 80
+                return 100
             else:
                 return 160
         if self.age == 'junior':
