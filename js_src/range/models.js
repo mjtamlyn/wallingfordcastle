@@ -1,7 +1,9 @@
 class BookableDate {
-    constructor({ api, pretty }) {
+    constructor({ api, pretty, title, notes }) {
         this.api = api;
         this.pretty = pretty;
+        this.title = title;
+        this.notes = notes;
     }
 }
 

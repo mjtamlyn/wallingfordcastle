@@ -92,3 +92,4 @@ class BookedSlotAdmin(admin.ModelAdmin):
 @admin.register(BookingTemplate)
 class BookingTemplateAdmin(admin.ModelAdmin):
     list_display = ['date', 'start_times', 'targets']
+    ordering = ['-date']

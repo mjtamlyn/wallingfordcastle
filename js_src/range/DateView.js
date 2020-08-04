@@ -28,8 +28,20 @@ class DateView extends Loader {
 
     renderLoaded(data) {
         const date = this.props.match.params.date;
+
+        let title = null;
+        let notes = null;
+        if (data.date.title) {
+            title = <h3 className="date-view__title">{ data.date.title }</h3>;
+        }
+        if (data.date.notes) {
+            notes = <p className="date-view__notes">{ data.date.notes }</p>
+        }
+
         return (
             <div className="date-view">
+                { title }
+                { notes }
                 <Schedule schedule={ data.schedule } date={ date } />
                 <Switch>
                     <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:target(\d+)/" component={ SlotBookView } />

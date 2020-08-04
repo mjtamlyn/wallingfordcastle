@@ -121,16 +121,18 @@ class Schedule extends React.Component {
         }
 
         return (
-            <table className="range-schedule">
-                <thead>
-                    <tr>
-                        { headerRow }
-                    </tr>
-                </thead>
-                <tbody>
-                    { rows }
-                </tbody>
-            </table>
+            <div>
+                <table className="range-schedule">
+                    <thead>
+                        <tr>
+                            { headerRow }
+                        </tr>
+                    </thead>
+                    <tbody>
+                        { rows }
+                    </tbody>
+                </table>
+            </div>
         );
     }
 }

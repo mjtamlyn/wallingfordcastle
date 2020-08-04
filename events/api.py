@@ -23,6 +23,8 @@ def date_list(request):
             '__type': 'BookableDate',
             'api': template.date.strftime('%Y-%m-%d'),
             'pretty': template.date.strftime('%A %-d %B'),
+            'title': template.title or None,
+            'notes': template.notes or None,
         } for template in templates]
     }
     return JsonResponse(response)
@@ -48,6 +50,8 @@ def date_slots(request, date):
             '__type': 'BookableDate',
             'api': template.date.strftime('%Y-%m-%d'),
             'pretty': template.date.strftime('%A %-d %B'),
+            'title': template.title or None,
+            'notes': template.notes or None,
         },
         'schedule': template.template.serialize(user=request.user),
     }
