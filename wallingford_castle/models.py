@@ -95,13 +95,15 @@ class MembershipInterest(models.Model):
     def send_to_beginners(self):
         from beginners.models import Beginner
 
-        Beginner.objects.create(
+        beginner = Beginner(
             name=self.name,
             contact_email=self.contact_email,
             contact_number=self.contact_number,
             age=self.age,
             date_of_birth=self.date_of_birth,
         )
+        beginner.fee = beginner.get_2020_fee()
+        beginner.save()
         self.status = STATUS_BEGINNERS
         self.save()
 
