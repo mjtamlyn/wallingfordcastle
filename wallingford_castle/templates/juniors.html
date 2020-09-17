@@ -22,76 +22,79 @@
         opportunities to progress their skills, compete, and enjoy their
         archery.
         </p>
-        <h2>Junior archers aged 11-18</h2>
+        <h2>Minis Archery (Ages 6-11)</h2>
         <p>
-        Young people attending secondary school form our junior club. We have a
-        dedicated weekly session for archers of this age, covering novices up
-        to archers competing at national level. Junior members are also able to
-        shoot at other club sessions, although parental supervision is required
-        for some sessions. We have many family groups who shoot together.
+        Minis Archery sessions are designed to aimed at our youngest archers,
+        aged between 6 and 11 years old.  All sessions are structured and led
+        by qualified coaches specialising in young people.  Minis archers may
+        only shoot at minis sessions, as our youngest archers require the
+        supervision of a coach to remain safe.
         </p>
         <p>
-        Junior members of Wallingford Castle Archers are encouraged to gain
-        competitive experience, through our membership of the Castle Junior
+        Minis Archers work towards their first World Archery beginners awards,
+        and have no requirement to get their own equipment.
+        </p>
+        <p>
+        Minis sessions run on Mondays 5pm-5:45pm and 5:45pm-6:30pm, or on
+        Sundays 10am-10:45am and 10:45-11:30am. Minis sessions are bookable on
+        a term by term basis, and carry a charge of £7.50 per session for
+        non-members and £4 per session for members.
+        </p>
+    </section>
+    <section>
+        <h2>Junior Arrows (Ages 9-16)</h2>
+        <p>
+        Our Junior Arrows club includes developing archers between the ages of
+        9 and 16. These include beginner archers at older age groups, or minis
+        archers who have progressed beyond the basics. Junior members of this
+        level are also welcome to attend open sessions with their parents.
+        </p>
+        <p>
+        Arrows sessions are coach led and work towards developing confidence,
+        technique, equipment understanding and achieving World Archery
+        beginners badges.
+        </p>
+        <p>
+        Junior Arrows members are encouraged to get competition experience at
+        selected events through the year.
+        </p>
+        <p>
+        Junior Arrows sessions are on Wednesdays 5pm-6:30pm at St Birinus
+        School in Didcot, or at Sundays 11:30am-1pm at Langtree School in
+        Woodcote. Junior Arrows coaching fees are £20/month, or £9/week for
+        non-members.
+        </p>
+        <h2>Junior Team (Ages 11-18)</h2>
+        <p>
+        Our Junior Team are nationally competitive archers aged 11-18 years
+        old. They have dedicated coached sessions every week and regularly
+        attend competitions. Many junior team archers also attend other open
+        club sessions, although parental permission is required for most other
+        sessions.
+        </p>
+        <p>
+        Our junior team compete through our membership of the Castle Junior
         Archery League, Perris Indoor League, and other local competitions. Our
-        coaching team are also heavily involved with the county junior
-        development squad.
+        coaching team are also heavily involved with the county junior team.
         </p>
         <p>
-        To get started in archery, archers of this age should attend a <a
-        href="{% url 'beginners:index' %}">beginners course</a> first.
+        Junior Team sessions are on Thursdays 5pm-6:30pm, or at Saturdays
+        11:30am-1pm, both at Didcot Girls School. Junior Team coaching fees are
+        £20/month.
         </p>
     </section>
     <section>
-        <h2>Minis - ages 6-11</h2>
-        <p>
-        Young people of primary school age form our minis club. We meet on a
-        Sunday mornings in term time, and also put on additional sessions over
-        the summer holidays. All sessions are structured and led by qualified
-        coaches specialising in young people. We run two sessions of 45 minutes
-        and each session is split into groups based on age and ability. Minis
-        sessions are bookable on a term by term basis, and carry a charge of £6
-        per session for non-members and £3 per session for members.
-        </p>
-        <p>
-        Minis wishing to start archery can book their first term as
-        non-members. For insurance reasons, once you have attended a certain
-        number of hours (usually one term) you must join as a member of the
-        club, which includes membership of ArcheryGB.
-        </p>
-        <p>
-        The intense nature of beginners courses makes them unsuitable for our
-        youngest archers, and they take longer to progress to independent
-        proficiency in core skills such as range safety, set up, warm ups and
-        core technique. The environment of open sessions can also prove
-        distracting and disruptive for young children. As such, juniors under
-        year 5 may only attend minis sessions and occasional other events as
-        organised by the club. Once archers are in year 5 or 6, and have
-        achieved their World Archery White Arrow beginners award, they may also
-        attend junior sessions and open sessions with parental supervision.
-        We've found this can be a great way for members in year 6 to prepare
-        for secondary school.
-        </p>
-    </section>
-    <section>
-        <h2>Book minis</h2>
         <form class="form page-form" method="POST" action="{% url 'courses:minis-interest' %}">
-            <h3>Register interest</h3>
+            <h2>Trial sessions</h2>
             <p>
-            Register interest in a trial term of minis. Those archers already
-            shooting regularly should <a href="{% url 'join' %}">join as
+            Junior Archers may attend a short block of minis or arrows sessions
+            before joining the club. For insurance reasons, once you have
+            attended a certain number of hours (usually one term) you must join
+            as a member of the club, which includes membership of ArcheryGB.
+            </p>
+            Register interest in a trial term. Those archers already shooting
+            regularly should <a href="{% url 'join' %}">join as
             members</a>.
-            </p>
-            <p>
-            Unforunately we are not currently taking on beginners of primary
-            school age, as we find they need close coaching support when first
-            starting which we can't manage under social distancing.
-            </p>
-            <p>
-            If you are interested in taking part in the minis club in the
-            future, please fill in the form below and we will be in touch once
-            we are able to get started again.
-            </p>
             {% csrf_token %}
             {% form minis_form using 'floppyforms/layouts/p.html' %}
             <input type="submit" class="btn">
