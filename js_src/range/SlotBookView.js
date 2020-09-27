@@ -1,8 +1,10 @@
 import React from 'react';
+import { withRouter } from 'react-router-dom';
 import { Link, Redirect } from 'react-router-dom';
 
 import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
+import ArcherSelect from 'range/ArcherSelect';
 import DistanceSelector from 'range/DistanceSelector';
 
 class SlotBookView extends React.Component {
@@ -31,7 +33,10 @@ class SlotBookView extends React.Component {
     }
 
     isValid(state) {
-        return (state.archers.length && state.distance);
+        return (
+            state.archers.length &&
+            (!this.props.options.distanceRequired || state.distance)
+        );
     }
 
     submit() {
@@ -55,12 +60,15 @@ class SlotBookView extends React.Component {
     }
 
     render() {
+        const { distanceRequired, multipleArchersPermitted } = this.props.options;
         const { date, target, time } = this.props.match.params;
         const dateUrl = `/${date}/`;
 
         if (this.state.done) {
             return <Redirect to={ dateUrl } />;
         }
+
+        const ArcherComponent = multipleArchersPermitted ? ArcherMultiSelect : ArcherSelect;
 
         const submitDisabled = !this.isValid(this.state) || this.state.submitting;
 
@@ -71,11 +79,13 @@ class SlotBookView extends React.Component {
                     <h4 className="booking-modal__title">Booking target { target } at { time }</h4>
                     <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
                     <div className="booking-modal__row">
-                        <ArcherMultiSelect onChange={ ::this.setArchers } />
+                        <ArcherComponent onChange={ ::this.setArchers } />
                     </div>
-                    <div className="booking-modal__row">
-                        <DistanceSelector onChange={ ::this.setDistance } />
-                    </div>
+                    { distanceRequired &&
+                        <div className="booking-modal__row">
+                            <DistanceSelector onChange={ ::this.setDistance } />
+                        </div>
+                    }
                     <div className="booking-modal__row">
                         <input className="booking-modal__button" type="submit" value="Book" disabled={ submitDisabled } onClick={ ::this.submit } />
                     </div>
@@ -85,4 +95,4 @@ class SlotBookView extends React.Component {
     }
 }
 
-export default SlotBookView;
+export default withRouter(SlotBookView);

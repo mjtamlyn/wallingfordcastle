@@ -54,6 +54,10 @@ def date_slots(request, date):
             'notes': template.notes or None,
         },
         'schedule': template.template.serialize(user=request.user),
+        'options': {
+            'distanceRequired': template.distance_required,
+            'multipleArchersPermitted': template.multiple_archers_permitted,
+        },
     }
     return JsonResponse(response)
 

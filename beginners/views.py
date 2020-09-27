@@ -31,8 +31,6 @@ class BeginnersInterestView(MessageMixin, CreateView):
 
     def form_valid(self, form):
         response = super().form_valid(form)
-        form.instance.fee = form.instance.get_2020_fee()
-        form.instance.save()
         self.messages.success('Thanks for your interest! We will be in touch soon.')
         if settings.SLACK_BEGINNERS_HREF:
             data = json.dumps({

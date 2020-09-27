@@ -46,7 +46,7 @@ class BookSlotForm(forms.Form):
     date = forms.DateField()
     time = forms.TimeField()
     target = forms.IntegerField()
-    distance = forms.CharField()
+    distance = forms.CharField(required=False)
     archers = JSONField()
 
     def __init__(self, user, **kwargs):
@@ -57,6 +57,11 @@ class BookSlotForm(forms.Form):
         archers = self.cleaned_data.get('archers')
         members = Member.objects.managed_by(self.user)
         return members.filter(id__in=archers)
+
+    def clean(self):
+        data = self.cleaned_data
+        # TODO: check distance properly, will require looking up the template
+        return data
 
     def save(self):
         data = self.cleaned_data

@@ -44,7 +44,9 @@ class DateView extends Loader {
                 { notes }
                 <Schedule schedule={ data.schedule } date={ date } />
                 <Switch>
-                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:target(\d+)/" component={ SlotBookView } />
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:target(\d+)/">
+                        <SlotBookView options={ data.options } />
+                    </Route>
                     <Route path="/:date(\d{4}-\d{2}-\d{2})/cancel/:time(\d{2}:\d{2})/:target(\d+)/">
                         <SlotCancelView schedule={ data.schedule } />
                     </Route>

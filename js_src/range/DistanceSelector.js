@@ -15,7 +15,7 @@ class DistanceSelector extends React.Component {
                 selected = id;
             }
             this.setState({ selected }, () => {
-                this.props.onChange(this.state.selected)
+                this.props.onChange(this.state.selected);
             });
         };
     }

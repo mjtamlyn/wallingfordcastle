@@ -8,22 +8,22 @@ class ArcherMultiSelect extends Loader {
     constructor(props) {
         super(props);
         this.state = {
-            selected: [],
+            selected: null,
         };
     }
 
     toggle(id) {
         return (e) => {
-            let archers = [].concat(this.state.selected);
-            if (this.state.selected.includes(id)) {
-                archers = archers.filter(item => item !== id)
-            } else {
-                archers.push(id);
+            let selected = null;
+            if (this.state.selected !== id) {
+                selected = id;
             }
-            this.setState({
-                selected: archers,
-            }, () => {
-                this.props.onChange(this.state.selected);
+            this.setState({ selected }, () => {
+                if (this.state.selected) {
+                    this.props.onChange([this.state.selected]);
+                } else {
+                    this.props.onChange([]);
+                }
             });
         };
     }
@@ -32,7 +32,7 @@ class ArcherMultiSelect extends Loader {
         const archers = [];
         data.archers.forEach((archer) => {
             let className = 'selector__link';
-            if (this.state.selected.includes(archer.id)) {
+            if (this.state.selected === archer.id) {
                 className += ' selector__link--selected';
             }
             archers.push(
@@ -45,7 +45,7 @@ class ArcherMultiSelect extends Loader {
         });
         return (
             <div className="archer-multi-select">
-                <label>Archer(s):</label>
+                <label>Archer:</label>
                 <div className="selector">
                     { archers }
                 </div>
@@ -55,3 +55,4 @@ class ArcherMultiSelect extends Loader {
 }
 
 export default ArcherMultiSelect;
+

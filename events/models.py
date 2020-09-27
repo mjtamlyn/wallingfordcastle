@@ -112,6 +112,8 @@ class BookingTemplate(models.Model):
     start_times = ArrayField(models.TimeField())
     targets = models.PositiveIntegerField()
     booking_duration = models.DurationField()
+    multiple_archers_permitted = models.BooleanField(default=True)
+    distance_required = models.BooleanField(default=True)
 
     def __str__(self):
         return 'Booking template for %s' % self.date
