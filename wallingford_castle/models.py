@@ -174,21 +174,22 @@ class User(AbstractEmailUser):
     def update_subscriptions(self):
         from membership.models import Member
 
-        plans = collections.defaultdict(int)
+        prices = collections.defaultdict(int)
         members = Member.objects.filter(archer__user=self, active=True)  # Just ones billed by this user
         for member in members:
-            plans[member.plan] += 1
+            for price in member.prices:
+                prices[price['id']] += 1
 
         if self.subscription_id:
             new_items = []
             subscription = stripe.Subscription.retrieve(self.subscription_id)
             for item in subscription['items']['data']:
-                if item.plan.id not in plans:
+                if item.price.id not in prices:
                     new_items.append({'id': item.id, 'deleted': True})
                 else:
                     new_items.append({'id': item.id, 'quantity': plans.pop(item.plan.id)})
             for plan, quantity in plans.items():
-                new_items.append({'plan': plan, 'quantity': quantity})
+                new_items.append({'price': price['id'], 'quantity': quantity})
             subscription.items = new_items
             subscription.prorate = False
             subscription.save()
