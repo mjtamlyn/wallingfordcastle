@@ -187,16 +187,16 @@ class User(AbstractEmailUser):
                 if item.price.id not in prices:
                     new_items.append({'id': item.id, 'deleted': True})
                 else:
-                    new_items.append({'id': item.id, 'quantity': plans.pop(item.plan.id)})
-            for plan, quantity in plans.items():
+                    new_items.append({'id': item.id, 'quantity': prices.pop(item.plan.id)})
+            for plan, quantity in prices.items():
                 new_items.append({'price': price['id'], 'quantity': quantity})
             subscription.items = new_items
             subscription.prorate = False
             subscription.save()
         else:
             new_items = []
-            for plan, quantity in plans.items():
-                new_items.append({'plan': plan, 'quantity': quantity})
+            for price, quantity in prices.items():
+                new_items.append({'price': price, 'quantity': quantity})
             customer = stripe.Customer.retrieve(self.customer_id)
             subscription = customer.subscriptions.create(items=new_items)
             self.subscription_id = subscription.id
