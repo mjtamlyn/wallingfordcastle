@@ -187,8 +187,8 @@ class User(AbstractEmailUser):
                 if item.price.id not in prices:
                     new_items.append({'id': item.id, 'deleted': True})
                 else:
-                    new_items.append({'id': item.id, 'quantity': prices.pop(item.plan.id)})
-            for plan, quantity in prices.items():
+                    new_items.append({'id': item.id, 'quantity': prices.pop(item.price.id)})
+            for price, quantity in prices.items():
                 new_items.append({'price': price['id'], 'quantity': quantity})
             subscription.items = new_items
             subscription.prorate = False
