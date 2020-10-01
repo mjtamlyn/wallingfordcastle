@@ -189,7 +189,7 @@ class User(AbstractEmailUser):
                 else:
                     new_items.append({'id': item.id, 'quantity': prices.pop(item.price.id)})
             for price, quantity in prices.items():
-                new_items.append({'price': price['id'], 'quantity': quantity})
+                new_items.append({'price': price, 'quantity': quantity})
             subscription.items = new_items
             subscription.prorate = False
             subscription.save()
