@@ -142,3 +142,26 @@ SLACK_EVENTS_HREF = os.environ.get('SLACK_EVENTS_HREF', '')
 
 STRIPE_KEY = os.environ.get('STRIPE_KEY', 'pk_test_Y1b88Dl9MMyGcRJQLnyHyOVI')
 stripe.api_key = STRIPE_SECRET_KEY = os.environ.get('STRIPE_SECRET_KEY')
+
+STRIPE_PRICES = {
+    'adult': {
+        'id': os.environ.get('STRIPE_PRICES_ADULT', 'price_1HXOx7BZ7K43BUB4SACbBRqW'),
+        'price': 20,
+    },
+    'concession': {
+        'id': os.environ.get('STRIPE_PRICES_CONCESSION', 'price_1HXOxRBZ7K43BUB43bdWQErn'),
+        'price': 15,
+    },
+    'non-shooting': {
+        'id': os.environ.get('STRIPE_PRICES_NON_SHOOTING', 'non-shooting'),
+        'price': 5,
+    },
+    'coaching-adult': {
+        'id': os.environ.get('STRIPE_PRICES_COACHING_ADULT', 'price_1HXOyBBZ7K43BUB4cIRekPDI'),
+        'price': 25,
+    },
+    'coaching-junior': {
+        'id': os.environ.get('STRIPE_PRICES_COACHING_JUNIOR', 'price_1HXOyCBZ7K43BUB42xWBMRTw'),
+        'price': 20,
+    },
+}

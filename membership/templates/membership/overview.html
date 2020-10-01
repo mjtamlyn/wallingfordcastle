@@ -132,6 +132,8 @@
                     <dd>{{ member.get_membership_type_display }}</dd>
                     <dt>ArcheryGB number</dt>
                     <dd>{{ member.archer.agb_number|default:"Unknown" }}</dd>
+                    <dt>Coaching subscription</dt>
+                    <dd>{% if member.coaching_subscription %}{% if member.archer.age == 'junior' %}Junior coaching{% else %}Adult coaching{% endif %}{% else %}None{% endif %}</dd>
                     <dt>Monthly Fee</dt>
                     <dd>£{{ member.plan_cost }}</dd>
                     <dt>Attendance</dt>

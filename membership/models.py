@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -25,6 +26,7 @@ class Member(models.Model):
     membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
     level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default='', blank=True)
     interest = models.ForeignKey('wallingford_castle.MembershipInterest', blank=True, null=True, on_delete=models.CASCADE)
+    coaching_subscription = models.BooleanField(default=False)
 
     active = models.BooleanField(default=True)
     created = models.DateTimeField(default=timezone.now, editable=False)
@@ -44,9 +46,15 @@ class Member(models.Model):
         return 'concession'
 
     @property
+    def prices(self):
+        prices = [settings.STRIPE_PRICES[self.plan]]
+        if self.coaching_subscription:
+            if self.archer.age == 'junior':
+                prices.append(settings.STRIPE_PRICES['coaching-junior'])
+            else:
+                prices.append(settings.STRIPE_PRICES['coaching-adult'])
+        return prices
+
+    @property
     def plan_cost(self):
-        return {
-            'adult': 15,
-            'concession': 10,
-            'non-shooting': 5,
-        }[self.plan]
+        return sum(price['price'] for price in self.prices) 

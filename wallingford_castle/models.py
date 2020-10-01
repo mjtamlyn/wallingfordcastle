@@ -49,6 +49,7 @@ class MembershipInterest(models.Model):
     agb_number = models.CharField(max_length=10, default='', blank=True)
     membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default=STATUS_PENDING)
+    coaching_subscription = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
@@ -86,6 +87,7 @@ class MembershipInterest(models.Model):
             member = Member.objects.create(
                 archer=archer,
                 membership_type=self.membership_type,
+                coaching_subscription=self.coaching_subscription,
                 interest=self,
             )
             self.status = STATUS_PROCESSED
