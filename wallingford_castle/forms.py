@@ -18,7 +18,7 @@ class MembershipInterestForm(forms.ModelForm):
 
     class Meta:
         model = MembershipInterest
-        exclude = ['status']
+        exclude = ['status', 'coaching_subscription']
 
 
 class RegisterForm(SetPasswordForm):
