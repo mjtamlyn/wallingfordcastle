@@ -17,8 +17,12 @@ class Slot:
     start = attr.ib()
     duration = attr.ib()
     target = attr.ib()
+    number_of_targets = attr.ib(default=1)
     booked = attr.ib(default=False)
     details = attr.ib(default=None, cmp=False)
+
+    is_group = attr.ib(default=False)
+    group_name = attr.ib(default=None)
 
     @property
     def end(self):
@@ -33,7 +37,7 @@ class Slot:
 
     def personalize(self, user):
         self.editable = False
-        if user is None:
+        if user is None or self.is_group:
             return self
         if user.manages_any(self.booked_archers):
             self.editable = True
@@ -59,8 +63,10 @@ class Slot:
             'end': serialize_time(self.end),
             'duration': self.duration.seconds // 60,
             'target': self.target,
+            'numberOfTargets': self.number_of_targets,
             'booked': self.booked,
             'details': details,
+            'groupName': self.group_name,
             'editable': self.editable,
         }
 
@@ -84,7 +90,8 @@ class Template:
             if start not in start_times:
                 start_times.append(start)
             exact_lookup[(start, booking.target)] = booking
-            target_lookup[booking.target].append(booking)
+            for i in range(booking.number_of_targets):
+                target_lookup[booking.target + i].append(booking)
         start_times.sort()
 
         for start_time in start_times:

@@ -614,11 +614,17 @@ dd {
   background-color: #777;
 }
 /* line 71, ../../sass/_range.sass */
+.range-schedule__title {
+  font-size: 14px;
+  font-weight: bold;
+  margin: 5px 0;
+}
+/* line 76, ../../sass/_range.sass */
 .range-schedule__description {
   font-size: 14px;
   margin: 5px 0;
 }
-/* line 75, ../../sass/_range.sass */
+/* line 80, ../../sass/_range.sass */
 .range-schedule__book {
   position: absolute;
   top: 0;
@@ -631,16 +637,16 @@ dd {
   display: flex;
   align-items: center;
 }
-/* line 87, ../../sass/_range.sass */
+/* line 92, ../../sass/_range.sass */
 .range-schedule__book:hover {
   background-color: #e0eee0;
   text-decoration: none;
 }
-/* line 91, ../../sass/_range.sass */
+/* line 96, ../../sass/_range.sass */
 .range-schedule__book__inner {
   flex-grow: 1;
 }
-/* line 94, ../../sass/_range.sass */
+/* line 99, ../../sass/_range.sass */
 .range-schedule__cancel {
   position: absolute;
   bottom: 0;
@@ -652,7 +658,7 @@ dd {
   cursor: pointer;
 }
 
-/* line 104, ../../sass/_range.sass */
+/* line 109, ../../sass/_range.sass */
 .booking-modal {
   position: absolute;
   top: 0;
@@ -661,7 +667,7 @@ dd {
   height: 100%;
   z-index: 2;
 }
-/* line 112, ../../sass/_range.sass */
+/* line 117, ../../sass/_range.sass */
 .booking-modal__background {
   z-index: -1;
   position: absolute;
@@ -671,7 +677,7 @@ dd {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
 }
-/* line 121, ../../sass/_range.sass */
+/* line 126, ../../sass/_range.sass */
 .booking-modal__content {
   margin: 30px auto;
   width: 350px;
@@ -680,34 +686,34 @@ dd {
   padding: 20px;
   position: relative;
 }
-/* line 129, ../../sass/_range.sass */
+/* line 134, ../../sass/_range.sass */
 .booking-modal__content > :first-child {
   margin-top: 0;
 }
-/* line 132, ../../sass/_range.sass */
+/* line 137, ../../sass/_range.sass */
 .booking-modal__content > :last-child {
   margin-bottom: 0;
 }
-/* line 135, ../../sass/_range.sass */
+/* line 140, ../../sass/_range.sass */
 .booking-modal__close {
   font-size: 12px;
   position: absolute;
   right: 10px;
   top: 10px;
 }
-/* line 141, ../../sass/_range.sass */
+/* line 146, ../../sass/_range.sass */
 .booking-modal__title {
   margin: 10px 0;
 }
-/* line 144, ../../sass/_range.sass */
+/* line 149, ../../sass/_range.sass */
 .booking-modal__row {
   margin: 10px 0;
 }
-/* line 147, ../../sass/_range.sass */
+/* line 152, ../../sass/_range.sass */
 .booking-modal__text {
   font-size: 16px;
 }
-/* line 150, ../../sass/_range.sass */
+/* line 155, ../../sass/_range.sass */
 .booking-modal__button {
   font-size: 14px;
   padding: 4px 8px;
@@ -719,15 +725,15 @@ dd {
   cursor: pointer;
   outline: none;
 }
-/* line 160, ../../sass/_range.sass */
+/* line 165, ../../sass/_range.sass */
 .booking-modal__button:hover {
   background-color: #f5f5f5;
 }
-/* line 162, ../../sass/_range.sass */
+/* line 167, ../../sass/_range.sass */
 .booking-modal__button:active {
   box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.6);
 }
-/* line 165, ../../sass/_range.sass */
+/* line 170, ../../sass/_range.sass */
 .booking-modal__button[disabled] {
   cursor: auto;
   border-color: #777;
@@ -735,15 +741,15 @@ dd {
   background-color: white;
   box-shadow: none;
 }
-/* line 171, ../../sass/_range.sass */
+/* line 176, ../../sass/_range.sass */
 .booking-modal__button[disabled]:hover {
   background-color: white;
 }
-/* line 173, ../../sass/_range.sass */
+/* line 178, ../../sass/_range.sass */
 .booking-modal__button[disabled]:active {
   box-shadow: none;
 }
-/* line 176, ../../sass/_range.sass */
+/* line 181, ../../sass/_range.sass */
 .booking-modal label {
   font-size: 14px;
   font-weight: bold;

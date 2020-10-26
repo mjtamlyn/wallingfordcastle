@@ -4,7 +4,7 @@ import moment from 'moment';
 
 class BaseBookedSlot extends React.Component {
     render() {
-        const { slot, rowSpan } = this.props;
+        const { slot, rowSpan, colSpan } = this.props;
 
         let cancelLink = null;
         if (slot.editable) {
@@ -20,11 +20,17 @@ class BaseBookedSlot extends React.Component {
             );
         }
 
+        let title = null;
+        if (slot.groupName) {
+            title = <p className="range-schedule__title">{ slot.groupName }</p>
+        }
         return (
             <td
                 className="range-schedule__slot range-schedule__slot--booked"
                 rowSpan={ rowSpan }
+                colSpan={ colSpan }
             >
+                { title }
                 <p className="range-schedule__description">{ slot.details.names }</p>
                 <p className="range-schedule__description">{ slot.details.distance }</p>
                 { cancelLink }
@@ -80,6 +86,7 @@ class Schedule extends React.Component {
                             <BookedSlot
                                 key={ slot.target }
                                 rowSpan={ duration }
+                                colSpan={ slot.numberOfTargets }
                                 slot={ slot }
                             />
                         );
@@ -96,7 +103,9 @@ class Schedule extends React.Component {
                             </td>
                         );
                     }
-                    overlaps[slot.target - 1] = duration - 1;
+                    for (let i=0; i<slot.numberOfTargets; i++) {
+                        overlaps[slot.target + i - 1] = duration - 1;
+                    }
                 });
             } else {
                 for (let i=0; i<targets; i++) {

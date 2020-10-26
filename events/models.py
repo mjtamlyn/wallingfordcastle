@@ -84,6 +84,11 @@ class BookedSlot(models.Model):
     distance = models.CharField(max_length=100, default='', blank=True)
     archers = models.ManyToManyField(Archer)
 
+    # Group fields
+    is_group = models.BooleanField(default=False)
+    group_name = models.CharField(max_length=100, default='', blank=True)
+    number_of_targets = models.PositiveIntegerField(default=1)
+
     class Meta:
         unique_together = ('start', 'target')
 
@@ -100,8 +105,11 @@ class BookedSlot(models.Model):
             start=self.start,
             duration=self.duration,
             target=self.target,
+            number_of_targets=self.number_of_targets,
             booked=True,
             details=self,
+            is_group=self.is_group,
+            group_name=self.group_name,
         )
 
 
