@@ -14,7 +14,7 @@ class TestBookedSlot(TestCase):
         now = timezone.now()
         hour = datetime.timedelta(hours=1)
         booked = BookedSlot(start=now, duration=hour, target=1)
-        slot = Slot(start=now, duration=hour, target=1, booked=True)
+        slot = Slot(start=now, duration=hour, target=1, booked=True, group_name='')
         self.assertEqual(booked.slot, slot)
 
 
