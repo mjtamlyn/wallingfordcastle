@@ -84,6 +84,9 @@ class MembershipInterest(models.Model):
                     contact_number=self.contact_number,
                     agb_number=self.agb_number,
                 )
+            elif not archer.address.strip():
+                archer.address = self.address
+                archer.save()
             member = Member.objects.create(
                 archer=archer,
                 membership_type=self.membership_type,
