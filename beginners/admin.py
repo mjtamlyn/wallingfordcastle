@@ -46,6 +46,7 @@ class AllocateCourseForm(forms.Form):
         empty_label='Fast track',
         widget=forms.RadioSelect,
         required=False,
+        blank=True,
     )
 
 
