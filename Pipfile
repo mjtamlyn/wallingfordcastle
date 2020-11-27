@@ -9,8 +9,6 @@ python_version = "3.6"
 [dev-packages]
 
 [packages]
-django-templated-email = {editable = true, ref = "cc5a94a2c53455c256e7b6f791df03a9971c3bcb", git = "https://github.com/mjtamlyn/django-templated-email"}
-django-sslify = {editable = true, ref = "2ee081b009b7f540edaa88584c78f3aa1ff5da65", git = "https://github.com/rdegges/django-sslify"}
 "dj-database-url" = ">=0.5.0"
 django-braces = "*"
 django-custom-user = "*"
