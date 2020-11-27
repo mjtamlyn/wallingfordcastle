@@ -109,5 +109,12 @@ class Beginner(models.Model):
             return 50
         return 80
 
+    @property
+    def is_fast_track(self):
+        return (
+            self.status == STATUS_FAST_TRACK
+            or self.status in [STATUS_JOINED, STATUS_LEFT] and self.paid
+        )
+
     def __str__(self):
         return self.name

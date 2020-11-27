@@ -9,6 +9,7 @@ from braces.views import MessageMixin
 import requests
 import stripe
 
+from beginners.models import STATUS_FAST_TRACK, STATUS_ON_COURSE
 from courses.models import Attendee
 from membership.models import Member
 from records.models import Achievement
@@ -24,7 +25,7 @@ class Overview(FullMemberRequired, TemplateView):
         context['members'] = Member.objects.managed_by(self.request.user).select_related('archer')
         context['monthly_fee'] = sum(member.plan_cost for member in context['members'] if member.archer.user == self.request.user)
         context['beginners'] = self.request.user.beginner_set.all()
-        context['beginners_to_pay'] = sum(beginner.fee for beginner in self.request.user.beginner_set.filter(paid=False))
+        context['beginners_to_pay'] = sum(beginner.fee for beginner in self.request.user.beginner_set.filter(paid=False, status__in=[STATUS_ON_COURSE, STATUS_FAST_TRACK]))
         context['course_attendees'] = Attendee.objects.filter(archer__user=self.request.user, course__can_book_individual_sessions=False).order_by('course').select_related('archer', 'course')
         context['course_fees_to_pay'] = sum(attendee.fee for attendee in context['course_attendees'] if not attendee.paid)
         context['courses_to_pay_description'] = '; '.join('%s - %s' % (attendee.archer, attendee.course) for attendee in context['course_attendees'] if not attendee.paid)

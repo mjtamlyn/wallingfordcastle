@@ -26,9 +26,15 @@
                 <td>{{ beginner.name }}</td>
                 <td>{{ beginner.get_age_display }} {% if beginner.date_of_birth %}({{ beginner.date_of_birth }}){% endif %}</td>
                 <td>
-                    {% for session in beginner.course.beginnerscoursesession_set.all %}
-                    {{ session.time_string }}<br>
-                    {% endfor %}
+                    {% if beginner.course %}
+                        {% for session in beginner.course.beginnerscoursesession_set.all %}
+                        {{ session.time_string }}<br>
+                        {% endfor %}
+                    {% elif beginner.is_fast_track %}
+                        Fast track course
+                    {% else %}
+                        No course dates yet
+                    {% endif %}
                 </td>
                 <td>£{{ beginner.fee }}</td>
                 <td>{{ beginner.paid|yesno:"Yes,No" }}</td>
