@@ -6,7 +6,6 @@ from django.utils import timezone
 
 from wallingford_castle.models import User
 
-
 GENDER_CHOICES = (
     ('gent', 'Gent'),
     ('lady', 'Lady'),
@@ -81,8 +80,19 @@ class Entry(models.Model):
         bowstyles, junior or masters age categories etc.
     ''', blank=True, default='')
     drugs_consent = models.BooleanField('I consent to drugs testing as required under WRS rules.', default=False)
-    gdpr_consent = models.BooleanField('I consent that some of the information here provided will be shared with tournament organisers, scoring systems, other competitors and ArcheryGB. I also consent that I may be contacted with further details of the event via email.', default=False)
-    future_event_consent = models.BooleanField('Please contact me about future competitions at Wallingford Castle Archers', default=False)
+    gdpr_consent = models.BooleanField(
+        verbose_name=(
+            'I consent that some of the information here provided will be shared '
+            'with tournament organisers, scoring systems, other competitors and '
+            'ArcheryGB. I also consent that I may be contacted with further details '
+            'of the event via email.'
+        ),
+        default=False,
+    )
+    future_event_consent = models.BooleanField(
+        verbose_name='Please contact me about future competitions at Wallingford Castle Archers',
+        default=False,
+    )
     paid = models.BooleanField(default=False)
 
     def __str__(self):

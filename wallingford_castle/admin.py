@@ -3,11 +3,13 @@ import functools
 from django import forms
 from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
-from django.views.generic import FormView
 from django.urls import path, reverse
+from django.views.generic import FormView
 
 from custom_user.admin import EmailUserAdmin
-from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
+from django_object_actions import (
+    DjangoObjectActions, takes_instance_or_queryset,
+)
 
 from .models import Archer, MembershipInterest, User
 

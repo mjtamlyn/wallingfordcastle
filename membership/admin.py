@@ -3,13 +3,16 @@ import functools
 from django import forms
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-from django.views.generic import FormView
 from django.urls import path, reverse
+from django.views.generic import FormView
 
-from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
+from django_object_actions import (
+    DjangoObjectActions, takes_instance_or_queryset,
+)
 
 from courses.models import Attendee, Course
 from wallingford_castle.admin import ArcherDataMixin
+
 from .models import Member
 
 
@@ -65,9 +68,17 @@ class AdminBookCourseView(FormView):
 
 @admin.register(Member)
 class MemberAdmin(DjangoObjectActions, ArcherDataMixin, admin.ModelAdmin):
-    list_display = ['archer_name', 'archer_age', 'membership_type', 'coaching_subscription', 'active', 'archer_agb_number', 'archer_age_group']
+    list_display = [
+        'archer_name', 'archer_age', 'membership_type',
+        'coaching_subscription', 'active', 'archer_agb_number',
+        'archer_age_group',
+    ]
     list_filter = ['active', 'membership_type', 'coaching_subscription', 'archer__age']
-    readonly_fields = ['created', 'modified', 'archer_age', 'archer_agb_number', 'archer_date_of_birth', 'archer_age_group', 'archer_address', 'archer_contact_number', 'archer_email']
+    readonly_fields = [
+        'created', 'modified', 'archer_age', 'archer_agb_number',
+        'archer_date_of_birth', 'archer_age_group', 'archer_address',
+        'archer_contact_number', 'archer_email',
+    ]
     fields = [
         'archer',
         ('archer_agb_number', 'archer_age', 'archer_date_of_birth', 'archer_age_group'),

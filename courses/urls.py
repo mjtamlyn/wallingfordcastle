@@ -2,7 +2,6 @@ from django.urls import path
 
 from . import views
 
-
 app_name = 'courses'
 
 urlpatterns = [
@@ -16,6 +15,10 @@ urlpatterns = [
     path('members/courses/', views.MembersCourseList.as_view(), name='members-course-list'),
     path('members/courses/external/', views.NonMembersCourseList.as_view(), name='non-members-course-list'),
     path('members/courses/<pk>/book/', views.MembersCourseBooking.as_view(), name='members-course-booking'),
-    path('members/courses/external/<pk>/book/', views.NonMembersCourseBooking.as_view(), name='non-members-course-booking'),
+    path(
+        'members/courses/external/<pk>/book/',
+        views.NonMembersCourseBooking.as_view(),
+        name='non-members-course-booking',
+    ),
     path('members/courses/pay/', views.NonMembersPayment.as_view(), name='non-members-payment'),
 ]

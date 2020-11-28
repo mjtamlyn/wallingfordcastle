@@ -1,6 +1,5 @@
 from django import forms
 
-from wallingford_castle.models import User
 from wallingford_castle.forms import DirectRegisterForm
 
 from .models import Entry
@@ -14,7 +13,18 @@ class EntryForm(forms.ModelForm):
 
     class Meta:
         model = Entry
-        fields = ['name', 'agb_number', 'club', 'date_of_birth', 'gender', 'bowstyle', 'notes', 'drugs_consent', 'gdpr_consent', 'future_event_consent']
+        fields = [
+            'name',
+            'agb_number',
+            'club',
+            'date_of_birth',
+            'gender',
+            'bowstyle',
+            'notes',
+            'drugs_consent',
+            'gdpr_consent',
+            'future_event_consent',
+        ]
 
 
 class RegisterForm(DirectRegisterForm):

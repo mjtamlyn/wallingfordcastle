@@ -6,14 +6,24 @@ from django.utils import timezone
 import pytz
 
 from ..lanes import Slot, Template
-from ..models import BookedSlot, BookingTemplate
+from .factories import BookedSlotFactory, BookingTemplateFactory
+
+
+class TestFactoriesAndStr(TestCase):
+    def test_booked_slot(self):
+        booked_slot = BookedSlotFactory.create()
+        str(booked_slot)
+
+    def test_booking_factory(self):
+        booking_template = BookingTemplateFactory.create()
+        str(booking_template)
 
 
 class TestBookedSlot(TestCase):
     def test_as_slot(self):
         now = timezone.now()
         hour = datetime.timedelta(hours=1)
-        booked = BookedSlot(start=now, duration=hour, target=1)
+        booked = BookedSlotFactory.build(start=now, duration=hour, target=1)
         slot = Slot(start=now, duration=hour, target=1, booked=True, group_name='')
         self.assertEqual(booked.slot, slot)
 
@@ -27,8 +37,8 @@ class TestBookingTemplate(TestCase):
         today = midday.date()
         midday_time = midday.time()
         hour = datetime.timedelta(hours=1)
-        
-        booking_template = BookingTemplate(
+
+        booking_template = BookingTemplateFactory.build(
             date=today,
             start_times=[midday_time],
             targets=3,
@@ -50,9 +60,9 @@ class TestBookingTemplate(TestCase):
         midday_time = midday.time()
         hour = datetime.timedelta(hours=1)
 
-        booked_slot = BookedSlot.objects.create(start=midday, duration=hour, target=1)
-        
-        booking_template = BookingTemplate(
+        booked_slot = BookedSlotFactory.create(start=midday, duration=hour, target=1)
+
+        booking_template = BookingTemplateFactory.build(
             date=today,
             start_times=[midday_time],
             targets=3,

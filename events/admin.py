@@ -2,12 +2,14 @@ import functools
 
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-from django.views.generic import DetailView
 from django.urls import path, reverse
+from django.views.generic import DetailView
 
 from django_object_actions import DjangoObjectActions
 
-from .models import Attendee, BookedSlot, Booking, BookingQuestion, BookingTemplate, Event
+from .models import (
+    Attendee, BookedSlot, Booking, BookingQuestion, BookingTemplate, Event,
+)
 
 
 class AttendeeInline(admin.TabularInline):
@@ -63,7 +65,9 @@ class EventAdmin(DjangoObjectActions, admin.ModelAdmin):
         return urls
 
     def view_booking_report(self, request, obj):
-        url = reverse('admin:%s_%s_booking_report' % (self.model._meta.app_label, self.model._meta.model_name), kwargs={'pk': obj.pk})
+        url = reverse('admin:%s_%s_booking_report' % (
+            self.model._meta.app_label, self.model._meta.model_name,
+        ), kwargs={'pk': obj.pk})
         return HttpResponseRedirect(url)
     view_booking_report.short_description = 'View booking report'
     view_booking_report.label = 'View booking report'

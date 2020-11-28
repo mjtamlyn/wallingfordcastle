@@ -1,7 +1,8 @@
 import floppyforms.__future__ as forms
 
 from wallingford_castle.models import AGE_CHOICES
-from .models import Member, MEMBERSHIP_CHOICES
+
+from .models import MEMBERSHIP_CHOICES
 
 
 class MemberForm(forms.Form):

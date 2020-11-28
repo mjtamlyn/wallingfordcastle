@@ -6,6 +6,7 @@ from django.http import Http404, JsonResponse
 from django.utils import timezone
 
 from membership.models import Member
+
 from .forms import BookSlotForm, CancelSlotForm
 from .models import BookingTemplate
 

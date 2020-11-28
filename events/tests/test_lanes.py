@@ -10,8 +10,8 @@ class TestSlot(TestCase):
     def test_slot_basics(self):
         now = timezone.now()
         slot = Slot(
-            start=now, 
-            duration=datetime.timedelta(minutes=90), 
+            start=now,
+            duration=datetime.timedelta(minutes=90),
             target=1,
         )
         self.assertEqual(slot.end, now + datetime.timedelta(hours=1, minutes=30))
@@ -19,21 +19,19 @@ class TestSlot(TestCase):
     def test_overalps(self):
         midday = datetime.datetime(2000, 1, 1, 12, 0, 0)
         one = midday + datetime.timedelta(hours=1)
-        two = midday + datetime.timedelta(hours=2)
-        half_one = midday + datetime.timedelta(hours=1, minutes=30)
         twelve_one = Slot(
             start=midday,
-            duration=datetime.timedelta(minutes=60), 
+            duration=datetime.timedelta(minutes=60),
             target=1,
         )
         one_two = Slot(
             start=one,
-            duration=datetime.timedelta(minutes=60), 
+            duration=datetime.timedelta(minutes=60),
             target=1,
         )
         midday_half_one = Slot(
             start=midday,
-            duration=datetime.timedelta(minutes=90), 
+            duration=datetime.timedelta(minutes=90),
             target=1,
         )
         self.assertFalse(twelve_one.overlaps(one_two))

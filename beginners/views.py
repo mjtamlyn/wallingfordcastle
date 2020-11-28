@@ -2,12 +2,12 @@ import json
 
 from django.conf import settings
 from django.http import HttpResponseRedirect
-from django.views.generic import CreateView, TemplateView, View
 from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, TemplateView, View
 
-from braces.views import MessageMixin
 import requests
 import stripe
+from braces.views import MessageMixin
 
 from .forms import BeginnersInterestForm
 from .models import BeginnersCourse
