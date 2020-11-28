@@ -5,7 +5,10 @@ from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from django.views.generic import DetailView
 
-from django_object_actions import DjangoObjectActions
+from django_object_actions import (
+    DjangoObjectActions, takes_instance_or_queryset,
+)
+
 
 from .models import (
     Attendee, BookedSlot, Booking, BookingQuestion, BookingTemplate, Event,
@@ -94,6 +97,14 @@ class BookedSlotAdmin(admin.ModelAdmin):
 
 
 @admin.register(BookingTemplate)
-class BookingTemplateAdmin(admin.ModelAdmin):
+class BookingTemplateAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['date', 'start_times', 'targets']
     ordering = ['-date']
+    actions = objectactions = ['create_next']
+
+    @takes_instance_or_queryset
+    def create_next(self, request, queryset):
+        for template in queryset:
+            template.create_next()
+    create_next.short_description = 'Create next week'
+    create_next.label = 'Create next week'
