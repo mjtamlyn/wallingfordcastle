@@ -129,12 +129,7 @@ class BookingTemplate(models.Model):
     @cached_property
     def template(self):
         tz = pytz.timezone('Europe/London')
-        midnight = datetime.datetime.combine(self.date, datetime.time(0))
-        midnight = tz.localize(midnight)
-        slots = [slot.slot for slot in BookedSlot.objects.filter(
-            start__gte=midnight,
-            start__lt=midnight + datetime.timedelta(days=1),
-        )]
+        slots = [slot.slot for slot in self.slots]
         start_times = [
             tz.localize(datetime.datetime.combine(self.date, time))
             for time in self.start_times
@@ -145,3 +140,44 @@ class BookingTemplate(models.Model):
             slot_duration=self.booking_duration,
             booked_slots=slots,
         )
+
+    @property
+    def slots(self):
+        tz = pytz.timezone('Europe/London')
+        midnight = datetime.datetime.combine(self.date, datetime.time(0))
+        midnight = tz.localize(midnight)
+        return BookedSlot.objects.filter(
+            start__gte=midnight,
+            start__lt=midnight + datetime.timedelta(days=1),
+        )
+
+    def create_next(self, date=None):
+        tz = pytz.timezone('Europe/London')
+
+        if date is None:
+            date = self.date + datetime.timedelta(days=7)
+        new = BookingTemplate.objects.create(
+            date=date,
+            title=self.title,
+            notes=self.notes,
+            start_times=self.start_times,
+            targets=self.targets,
+            booking_duration=self.booking_duration,
+            multiple_archers_permitted=self.multiple_archers_permitted,
+            distance_required=self.distance_required,
+        )
+        slots = self.slots.filter(is_group=True)
+        for slot in slots:
+            start_time = datetime.datetime.combine(new.date, slot.start.time())
+            start_time = tz.localize(start_time)
+            new_slot = BookedSlot.objects.create(
+                start=start_time,
+                duration=slot.duration,
+                target=slot.target,
+                distance=slot.distance,
+                is_group=slot.is_group,
+                group_name=slot.group_name,
+                number_of_targets=slot.number_of_targets,
+            )
+            new_slot.archers.set(slot.archers.all())
+        return new
