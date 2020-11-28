@@ -6,8 +6,7 @@ import factory.django
 import factory.fuzzy
 from faker import Faker
 
-from ..models import User, Archer
-
+from ..models import Archer, User
 
 fake = Faker()
 

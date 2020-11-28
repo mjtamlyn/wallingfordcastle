@@ -9,7 +9,6 @@ from django_object_actions import (
     DjangoObjectActions, takes_instance_or_queryset,
 )
 
-
 from .models import (
     Attendee, BookedSlot, Booking, BookingQuestion, BookingTemplate, Event,
 )
