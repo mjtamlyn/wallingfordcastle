@@ -2,12 +2,13 @@ import json
 
 from django.conf import settings
 from django.db.models import Q
-from django.views.generic import FormView, ListView
-from django.views.generic.detail import SingleObjectMixin
 from django.urls import reverse
 from django.utils import timezone
+from django.views.generic import FormView, ListView
+from django.views.generic.detail import SingleObjectMixin
 
 import requests
+
 from wallingford_castle.mixins import FullMemberRequired
 
 from .forms import BookEventForm

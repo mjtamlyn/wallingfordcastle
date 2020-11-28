@@ -5,22 +5,28 @@ from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Prefetch, Q
-from django.http import HttpResponseNotAllowed, HttpResponseRedirect
-from django.views.generic import CreateView, DetailView, FormView, ListView, TemplateView, View
-from django.views.generic.detail import SingleObjectMixin
+from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
+from django.views.generic import (
+    CreateView, FormView, ListView, TemplateView, View,
+)
+from django.views.generic.detail import SingleObjectMixin
 
-from braces.views import MessageMixin
-from dateutil.relativedelta import relativedelta
 import requests
 import stripe
+from braces.views import MessageMixin
+from dateutil.relativedelta import relativedelta
 
+from membership.models import Member
 from wallingford_castle.forms import DirectRegisterForm
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer
-from membership.models import Member
-from .models import Attendee, Course, Session, Summer2018Signup
-from .forms import MembersBookCourseForm, CourseInterestForm, Summer2018SignupForm, NonMembersBookCourseForm, SessionBookingForm
+
+from .forms import (
+    CourseInterestForm, MembersBookCourseForm, NonMembersBookCourseForm,
+    SessionBookingForm,
+)
+from .models import Attendee, Course, Session
 
 
 class Holidays(TemplateView):
@@ -52,7 +58,8 @@ class HolidaysBook(MessageMixin, TemplateView):
             for archer in context['archers']:
                 self.annotate_with_details(archer, context.get('errored_booking_forms'))
 
-            context.setdefault('new_archer_form', CourseInterestForm(initial={'contact_email': self.request.user.email}, course_type='holidays'))
+            form = CourseInterestForm(initial={'contact_email': self.request.user.email}, course_type='holidays')
+            context.setdefault('new_archer_form', form)
 
             context['to_pay'] = self.get_to_pay(context['archers'], context['members'])
             context['STRIPE_KEY'] = settings.STRIPE_KEY
@@ -123,7 +130,11 @@ class HolidaysBook(MessageMixin, TemplateView):
                 today = datetime.date.today()
                 age = relativedelta(today, form.instance.date_of_birth).years
                 if age >= 13:
-                    form.add_error(None, 'Holiday archery is only available for under 13s. For older children, please book a beginners course.')
+                    msg = (
+                        'Holiday archery is only available for under 13s. For '
+                        'older children, please book a beginners course.'
+                    )
+                    form.add_error(None, msg)
                     context['new_archer_form'] = form
                 else:
                     interest = form.save()
@@ -139,7 +150,11 @@ class HolidaysBook(MessageMixin, TemplateView):
                     form.save(archer_id=archer_id)
                     return self.get(request, *args, **kwargs)
                 except SessionBookingForm.CancellationException:
-                    form.add_error(None, 'To cancel a session which has been paid for, please email us at hello@wallingfordcastle.co.uk')
+                    msg = (
+                        'To cancel a session which has been paid for, please '
+                        'email us at hello@wallingfordcastle.co.uk'
+                    )
+                    form.add_error(None, msg)
                     context['errored_booking_forms'] = {archer_id: form}
         elif form == 'payment':
             token = request.POST['stripeToken']
@@ -177,7 +192,11 @@ class HolidaysBook(MessageMixin, TemplateView):
                 for session in getattr(archer, 'sessions_booked', []):
                     session.paid = True
                     session.save()
-            self.messages.success('Thanks for booking your holiday session! We will contact you soon with more details.')
+            msg = (
+                'Thanks for booking your holiday session! We will contact you '
+                'soon with more details.'
+            )
+            self.messages.success()
         return self.render_to_response(context=self.get_context_data(**context))
 
 
@@ -230,7 +249,10 @@ class MembersCourseList(FullMemberRequired, ListView):
         ).order_by('id')
         for course in bookable_courses:
             user = self.request.user
-            course.registered_members = course.attendee_set.filter(archer__user=user) | course.attendee_set.filter(archer__managing_users=user)
+            course.registered_members = (
+                course.attendee_set.filter(archer__user=user)
+                | course.attendee_set.filter(archer__managing_users=user)
+            )
         return bookable_courses
 
 
@@ -285,7 +307,10 @@ class NonMembersCourseList(FullMemberRequired, ListView):
         )
         for course in bookable_courses:
             user = self.request.user
-            course.registered_archers = course.attendee_set.filter(archer__user=user) | course.attendee_set.filter(archer__managing_users=user)
+            course.registered_archers = (
+                course.attendee_set.filter(archer__user=user)
+                | course.attendee_set.filter(archer__managing_users=user)
+            )
         return bookable_courses
 
 
@@ -345,7 +370,12 @@ class NonMembersPayment(MessageMixin, View):
             )
             self.request.user.customer_id = customer.id
             self.request.user.save()
-        attendees = Attendee.objects.filter(archer__user=self.request.user, member=False, paid=False, course__can_book_individual_sessions=False)
+        attendees = Attendee.objects.filter(
+            archer__user=self.request.user,
+            member=False,
+            paid=False,
+            course__can_book_individual_sessions=False,
+        )
         amount = sum(attendee.fee for attendee in attendees)
         description = '; '.join('%s - %s' % (attendee.archer, attendee.course) for attendee in attendees)
         stripe.Charge.create(

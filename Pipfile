@@ -4,7 +4,7 @@ url = "https://pypi.org/simple"
 name = "pypi"
 
 [requires]
-python_version = "3.6"
+python_version = "3.9"
 
 [dev-packages]
 
@@ -27,3 +27,7 @@ attrs = "*"
 sentry-sdk = "*"
 django-webpack-loader = "*"
 django-floppyforms = "*"
+factory-boy = "*"
+isort = "*"
+flake8 = "*"
+django-templated-email = "*"

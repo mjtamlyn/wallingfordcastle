@@ -1,12 +1,11 @@
 import os
 
 from django.urls import reverse_lazy
+
 import dj_database_url
-import stripe
-
 import sentry_sdk
+import stripe
 from sentry_sdk.integrations.django import DjangoIntegration
-
 
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
@@ -74,7 +73,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [os.path.join(BASE_DIR, 'build')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'collected_static')
-STATICFILES_STORAGE ='whitenoise.storage.CompressedStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 WEBPACK_LOADER = {
     'DEFAULT': {

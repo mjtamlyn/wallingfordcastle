@@ -1,7 +1,6 @@
-from django.urls import re_path, path
+from django.urls import path, re_path
 
 from . import views
-
 
 app_name = 'membership'
 

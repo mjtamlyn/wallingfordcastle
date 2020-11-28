@@ -1,14 +1,16 @@
 import collections
 import functools
 
+from django import forms
 from django.conf.urls import url
 from django.contrib import admin
-from django import forms
 from django.http import HttpResponseRedirect
-from django.views.generic import FormView
 from django.urls import reverse
+from django.views.generic import FormView
 
-from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
+from django_object_actions import (
+    DjangoObjectActions, takes_instance_or_queryset,
+)
 
 from wallingford_castle.models import User
 

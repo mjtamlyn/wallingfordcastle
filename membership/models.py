@@ -2,9 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
-import stripe
-
-from wallingford_castle.models import AGE_CHOICES, MEMBERSHIP_CHOICES
+from wallingford_castle.models import MEMBERSHIP_CHOICES
 
 
 class MemberManager(models.Manager):
@@ -25,7 +23,12 @@ class Member(models.Model):
     archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
     membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
     level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default='', blank=True)
-    interest = models.ForeignKey('wallingford_castle.MembershipInterest', blank=True, null=True, on_delete=models.CASCADE)
+    interest = models.ForeignKey(
+        'wallingford_castle.MembershipInterest',
+        blank=True,
+        null=True,
+        on_delete=models.CASCADE,
+    )
     coaching_subscription = models.BooleanField(default=False)
 
     active = models.BooleanField(default=True)
@@ -57,4 +60,4 @@ class Member(models.Model):
 
     @property
     def plan_cost(self):
-        return sum(price['price'] for price in self.prices) 
+        return sum(price['price'] for price in self.prices)

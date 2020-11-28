@@ -1,7 +1,7 @@
 import datetime
 
-from django.db import models
 from django.contrib.postgres.fields import ArrayField, HStoreField
+from django.db import models
 from django.utils.functional import cached_property
 
 import pytz
@@ -137,7 +137,8 @@ class BookingTemplate(models.Model):
         )]
         start_times = [
             tz.localize(datetime.datetime.combine(self.date, time))
-        for time in self.start_times]
+            for time in self.start_times
+        ]
         return Template(
             start_times=start_times,
             targets=self.targets,

@@ -27,11 +27,9 @@ class RegisterForm(SetPasswordForm):
         return super(RegisterForm, self).save()
 
 
-
 class CompliantPasswordInput(forms.PasswordInput):
     def render(self, name, value, attrs=None, renderer=None):
         return super().render(name, value, attrs=None)
-
 
 
 class DirectRegisterForm(forms.Form):

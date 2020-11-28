@@ -1,5 +1,3 @@
-import copy
-import datetime
 import functools
 
 from django import forms
@@ -8,80 +6,28 @@ from django.contrib.admin.helpers import AdminForm
 from django.db import transaction
 from django.db.models import Count
 from django.http import HttpResponseRedirect
-from django.views.generic import CreateView, DetailView, FormView, ListView
 from django.urls import path, reverse
 from django.utils import html
+from django.views.generic import CreateView, DetailView, FormView, ListView
 
 from braces.views import MessageMixin
-from dateutil.relativedelta import relativedelta
-from django_object_actions import DjangoObjectActions, takes_instance_or_queryset
+from django_object_actions import (
+    DjangoObjectActions, takes_instance_or_queryset,
+)
 
 from events.models import Event
 from wallingford_castle.admin import ArcherDataMixin
-from wallingford_castle.models import Archer, User
-from .models import Attendee, AttendeeSession, Course, Interest, Session, Summer2018Signup
+from wallingford_castle.models import User
 
-
-class Summer2018Summary(ListView):
-    model = Summer2018Signup
-    template_name = 'admin/courses/summer2018_signup/summary.html'
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        sessions = (
-            ('6-12 beginners', []),
-            ('6-12 intermediates', []),
-            ('12-18 beginners', []),
-            ('12-18 intermediates', []),
-        )
-        dates = (
-            (datetime.date(2018, 7, 26), copy.deepcopy(sessions)),
-            (datetime.date(2018, 7, 31), copy.deepcopy(sessions)),
-            (datetime.date(2018, 8, 2), copy.deepcopy(sessions)),
-            (datetime.date(2018, 8, 7), copy.deepcopy(sessions)),
-            (datetime.date(2018, 8, 9), copy.deepcopy(sessions)),
-            (datetime.date(2018, 8, 14), copy.deepcopy(sessions)),
-            (datetime.date(2018, 8, 16), copy.deepcopy(sessions)),
-            (datetime.date(2018, 8, 21), copy.deepcopy(sessions)),
-            (datetime.date(2018, 8, 23), copy.deepcopy(sessions)),
-            (datetime.date(2018, 8, 28), copy.deepcopy(sessions)),
-            (datetime.date(2018, 8, 30), copy.deepcopy(sessions)),
-            (datetime.date(2018, 9, 4), copy.deepcopy(sessions)),
-        )
-        for archer in context['object_list']:
-            for date, date_sessions in dates:
-                if date in archer.dates:
-                    for session, names in date_sessions:
-                        if session == archer.group:
-                            names.append(archer.student_name)
-
-        context['summary'] = dates
-        context['opts'] = Summer2018Signup._meta
-        context['title'] = 'Summer signups summary'
-        return context
+from .models import (
+    Attendee, AttendeeSession, Course, Interest, Session, Summer2018Signup,
+)
 
 
 @admin.register(Summer2018Signup)
 class Summer2018SignupAdmin(admin.ModelAdmin):
     list_display = ['student_name', 'email', 'student_date_of_birth', 'dates', 'group', 'paid']
     list_filter = ['group']
-
-    def get_urls(self):
-        urls = super().get_urls()
-
-        def wrap(view):
-            def wrapper(*args, **kwargs):
-                return self.admin_site.admin_view(view)(*args, **kwargs)
-            wrapper.model_admin = self
-            return functools.update_wrapper(wrapper, view)
-
-        info = self.model._meta.app_label, self.model._meta.model_name
-
-        urls.insert(
-            0,
-            path('summary/', wrap(Summer2018Summary.as_view()), name='%s_%s_summary' % info),
-        )
-        return urls
 
 
 class SessionSetAttendeesForm(forms.Form):
@@ -92,21 +38,26 @@ class SessionSetAttendeesForm(forms.Form):
         self.session = session
         self.fields['attendees'].choices = [
             (coach.id, coach.name)
-        for coach in session.course.coaches.order_by('name')]
+            for coach in session.course.coaches.order_by('name')
+        ]
         if session.course.can_book_individual_sessions:
             self.fields['attendees'].choices += [
                 (booking.attendee.archer_id, booking.attendee.archer.name)
-            for booking in session.attendeesession_set.order_by('attendee__archer__name')]
+                for booking in session.attendeesession_set.order_by('attendee__archer__name')
+            ]
         else:
             self.fields['attendees'].choices += [
                 (attendee.archer_id, attendee.archer.name)
-            for attendee in session.course.attendee_set.order_by('archer__name')]
+                for attendee in session.course.attendee_set.order_by('archer__name')
+            ]
         # This is needed to ensure that we don't remove any attendees not in the default list
         self.form_attendees = [c[0] for c in self.fields['attendees'].choices]
 
     def save(self):
         attendees = set(map(int, self.cleaned_data['attendees']))
-        current_attendees = set(self.session.event.attendee_set.values_list('archer_id', flat=True))
+        current_attendees = set(
+            self.session.event.attendee_set.values_list('archer_id', flat=True)
+        )
         to_add = attendees - current_attendees
         to_remove = (set(self.form_attendees) & current_attendees) - attendees
         for archer in to_add:
@@ -149,7 +100,11 @@ class SessionSetAttendees(FormView):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Set attendees for %s on %s' % (self.session.course, self.session.start_time.date())
         context['opts'] = Session._meta
-        context['adminform'] = AdminForm(context['form'], fieldsets=[(None, {'fields': ['attendees']})], prepopulated_fields={})
+        context['adminform'] = AdminForm(
+            context['form'],
+            fieldsets=[(None, {'fields': ['attendees']})],
+            prepopulated_fields={},
+        )
         return context
 
     def form_valid(self, form):
@@ -183,9 +138,15 @@ class SessionCreateEvent(MessageMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = 'Create event for %s on %s' % (self.session.course, self.session.start_time.date())
+        context['title'] = 'Create event for %s on %s' % (
+            self.session.course, self.session.start_time.date(),
+        )
         context['opts'] = Session._meta
-        context['adminform'] = AdminForm(context['form'], fieldsets=[(None, {'fields': self.fields})], prepopulated_fields={})
+        context['adminform'] = AdminForm(
+            context['form'],
+            fieldsets=[(None, {'fields': self.fields})],
+            prepopulated_fields={},
+        )
         return context
 
     def form_valid(self, form):
@@ -218,7 +179,6 @@ class SessionAdmin(admin.ModelAdmin):
             path('<pk>/set-attendees/', wrap(SessionSetAttendees.as_view()), name='%s_%s_set_attendees' % info),
         ] + urls
         return urls
-
 
 
 class SessionInline(admin.TabularInline):
@@ -296,11 +256,15 @@ class CourseAdmin(DjangoObjectActions, admin.ModelAdmin):
             <a href="{}" title="View report">
                 View report >
             </a>
-        ''', reverse('admin:%s_%s_report' % (self.model._meta.app_label, self.model._meta.model_name), kwargs={'pk': obj.pk}))
+        ''', reverse('admin:%s_%s_report' % (
+            self.model._meta.app_label, self.model._meta.model_name,
+        ), kwargs={'pk': obj.pk}))
     report_link.short_description = 'View report'
 
     def view_report(self, request, instance):
-        url = reverse('admin:%s_%s_report' % (self.model._meta.app_label, self.model._meta.model_name), kwargs={'pk': instance.pk})
+        url = reverse('admin:%s_%s_report' % (
+            self.model._meta.app_label, self.model._meta.model_name,
+        ), kwargs={'pk': instance.pk})
         return HttpResponseRedirect(url)
     view_report.short_description = 'View report'
     view_report.label = 'View report'
@@ -312,7 +276,11 @@ class AttendeeAdmin(ArcherDataMixin, admin.ModelAdmin):
     list_filter = ['course', 'paid', 'member']
     search_fields = ['archer__name']
     autocomplete_fields = ['archer']
-    readonly_fields = ['created', 'modified', 'archer_age', 'archer_agb_number', 'archer_date_of_birth', 'archer_age_group', 'archer_address', 'archer_contact_number', 'archer_email']
+    readonly_fields = [
+        'created', 'modified', 'archer_age', 'archer_agb_number',
+        'archer_date_of_birth', 'archer_age_group', 'archer_address',
+        'archer_contact_number', 'archer_email',
+    ]
     fields = [
         ('archer', 'course'),
         'group',
@@ -341,7 +309,11 @@ class AllocateCourseForm(forms.Form):
     def clean(self):
         for interest in self.interests:
             if interest.processed:
-                self.add_error(None, forms.ValidationError('%(interest)s is already processed', params={'interest': interest}))
+                error = forms.ValidationError(
+                    '%(interest)s is already processed',
+                    params={'interest': interest},
+                )
+                self.add_error(None, error)
 
     def save(self):
         new_users = set()

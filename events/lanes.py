@@ -1,10 +1,10 @@
 import copy
 from collections import defaultdict
 
+from django.utils.functional import cached_property
+
 import attr
 import pytz
-
-from django.utils.functional import cached_property
 
 
 def serialize_time(time):

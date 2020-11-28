@@ -1,19 +1,18 @@
 import collections
 import datetime
 
-from django.contrib.auth.tokens import default_token_generator
 from django.contrib import messages
+from django.contrib.auth.tokens import default_token_generator
 from django.db import models, transaction
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.functional import cached_property
 from django.utils.http import urlsafe_base64_encode
-from django.urls import reverse
 
-from custom_user.models import AbstractEmailUser
-from templated_email import send_templated_mail
 import stripe
+from custom_user.models import AbstractEmailUser
 from dateutil.relativedelta import relativedelta
-
+from templated_email import send_templated_mail
 
 AGE_CHOICES = (
     ('junior', 'Junior'),
@@ -277,4 +276,3 @@ class Archer(models.Model):
         if days_to_birthday < 90 and years % 2:
             group += ' (Moving up on %s)' % this_years_birthday.strftime('%d/%m/%Y')
         return group
-

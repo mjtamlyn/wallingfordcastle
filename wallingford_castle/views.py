@@ -2,13 +2,14 @@ import json
 
 from django.conf import settings
 from django.contrib.auth.views import LoginView
-from django.views.generic import TemplateView, CreateView
 from django.urls import reverse, reverse_lazy
+from django.views.generic import CreateView, TemplateView
 
-from braces.views import MessageMixin
 import requests
+from braces.views import MessageMixin
 
 from courses.forms import CourseInterestForm
+
 from .forms import MembershipInterestForm
 
 
@@ -16,7 +17,7 @@ class HomeView(MessageMixin, TemplateView):
     template_name = 'home.html'
 
 
-class Join(TemplateView): 
+class Join(TemplateView):
     template_name = 'join.html'
 
     def get_context_data(self, **kwargs):

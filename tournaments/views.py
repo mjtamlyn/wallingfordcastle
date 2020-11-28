@@ -5,15 +5,15 @@ from django.contrib.auth import login
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
-from django.views.generic import (
-    CreateView, DeleteView, DetailView, FormView, TemplateView, UpdateView,
-    View,
-)
 from django.utils import timezone
+from django.views.generic import (
+    CreateView, DeleteView, FormView, TemplateView, UpdateView, View,
+)
 
 import requests
 import stripe
 from braces.views import LoginRequiredMixin, MessageMixin
+
 from events.models import Event
 
 from .forms import EntryForm, RegisterForm
@@ -50,7 +50,10 @@ class TournamentDetail(TournamentMixin, TemplateView):
         context = super().get_context_data()
         if self.request.user.is_authenticated:
             context['existing_entries'] = self.request.user.entry_set.filter(tournament=self.tournament)
-            context['to_pay'] = self.request.user.entry_set.filter(paid=False, tournament=self.tournament).count() * self.tournament.entry_fee
+            context['to_pay'] = self.request.user.entry_set.filter(
+                paid=False,
+                tournament=self.tournament,
+            ).count() * self.tournament.entry_fee
             context['STRIPE_KEY'] = settings.STRIPE_KEY
             context['entry_form'] = EntryForm()
         else:
@@ -107,7 +110,18 @@ class EntryCreate(LoginRequiredMixin, TournamentMixin, MessageMixin, CreateView)
 class EntryUpdate(LoginRequiredMixin, TournamentMixin, MessageMixin, UpdateView):
     template_name = 'tournaments/entry_form.html'
     model = Entry
-    fields = ['name', 'agb_number', 'club', 'date_of_birth', 'gender', 'bowstyle', 'notes', 'drugs_consent', 'gdpr_consent', 'future_event_consent']
+    fields = [
+        'name',
+        'agb_number',
+        'club',
+        'date_of_birth',
+        'gender',
+        'bowstyle',
+        'notes',
+        'drugs_consent',
+        'gdpr_consent',
+        'future_event_consent',
+    ]
 
     def get_object(self):
         obj = super().get_object()
@@ -147,7 +161,10 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
             source = customer.sources.create(source=token)
             self.request.user.customer_id = customer.id
             self.request.user.save()
-        to_pay = self.request.user.entry_set.filter(paid=False, tournament=tournament).count() * 100 * tournament.entry_fee
+        to_pay = self.request.user.entry_set.filter(
+            paid=False,
+            tournament=tournament,
+        ).count() * 100 * tournament.entry_fee
         stripe.Charge.create(
             amount=to_pay,
             currency="GBP",
