@@ -8,7 +8,6 @@ import pytz
 from wallingford_castle.tests.factories import ArcherFactory
 
 from ..lanes import Slot, Template
-from ..models import BookedSlot
 from .factories import BookedSlotFactory, BookingTemplateFactory
 
 
@@ -19,7 +18,7 @@ class TestFactoriesAndStr(TestCase):
 
     def test_booked_slot_factory_with_archers(self):
         archer = ArcherFactory.create()
-        booking_template = BookedSlotFactory.create(archers=[archer])
+        BookedSlotFactory.create(archers=[archer])
 
     def test_booking_factory(self):
         booking_template = BookingTemplateFactory.create()
@@ -115,7 +114,7 @@ class TestBookingTemplate(TestCase):
             is_group=True,
             archers=[archer_1],
         )
-        booked_individual = BookedSlotFactory.create(
+        BookedSlotFactory.create(
             start=start_time,
             target=2,
             is_group=False,
@@ -124,8 +123,9 @@ class TestBookingTemplate(TestCase):
 
         new = template.create_next()
         next_start_time = start_time + datetime.timedelta(days=7)
-        self.assertEqual(BookedSlot.objects.filter(start=next_start_time).count(), 1)
-        new_slots = BookedSlot.objects.filter(start=next_start_time)
+        new_slots = new.slots.filter(start=next_start_time)
         self.assertEqual(new_slots.count(), 1)
         new_slot = new_slots.get()
+        self.assertTrue(new_slot.is_group)
+        self.assertEqual(new_slot.target, booked_group.target)
         self.assertSequenceEqual(new_slot.archers.all(), [archer_1])
