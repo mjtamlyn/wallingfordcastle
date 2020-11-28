@@ -20,6 +20,12 @@ class BookedSlotFactory(factory.django.DjangoModelFactory):
     duration = datetime.timedelta(hours=1)
     target = 1
 
+    @factory.post_generation
+    def archers(obj, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        obj.archers.set(extracted)
+
 
 class BookingTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
