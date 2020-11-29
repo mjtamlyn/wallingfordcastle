@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 
 // Structure taken from the react docs
@@ -25,10 +26,12 @@ class Modal extends React.Component {
         // state to Modal and only render the children when Modal
         // is inserted in the DOM tree.
         this.modalRoot.appendChild(this.el);
+        disableBodyScroll(this.el);
     }
 
     componentWillUnmount() {
         this.modalRoot.removeChild(this.el);
+        clearAllBodyScrollLocks();
     }
 
     render() {
