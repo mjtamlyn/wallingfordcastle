@@ -6,6 +6,7 @@ import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
 import ArcherSelect from 'range/ArcherSelect';
 import DistanceSelector from 'range/DistanceSelector';
+import Modal from 'utils/Modal';
 
 class SlotBookView extends React.Component {
     constructor(props) {
@@ -73,24 +74,21 @@ class SlotBookView extends React.Component {
         const submitDisabled = !this.isValid(this.state) || this.state.submitting;
 
         return (
-            <div className="booking-modal">
-                <div className="booking-modal__background" onClick={ ::this.close } />
-                <div className="booking-modal__content">
-                    <h4 className="booking-modal__title">Booking target { target } at { time }</h4>
-                    <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
-                    <div className="booking-modal__row">
-                        <ArcherComponent onChange={ ::this.setArchers } />
-                    </div>
-                    { distanceRequired &&
-                        <div className="booking-modal__row">
-                            <DistanceSelector onChange={ ::this.setDistance } />
-                        </div>
-                    }
-                    <div className="booking-modal__row">
-                        <input className="booking-modal__button" type="submit" value="Book" disabled={ submitDisabled } onClick={ ::this.submit } />
-                    </div>
+            <Modal className="booking-modal" close={ ::this.close }>
+                <h4 className="booking-modal__title">Booking target { target } at { time }</h4>
+                <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
+                <div className="booking-modal__row">
+                    <ArcherComponent onChange={ ::this.setArchers } />
                 </div>
-            </div>
+                { distanceRequired &&
+                    <div className="booking-modal__row">
+                        <DistanceSelector onChange={ ::this.setDistance } />
+                    </div>
+                }
+                <div className="booking-modal__row">
+                    <input className="booking-modal__button" type="submit" value="Book" disabled={ submitDisabled } onClick={ ::this.submit } />
+                </div>
+            </Modal>
         );
     }
 }

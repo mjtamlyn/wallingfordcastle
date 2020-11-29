@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Redirect, withRouter } from 'react-router-dom';
 
+import Modal from 'utils/Modal';
 import store from 'utils/store';
 
 class SlotCancelView extends React.Component {
@@ -47,17 +48,14 @@ class SlotCancelView extends React.Component {
         const submitDisabled = this.state.submitting;
 
         return (
-            <div className="booking-modal">
-                <div className="booking-modal__background" onClick={ ::this.close } />
-                <div className="booking-modal__content">
-                    <h4 className="booking-modal__title">Cancel your session?</h4>
-                    <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
-                    <p className="booking-modal__text">You are booked for target { this.submitData.target} at { this.submitData.time }.</p>
-                    <div className="booking-modal__row">
-                        <input className="booking-modal__button" type="submit" value="Confirm" disabled={ submitDisabled } onClick={ ::this.submit } />
-                    </div>
+            <Modal className="booking-modal" close={ ::this.close }>
+                <h4 className="booking-modal__title">Cancel your session?</h4>
+                <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
+                <p className="booking-modal__text">You are booked for target { this.submitData.target} at { this.submitData.time }.</p>
+                <div className="booking-modal__row">
+                    <input className="booking-modal__button" type="submit" value="Confirm" disabled={ submitDisabled } onClick={ ::this.submit } />
                 </div>
-            </div>
+            </Modal>
         );
     }
 };
