@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Mousetrap from 'mousetrap';
 import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
 
@@ -26,11 +27,13 @@ class Modal extends React.Component {
         // state to Modal and only render the children when Modal
         // is inserted in the DOM tree.
         this.modalRoot.appendChild(this.el);
+        Mousetrap.bind('esc', this.props.close);
         disableBodyScroll(this.el);
     }
 
     componentWillUnmount() {
         this.modalRoot.removeChild(this.el);
+        Mousetrap.unbind('esc');
         clearAllBodyScrollLocks();
     }
 
