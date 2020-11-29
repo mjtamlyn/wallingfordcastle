@@ -107,7 +107,7 @@
     cursor: pointer
 
 .booking-modal
-  position: absolute
+  position: fixed
   top: 0
   left: 0
   width: 100%
@@ -124,12 +124,14 @@
     background-color: rgba(0, 0, 0, 0.8)
 
   &__content
-    margin: 30px auto
     width: 350px
     background-color: white
     border-radius: 20px
     padding: 20px
-    position: relative
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate(-50%, -50%)
     
     & > :first-child
       margin-top: 0
