@@ -39,8 +39,10 @@
         </iframe>
         <h3>Refreshments</h3>
         {{ tournament.refreshments|linebreaks }}
-        <h3>Camping</h3>
-        {{ tournament.camping|linebreaks }}
+	{% if tournament.camping %}
+	    <h3>Camping</h3>
+	    {{ tournament.camping|linebreaks }}
+	{% endif %}
     </section>
     <section>
         {% if tournament.entry_is_open %}

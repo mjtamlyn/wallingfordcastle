@@ -37,7 +37,7 @@ class Tournament(models.Model):
     venue_description = models.TextField()
     venue_google_search = models.CharField(max_length=200)
     refreshments = models.TextField()
-    camping = models.TextField()
+    camping = models.TextField(blank=True, default='')
 
     # Entry information
     entry_information = models.TextField()
@@ -76,8 +76,9 @@ class Entry(models.Model):
     gender = models.CharField(max_length=50, choices=GENDER_CHOICES)
     bowstyle = models.CharField(max_length=50, choices=BOWSTYLE_CHOICES)
     notes = models.TextField(help_text='''
-        Please include details of any accessibility requirements, other
-        bowstyles, junior or masters age categories etc.
+        Please include details of any accessibility requirements, session and
+        target face preferences, other bowstyles, junior or masters age
+        categories etc.
     ''', blank=True, default='')
     drugs_consent = models.BooleanField('I consent to drugs testing as required under WRS rules.', default=False)
     gdpr_consent = models.BooleanField(
