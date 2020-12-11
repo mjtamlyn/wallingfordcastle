@@ -49,7 +49,7 @@ class Schedule extends React.Component {
     render() {
         const schedule = this.props.schedule;
         const firstTime = moment(schedule[0].startTime);
-        const lastTime = moment(schedule[this.props.schedule.length - 1].slots[0].end);
+        const lastTime = moment(schedule[this.props.schedule.length - 1].endTime);
 
         const targets = Math.max(...schedule.map((row) => row.slots.length));
 

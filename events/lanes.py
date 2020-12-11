@@ -120,5 +120,6 @@ class Template:
     def serialize(self, user=None):
         return [{
             'startTime': serialize_time(row['start_time']),
+            'endTime': serialize_time(row['start_time'] + self.slot_duration),
             'slots': [slot.personalize(user=user).serialize() if slot else None for slot in row['slots']],
         } for row in self.slots]
