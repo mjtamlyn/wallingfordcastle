@@ -196,7 +196,7 @@ class HolidaysBook(MessageMixin, TemplateView):
                 'Thanks for booking your holiday session! We will contact you '
                 'soon with more details.'
             )
-            self.messages.success()
+            self.messages.success(msg)
         return self.render_to_response(context=self.get_context_data(**context))
 
 

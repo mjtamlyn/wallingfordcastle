@@ -116,7 +116,7 @@ class SessionBookingForm(forms.Form):
             booked_dict = {session.session_id: session for session in booked}
         else:
             booked_dict = {}
-        for session in course.session_set.all():
+        for session in course.session_set.order_by('start_time'):
             self.fields['session_%s' % session.pk] = forms.BooleanField(
                 label=session.label,
                 label_suffix='',
