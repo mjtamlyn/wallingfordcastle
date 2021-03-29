@@ -204,6 +204,27 @@ class User(AbstractEmailUser):
             self.subscription_id = subscription.id
             self.save()
 
+    def update_subscriptions_post_covid(self):
+        from membership.models import Member
+
+        prices = collections.defaultdict(int)
+        members = Member.objects.filter(archer__user=self, active=True)  # Just ones billed by this user
+        for member in members:
+            prices[member.prices[0]['id']] += 1  # Ignore any coaching plan
+
+        new_items = []
+        subscription = stripe.Subscription.retrieve(self.subscription_id)
+        for item in subscription['items']['data']:
+            if item.price.id not in prices:
+                new_items.append({'id': item.id, 'quantity': 0})  # Don't remove, just leave at 0
+            else:
+                new_items.append({'id': item.id, 'quantity': prices.pop(item.price.id)})
+        for price, quantity in prices.items():
+            new_items.append({'price': price, 'quantity': quantity})
+        subscription.items = new_items
+        subscription.prorate = True  # Prices is prorated
+        subscription.save()
+
     def add_invoice_item(self, amount, description):
         if not self.customer_id or not self.subscription_id:
             raise ValueError('User does not have a subscription')
