@@ -35,6 +35,10 @@
         {% endfor %}
     </ul>
 
+    {% if revenue %}
+    <h2>Revenue – £{{ revenue }}</h2>
+    {% endif %}
+
     <h2>Attendees ({{ attendees|length }})</h2>
     <div class="results">
         <table id="result_list">

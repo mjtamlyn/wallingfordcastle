@@ -200,6 +200,10 @@ class CourseReport(DetailView):
         if context['has_groups']:
             groups = self.object.attendee_set.exclude(group='').values('group').annotate(attendee_count=Count('id'))
             context['groups'] = sorted(groups, key=lambda g: g['group'])
+        if self.object.can_book_individual_sessions:
+            context['revenue'] = sum(sum(
+                session.fee for session in attendee.session_set.all()
+            ) for attendee in context['attendees'])
         return context
 
 
