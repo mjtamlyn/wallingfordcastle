@@ -82,7 +82,7 @@ class BookedSlot(models.Model):
     duration = models.DurationField()
     target = models.PositiveIntegerField()
     distance = models.CharField(max_length=100, default='', blank=True)
-    archers = models.ManyToManyField(Archer)
+    archers = models.ManyToManyField(Archer, blank=True)
 
     # Group fields
     is_group = models.BooleanField(default=False)
