@@ -65,6 +65,7 @@ ROOT_URLCONF = 'wallingford_castle.urls'
 WSGI_APPLICATION = 'wallingford_castle.wsgi.application'
 
 DATABASES = {'default': dj_database_url.config(default='postgresql://localhost/wallingford_castle')}
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 LANGUAGE_CODE = 'en-gb'
 TIME_ZONE = 'Europe/London'
