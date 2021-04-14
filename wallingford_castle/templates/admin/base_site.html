@@ -1,0 +1,22 @@
+{% extends 'admin/base_site.html' %}
+
+{% block branding %}
+<h1 id="site-name">
+    <a href="/admin/">Wallingford Castle Archers Administration</a>
+</h1>
+{% endblock %}
+
+{% block extrastyle %}
+<style>
+    div.breadcrumbs,
+    .module h2,
+    .module caption,
+    .inline-group h2,
+    #user-tools a:focus,
+    #user-tools a:hover,
+    .button, input[type=submit], input[type=button], .submit-row input, a.button,
+    #header {
+        background-color: #CA4984;
+    }
+</style>
+{% endblock %}
