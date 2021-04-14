@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.db import migrations
 
+
 def migrate_times(apps, editor):
     Event = apps.get_model('events', 'Event')
     for event in Event.objects.all():
