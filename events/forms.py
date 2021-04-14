@@ -1,9 +1,8 @@
 import datetime
 
 from django import forms
+from django.conf import settings
 from django.contrib.postgres.forms import JSONField
-
-import pytz
 
 from membership.models import Member
 
@@ -65,9 +64,8 @@ class BookSlotForm(forms.Form):
 
     def save(self):
         data = self.cleaned_data
-        tz = pytz.timezone('Europe/London')
         start = datetime.datetime.combine(data['date'], data['time'])
-        start = tz.localize(start)
+        start = settings.TZ.localize(start)
         duration = datetime.timedelta(minutes=90)  # TODO: submit this somehow?
         target = data['target']
         distance = data['distance']
@@ -93,9 +91,8 @@ class CancelSlotForm(forms.Form):
 
     def clean(self):
         data = self.cleaned_data
-        tz = pytz.timezone('Europe/London')
         start = datetime.datetime.combine(data['date'], data['time'])
-        start = tz.localize(start)
+        start = settings.TZ.localize(start)
         slot = BookedSlot.objects.get(
             start=start,
             target=data['target'],

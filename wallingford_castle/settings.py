@@ -3,6 +3,7 @@ import os
 from django.urls import reverse_lazy
 
 import dj_database_url
+import pytz
 import sentry_sdk
 import stripe
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -56,6 +57,7 @@ MIDDLEWARE = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'wallingford_castle.middleware.TimezoneMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
 )
 
@@ -65,7 +67,8 @@ WSGI_APPLICATION = 'wallingford_castle.wsgi.application'
 DATABASES = {'default': dj_database_url.config(default='postgresql://localhost/wallingford_castle')}
 
 LANGUAGE_CODE = 'en-gb'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/London'
+TZ = pytz.timezone(TIME_ZONE)
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True

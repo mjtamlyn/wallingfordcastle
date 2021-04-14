@@ -1,6 +1,7 @@
 import datetime
 import uuid
 
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
@@ -47,18 +48,27 @@ class Session(models.Model):
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
 
+    @property
+    def local_start_time(self):
+        return settings.TZ.normalize(self.start_time)
+
+    @property
     def end_time(self):
         return self.start_time + self.duration
 
     @property
+    def local_end_time(self):
+        return settings.TZ.normalize(self.end_time)
+
+    @property
     def label(self):
-        label = self.start_time.strftime('%d %b %Y, %-I:%M%p')
+        label = self.local_start_time.strftime('%d %b %Y, %-I:%M%p')
         if self.public_label:
             label += ' (%s)' % self.public_label
         return label
 
     def __str__(self):
-        return 'Session at %s' % self.start_time
+        return 'Session at %s' % self.local_start_time
 
 
 class Attendee(models.Model):

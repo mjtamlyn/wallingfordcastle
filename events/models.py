@@ -1,10 +1,9 @@
 import datetime
 
+from django.conf import settings
 from django.contrib.postgres.fields import ArrayField, HStoreField
 from django.db import models
 from django.utils.functional import cached_property
-
-import pytz
 
 from wallingford_castle.models import Archer
 
@@ -128,10 +127,9 @@ class BookingTemplate(models.Model):
 
     @cached_property
     def template(self):
-        tz = pytz.timezone('Europe/London')
         slots = [slot.slot for slot in self.slots]
         start_times = [
-            tz.localize(datetime.datetime.combine(self.date, time))
+            settings.TZ.localize(datetime.datetime.combine(self.date, time))
             for time in self.start_times
         ]
         return Template(
@@ -143,17 +141,14 @@ class BookingTemplate(models.Model):
 
     @property
     def slots(self):
-        tz = pytz.timezone('Europe/London')
         midnight = datetime.datetime.combine(self.date, datetime.time(0))
-        midnight = tz.localize(midnight)
+        midnight = settings.TZ.localize(midnight)
         return BookedSlot.objects.filter(
             start__gte=midnight,
             start__lt=midnight + datetime.timedelta(days=1),
         )
 
     def create_next(self, date=None):
-        tz = pytz.timezone('Europe/London')
-
         if date is None:
             date = self.date + datetime.timedelta(days=7)
         new = BookingTemplate.objects.create(
@@ -168,8 +163,9 @@ class BookingTemplate(models.Model):
         )
         slots = self.slots.filter(is_group=True)
         for slot in slots:
-            start_time = datetime.datetime.combine(new.date, slot.start.time())
-            start_time = tz.localize(start_time)
+            start = settings.TZ.normalize(slot.start)
+            start_time = datetime.datetime.combine(new.date, start.time())
+            start_time = settings.TZ.localize(start_time)
             new_slot = BookedSlot.objects.create(
                 start=start_time,
                 duration=slot.duration,

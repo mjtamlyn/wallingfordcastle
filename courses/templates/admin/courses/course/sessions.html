@@ -58,7 +58,7 @@
                 {% for session in object_list %}
                 <tr class="{% cycle 'row1' 'row2' %}">
                     <th><a href="{% url session_opts|admin_urlname:'change' session.pk %}">{{ session.start_time.date }}</a></th>
-                    <td>{{ session.start_time.time }} - {{ session.end_time.time }}</td>
+                    <td>{{ session.local_start_time.time }} - {{ session.local_end_time.time }}</td>
                     <td>
                         {% if session.event %}
                             <strong>Attendees ({{ session.event.attendee_count }})</strong>

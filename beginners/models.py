@@ -1,5 +1,6 @@
 import datetime
 
+from django.conf import settings
 from django.db import models
 from django.utils import timezone
 
@@ -41,14 +42,18 @@ class BeginnersCourseSession(models.Model):
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
 
+    @property
+    def local_start_time(self):
+        return settings.TZ.normalize(self.start_time)
+
     def __str__(self):
-        return 'Beginners course session at %s' % self.start_time
+        return 'Beginners course session at %s' % self.local_start_time
 
     def time_string(self):
         return '%s, %s to %s' % (
-            self.start_time.strftime('%d %B %Y'),
-            self.start_time.strftime('%H:%M'),
-            (self.start_time + self.duration).strftime('%H:%M'),
+            self.local_start_time.strftime('%d %B %Y'),
+            self.local_start_time.strftime('%H:%M'),
+            (self.local_start_time + self.duration).strftime('%H:%M'),
         )
 
 

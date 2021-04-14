@@ -1,14 +1,14 @@
 import copy
 from collections import defaultdict
 
+from django.conf import settings
 from django.utils.functional import cached_property
 
 import attr
-import pytz
 
 
 def serialize_time(time):
-    local = time.astimezone(pytz.timezone('Europe/London'))
+    local = time.astimezone(settings.TZ)
     return local.strftime('%Y-%m-%dT%H:%M')
 
 
@@ -86,7 +86,7 @@ class Template:
         exact_lookup = {}
         target_lookup = defaultdict(list)
         for booking in self.booked_slots:
-            start = booking.start.astimezone(pytz.timezone('Europe/London'))
+            start = booking.start.astimezone(settings.TZ)
             if start not in start_times:
                 start_times.append(start)
             exact_lookup[(start, booking.target)] = booking
