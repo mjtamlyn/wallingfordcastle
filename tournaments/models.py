@@ -1,19 +1,16 @@
 import datetime
 
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
 
+from archery.bows import BOWSTYLE_CHOICES
 from wallingford_castle.models import User
 
 GENDER_CHOICES = (
     ('gent', 'Gent'),
     ('lady', 'Lady'),
-)
-
-BOWSTYLE_CHOICES = (
-    ('recurve', 'Recurve'),
-    ('compound', 'Compound'),
 )
 
 
@@ -23,7 +20,10 @@ class Tournament(models.Model):
     date = models.DateField()
 
     # Prospectus information
-    rounds = models.TextField()
+    old_rounds = models.TextField()
+    rounds = models.ManyToManyField('archery.Round')
+    has_wrs = models.BooleanField(default=True)
+    bowstyles = ArrayField(models.CharField(max_length=30, choices=BOWSTYLE_CHOICES))
     event_format = models.TextField()
     judges = models.TextField()
     awards = models.TextField()
@@ -75,6 +75,7 @@ class Entry(models.Model):
     date_of_birth = models.DateField(blank=True, null=True, help_text='Required for junior archers.')
     gender = models.CharField(max_length=50, choices=GENDER_CHOICES)
     bowstyle = models.CharField(max_length=50, choices=BOWSTYLE_CHOICES)
+    round = models.ForeignKey('archery.Round', blank=True, null=True, on_delete=models.SET_NULL)
     notes = models.TextField(help_text='''
         Please include details of any accessibility requirements, session and
         target face preferences, other bowstyles, junior or masters age

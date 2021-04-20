@@ -15,6 +15,7 @@ import stripe
 from braces.views import LoginRequiredMixin, MessageMixin
 
 from events.models import Event
+from membership.models import Member
 
 from .forms import EntryForm, RegisterForm
 from .models import Entry, Tournament
@@ -55,7 +56,9 @@ class TournamentDetail(TournamentMixin, TemplateView):
                 tournament=self.tournament,
             ).count() * self.tournament.entry_fee
             context['STRIPE_KEY'] = settings.STRIPE_KEY
-            context['entry_form'] = EntryForm()
+            context['entry_form'] = EntryForm(tournament=self.tournament)
+            if not self.request.user.tournament_only:
+                context['members'] = Member.objects.managed_by(self.request.user)
         else:
             context['register_form'] = RegisterForm()
         return context
@@ -79,9 +82,13 @@ class EntryCreate(LoginRequiredMixin, TournamentMixin, MessageMixin, CreateView)
     model = Entry
     form_class = EntryForm
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['tournament'] = self.get_tournament()
+        return kwargs
+
     def form_valid(self, form):
         form.instance.user = self.request.user
-        form.instance.tournament = self.get_tournament()
         self.messages.success('Entry added, please pay below.')
         response = super().form_valid(form)
         data = json.dumps({

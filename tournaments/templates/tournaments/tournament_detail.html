@@ -11,7 +11,12 @@
         {{ tournament.date|date:"jS F Y" }}.
         </p>
         <h3>Rounds</h3>
-        {{ tournament.rounds|linebreaks }}
+        <p>
+        {% for round in tournament.rounds.all %}
+        {% if tournament.has_wrs %}WRS {% endif %}{{ round }}
+        {% if not forloop.last %}<br />{% endif %}
+        {% endfor %}
+        </p>
         <h3>Event Format</h3>
         {{ tournament.event_format|linebreaks }}
         <h3>Judges</h3>
@@ -81,6 +86,7 @@
                 {% endfor %}
             </ul>
             {% if to_pay %}
+            {% if not user.subscription_id %}
             <form action="{% url 'tournaments:pay' tournament_slug=tournament.slug %}" method="POST">
                 <p>To pay: £{{ to_pay }}</p>
                 {% csrf_token %}
@@ -102,6 +108,9 @@
             BACS on request. Charges will be shown on your account as WALLINGFORD
             C. ARCHERS.
             </small></p>
+            {% else %}
+            <p>Tournament fees will be added to your membership payments.</p>
+            {% endif %}
             {% endif %}
         {% elif not tournament.entry_is_open and not tournament.entry_will_open %}
             <p><strong>
@@ -113,11 +122,27 @@
 
         {% if tournament.entry_is_open %}
             {% if user.is_authenticated %}
-            <form class="form page-form" action="{% url 'tournaments:enter' tournament_slug=tournament.slug %}" method="POST">
+            <form id="tournament-entry" class="form page-form" action="{% url 'tournaments:enter' tournament_slug=tournament.slug %}" method="POST">
                 <h2>Add entry</h2>
-                {% csrf_token %}
-                {% form entry_form using 'floppyforms/layouts/p.html' %}
-                <input type="submit" value="Enter" class="btn">
+                {% if members %}
+                <div class="member-select">
+                    {% for member in members %}
+                    <p>
+                    <a class="btn"
+                        data-name="{{ member.archer.name }}"
+                        data-agb="{{ member.archer.agb_number }}"
+                        data-dob="{{ member.archer.date_of_birth|date:"d/m/Y" }}"
+                    >{{ member }}</a>
+                    </p>
+                    {% endfor %}
+                    <p><a class="btn">Another archer</a></p>
+                </div>
+                {% endif %}
+                <div class="form">
+                    {% csrf_token %}
+                    {% form entry_form using 'floppyforms/layouts/p.html' %}
+                    <input type="submit" value="Enter" class="btn">
+                </div>
             </form>
             {% else %}
             <form class="form page-form" action="{% url 'tournaments:register' tournament_slug=tournament.slug %}" method="POST">
@@ -132,4 +157,3 @@
     </section>
 </div>
 {% endblock %}
-

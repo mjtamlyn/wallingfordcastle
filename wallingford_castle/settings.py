@@ -24,6 +24,7 @@ if DEBUG:
 
 INSTALLED_APPS = (
     'wallingford_castle',
+    'archery',
     'membership',
     'beginners',
     'events',

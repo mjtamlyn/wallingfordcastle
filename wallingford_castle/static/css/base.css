@@ -2,6 +2,7 @@
 /* line 1, ../../sass/_buttons.sass */
 .btn {
   display: block;
+  cursor: pointer;
   min-width: 100px;
   background-color: #303236;
   color: #CA4984;
@@ -12,7 +13,7 @@
   text-align: center;
   white-space: nowrap;
 }
-/* line 13, ../../sass/_buttons.sass */
+/* line 14, ../../sass/_buttons.sass */
 .btn.btn-small {
   font-size: smaller;
   min-width: 0;

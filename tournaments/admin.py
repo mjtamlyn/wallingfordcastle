@@ -7,6 +7,7 @@ from .models import Entry, Tournament
 class TournamentAdmin(admin.ModelAdmin):
     list_display = ['name', 'entries_open', 'entries_close']
     prepopulated_fields = {'slug': ('name',)}
+    autocomplete_fields = ['rounds']
 
 
 @admin.register(Entry)

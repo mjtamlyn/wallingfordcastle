@@ -6,8 +6,9 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import NoMatch from 'utils/NoMatch';
 import DateSelectorView from 'range/DateSelectorView';
 import DateView from 'range/DateView';
+import initTournamentEntry from 'tournamentEntry';
 
-const app = document.getElementById('app-range-booking');
+const rangeApp = document.getElementById('app-range-booking');
 
 class RangeBookingApp extends React.Component {
     render() {
@@ -25,6 +26,11 @@ class RangeBookingApp extends React.Component {
 }
 
 
-if (app) {
-    ReactDOM.render(<RangeBookingApp />, app);
+if (rangeApp) {
+    ReactDOM.render(<RangeBookingApp />, rangeApp);
+}
+
+const tournamentEntry = document.getElementById('tournament-entry');
+if (tournamentEntry) {
+    initTournamentEntry(tournamentEntry);
 }
