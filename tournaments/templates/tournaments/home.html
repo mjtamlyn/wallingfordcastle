@@ -19,7 +19,12 @@
         {% for tournament in upcoming_tournaments %}
         <h3>{{ tournament }}</h3>
         <p><strong>{{ tournament.date|date:"jS F Y" }}</strong></p>
-        {{ tournament.rounds|linebreaks }}
+        <p>
+        {% for round in tournament.rounds.all %}
+        {% if tournament.has_wrs %}WRS {% endif %}{{ round }}
+        {% if not forloop.last %}<br />{% endif %}
+        {% endfor %}
+        </p>
         <a href="{{ tournament.get_absolute_url }}" class="btn">Find out more</a>
         {% empty %}
         <p>
