@@ -5,12 +5,12 @@ from .models import Entry, Tournament
 
 @admin.register(Tournament)
 class TournamentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'entries_open', 'entries_close']
+    list_display = ['name', 'date', 'entries_open', 'entries_close']
     prepopulated_fields = {'slug': ('name',)}
     autocomplete_fields = ['rounds']
 
 
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'paid', 'club', 'gender', 'bowstyle', 'agb_number', 'notes']
-    list_filter = ['tournament', 'paid', 'gender', 'bowstyle', 'club']
+    list_display = ['name', 'paid', 'club', 'gender', 'bowstyle', 'agb_number', 'round', 'notes']
+    list_filter = ['tournament', 'paid', 'gender', 'bowstyle', 'round']

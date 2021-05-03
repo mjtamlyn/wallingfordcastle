@@ -20,7 +20,6 @@ class Tournament(models.Model):
     date = models.DateField()
 
     # Prospectus information
-    old_rounds = models.TextField()
     rounds = models.ManyToManyField('archery.Round')
     has_wrs = models.BooleanField(default=True)
     bowstyles = ArrayField(models.CharField(max_length=30, choices=BOWSTYLE_CHOICES))

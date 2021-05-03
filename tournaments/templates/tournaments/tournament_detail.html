@@ -62,9 +62,9 @@
         <p>
         Entry fee is £{{ tournament.entry_fee }}.
         {% if tournament.entry_will_open %}
-        Entries will open on {{ tournament.entries_open|date:"jS F Y" }}.
+        Entries will open on {{ tournament.entries_open|date:"jS F Y" }} at {{ tournament.entries_open|date:"H:i" }}.
         {% elif tournament.entry_is_open %}
-        Entries must be received by {{ tournament.entries_close|date:"jS F Y" }}.
+        Entries must be received by {{ tournament.entries_close|date:"jS F Y" }} at {{ tournament.entries_close|date:"H:i" }}.
         {% endif %}
         </p>
         {% endif %}
