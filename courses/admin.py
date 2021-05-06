@@ -227,6 +227,7 @@ class CourseSessions(ListView):
 @admin.register(Course)
 class CourseAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['name', 'course_start_date', 'report_link']
+    search_fields = ['name']
     autocomplete_fields = ['coaches']
     readonly_fields = ['created', 'modified']
     inlines = [SessionInline]
@@ -279,7 +280,7 @@ class AttendeeAdmin(ArcherDataMixin, admin.ModelAdmin):
     list_display = ['archer', 'course', 'group', 'paid', 'member']
     list_filter = ['course', 'paid', 'member']
     search_fields = ['archer__name']
-    autocomplete_fields = ['archer']
+    autocomplete_fields = ['archer', 'course']
     readonly_fields = [
         'created', 'modified', 'archer_age', 'archer_agb_number',
         'archer_date_of_birth', 'archer_age_group', 'archer_address',
