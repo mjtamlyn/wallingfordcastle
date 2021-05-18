@@ -12,5 +12,5 @@ class TournamentAdmin(admin.ModelAdmin):
 
 @admin.register(Entry)
 class EntryAdmin(admin.ModelAdmin):
-    list_display = ['name', 'paid', 'club', 'gender', 'bowstyle', 'agb_number', 'round', 'notes']
+    list_display = ['name', 'user', 'paid', 'club', 'gender', 'bowstyle', 'agb_number', 'round', 'notes']
     list_filter = ['tournament', 'paid', 'gender', 'bowstyle', 'round']
