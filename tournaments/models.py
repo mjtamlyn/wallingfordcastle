@@ -43,6 +43,7 @@ class Tournament(models.Model):
     entry_fee = models.IntegerField()
     entries_open = models.DateTimeField()
     entries_close = models.DateTimeField()
+    waiting_list_enabled = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name
@@ -95,6 +96,7 @@ class Entry(models.Model):
         default=False,
     )
     paid = models.BooleanField(default=False)
+    waiting_list = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name

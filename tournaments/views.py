@@ -53,6 +53,7 @@ class TournamentDetail(TournamentMixin, TemplateView):
             context['existing_entries'] = self.request.user.entry_set.filter(tournament=self.tournament)
             context['to_pay'] = self.request.user.entry_set.filter(
                 paid=False,
+                waiting_list=False,
                 tournament=self.tournament,
             ).count() * self.tournament.entry_fee
             context['STRIPE_KEY'] = settings.STRIPE_KEY
@@ -89,13 +90,17 @@ class EntryCreate(LoginRequiredMixin, TournamentMixin, MessageMixin, CreateView)
 
     def form_valid(self, form):
         form.instance.user = self.request.user
-        self.messages.success('Entry added, please pay below.')
+        if form.tournament.waiting_list_enabled:
+            self.messages.success('Entry added to waiting list. We hope to be in touch soon!')
+        else:
+            self.messages.success('Entry added, please pay below.')
         response = super().form_valid(form)
         data = json.dumps({
             'icon_emoji': ':wave:',
-            'text': 'New entry received for %s to %s!\n%s' % (
+            'text': 'New entry received for %s to %s!%s\n%s' % (
                 form.instance.name,
                 form.instance.tournament,
+                ' (waiting list)' if form.instance.tournament.waiting_list_enabled else '',
                 self.request.build_absolute_uri(
                     reverse(
                         'admin:tournaments_entry_change',

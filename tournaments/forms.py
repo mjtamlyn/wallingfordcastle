@@ -38,6 +38,8 @@ class EntryForm(forms.ModelForm):
 
     def save(self, **kwargs):
         self.instance.tournament = self.tournament
+        if self.tournament.waiting_list_enabled:
+            self.instance.waiting_list = True
         super().save(**kwargs)
 
 
