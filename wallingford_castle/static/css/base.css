@@ -362,34 +362,38 @@ footer {
   background-image: url(../img/targets.jpg);
 }
 /* line 180, ../../sass/_layout.sass */
+.hero--wsp-rainbow:before {
+  background-image: url(../img/wsp-rainbow.jpg);
+}
+/* line 183, ../../sass/_layout.sass */
 .hero--coaching:before {
   background-image: url(../img/coaching.jpg);
 }
-/* line 183, ../../sass/_layout.sass */
+/* line 186, ../../sass/_layout.sass */
 .hero--juniors:before {
   background-image: url(../img/juniors-jinu19.jpg);
 }
-/* line 186, ../../sass/_layout.sass */
+/* line 189, ../../sass/_layout.sass */
 .hero--photocrowd:before {
   background-image: url(../img/photocrowd.jpg);
 }
-/* line 189, ../../sass/_layout.sass */
+/* line 192, ../../sass/_layout.sass */
 .hero--diana:before {
   background-image: url(../img/diana.jpg);
 }
-/* line 192, ../../sass/_layout.sass */
+/* line 195, ../../sass/_layout.sass */
 .hero h1 {
   font-size: 34px;
   text-align: center;
 }
 
-/* line 196, ../../sass/_layout.sass */
+/* line 199, ../../sass/_layout.sass */
 .intro {
   margin: 30px auto;
   max-width: 600px;
 }
 
-/* line 200, ../../sass/_layout.sass */
+/* line 203, ../../sass/_layout.sass */
 .modal {
   position: fixed;
   top: 0;
@@ -398,7 +402,7 @@ footer {
   height: 100%;
   z-index: 2;
 }
-/* line 208, ../../sass/_layout.sass */
+/* line 211, ../../sass/_layout.sass */
 .modal__background {
   z-index: -1;
   position: absolute;
@@ -408,7 +412,7 @@ footer {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
 }
-/* line 217, ../../sass/_layout.sass */
+/* line 220, ../../sass/_layout.sass */
 .modal__content {
   width: 350px;
   background-color: white;
@@ -419,11 +423,11 @@ footer {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-/* line 227, ../../sass/_layout.sass */
+/* line 230, ../../sass/_layout.sass */
 .modal__content > :first-child {
   margin-top: 0;
 }
-/* line 230, ../../sass/_layout.sass */
+/* line 233, ../../sass/_layout.sass */
 .modal__content > :last-child {
   margin-bottom: 0;
 }
