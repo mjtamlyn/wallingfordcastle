@@ -7,7 +7,8 @@ from wallingford_castle.models import MEMBERSHIP_CHOICES
 
 class MemberManager(models.Manager):
     def managed_by(self, user):
-        return (self.filter(archer__user=user) | self.filter(archer__managing_users=user)) & self.filter(active=True)
+        members = (self.filter(archer__user=user) | self.filter(archer__managing_users=user)) & self.filter(active=True)
+        return members.distinct()
 
 
 LEVEL_CHOICES = (
