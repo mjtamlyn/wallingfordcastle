@@ -113,8 +113,8 @@ class MembershipInterest(models.Model):
 
 
 class User(AbstractEmailUser):
-    customer_id = models.CharField(max_length=20, blank=True, default='')
-    subscription_id = models.CharField(max_length=20, default='', blank=True)
+    customer_id = models.CharField(max_length=50, blank=True, default='')
+    subscription_id = models.CharField(max_length=50, default='', blank=True)
     tournament_only = models.BooleanField(default=False)
 
     def generate_register_url(self, request=None):
