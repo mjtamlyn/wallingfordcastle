@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Coaching - {{ season }}{% endblock %}
+
+{% block content %}
+<h2>Coaching - {{ season }}</h2>
+{% if coached_groups %}
+<h3>Groups you are coaching</h3>
+<div class="flex-sections">
+{% for group in coached_groups %}
+    <section class="coaching__group-details">
+        <h3>{{ group.group_name }} </h3>
+        <p>Meets on {{ group.time }}</p>
+        <p>Coached by:
+            {% for coach in group.coaches.all %}
+                {{ coach }}
+            {% endfor %}
+        </p>
+        <p>Participants: {{ group.participants.count }}</p>
+    </section>
+{% endfor %}
+</div>
+{% else %}
+<p>This page is for coaches only at present</p>
+{% endif %}
+
+{% endblock content %}
