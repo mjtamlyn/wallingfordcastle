@@ -2,6 +2,7 @@ from django.db.models.functions import Lower
 from django.http import Http404
 from django.views.generic import DetailView, TemplateView
 
+from records.models import Achievement
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
 
@@ -61,4 +62,9 @@ class GroupReport(CurrentSeasonMixin, DetailView):
         context = super().get_context_data(**kwargs)
         group = self.object
         context['archers'] = group.participants.order_by('name')
+        for archer in context['archers']:
+            archer.best_outdoor = Achievement.objects.best_outdoor(archer)
+            archer.best_portsmouth = Achievement.objects.best_portsmouth(archer)
+            archer.best_wa_18 = Achievement.objects.best_wa_18(archer)
+            archer.best_beginner = Achievement.objects.best_beginner(archer)
         return context

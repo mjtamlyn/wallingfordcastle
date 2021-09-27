@@ -18,7 +18,12 @@
         <td>{{ archer }}</td>
         <td>{{ archer.date_of_birth }}</td>
         <td>{{ archer.agb_number }}</td>
-        <td>TODO</td>
+        <td>
+            Outdoor: {{ archer.best_outdoor.name|default:"None" }}<br>
+            Portsmouth: {{ archer.best_portsmouth.name|default:"None" }}<br>
+            WA18: {{ archer.best_wa_18.name|default:"None" }}<br>
+            Beginner: {{ archer.best_beginner.name|default:"None" }}
+        </td>
     </tr>
     {% endfor %}
 </table>
