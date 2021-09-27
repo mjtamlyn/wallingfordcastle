@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ group }} - {{ season }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'coaching:overview' %}">< Back to list of groups</a>
+<h2>{{ group }}</h2>
+<h3>Archers</h3>
+<table class="table">
+    <thead>
+        <th>Name</th>
+        <th>DOB</th>
+        <th>AGB number</th>
+        <th>Badges</th>
+    <thead>
+    {% for archer in archers %}
+    <tr>
+        <td>{{ archer }}</td>
+        <td>{{ archer.date_of_birth }}</td>
+        <td>{{ archer.agb_number }}</td>
+        <td>TODO</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<h3>Group details</h3>
+<p>Meets on {{ group.time }}</p>
+<p>Coached by:
+    {% for coach in group.coaches.all %}
+        {{ coach }}
+    {% endfor %}
+</p>
+{% endblock %}

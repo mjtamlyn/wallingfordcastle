@@ -17,6 +17,7 @@
             {% endfor %}
         </p>
         <p>Participants: {{ group.participants.count }}</p>
+        <p><a href="{% url 'coaching:group-report' group=group.slug %}">View report ></a></p>
     </section>
 {% endfor %}
 </div>

@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 from wallingford_castle.models import AGE_CHOICES
 
@@ -33,6 +34,13 @@ class TrainingGroup(models.Model):
     @property
     def group_name(self):
         return '/'.join(map(str, self.level.all()))
+
+    @property
+    def slug(self):
+        return slugify('%s-%s' % (
+            self.get_session_day_display(),
+            ' '.join(map(str, self.level.all())),
+        ))
 
     @property
     def time(self):
