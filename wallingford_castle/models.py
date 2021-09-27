@@ -224,6 +224,12 @@ class User(AbstractEmailUser):
         return any(map(lambda m: m.archer in archers, self.managed_members))
 
 
+class ArcherManager(models.Manager):
+    def managed_by(self, user):
+        members = (self.filter(user=user) | self.filter(managing_users=user))
+        return members.distinct()
+
+
 class Archer(models.Model):
     """
     Represents any archer - members, non-members on courses, beginners,
@@ -242,6 +248,8 @@ class Archer(models.Model):
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
+
+    objects = ArcherManager()
 
     def __str__(self):
         return self.name
@@ -276,3 +284,23 @@ class Archer(models.Model):
         if days_to_birthday < 90 and years % 2:
             group += ' (Moving up on %s)' % this_years_birthday.strftime('%d/%m/%Y')
         return group
+
+
+class SeasonManager(models.Manager):
+    def get_current(self):
+        today = timezone.now().date()
+        try:
+            return self.get(start_date__lte=today, end_date__gte=today)
+        except self.DoesNotExist:
+            return self.order_by('-start_date').first()
+
+
+class Season(models.Model):
+    name = models.CharField(max_length=255)
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    objects = SeasonManager()
+
+    def __str__(self):
+        return self.name
