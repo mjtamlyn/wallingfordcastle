@@ -11,7 +11,7 @@ from django_object_actions import (
     DjangoObjectActions, takes_instance_or_queryset,
 )
 
-from .models import Archer, MembershipInterest, User
+from .models import Archer, MembershipInterest, Season, User
 
 
 class AddInvoiceItemForm(forms.Form):
@@ -187,3 +187,8 @@ class UserAdmin(DjangoObjectActions, EmailUserAdmin):
             user.send_welcome_email(request)
     send_welcome_email.short_description = 'Send welcome email'
     send_welcome_email.label = 'Send welcome email'
+
+
+@admin.register(Season)
+class SeasonAdmin(admin.ModelAdmin):
+    list_display = ['name', 'start_date', 'end_date']

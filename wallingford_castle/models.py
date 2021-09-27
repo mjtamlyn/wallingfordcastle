@@ -276,3 +276,12 @@ class Archer(models.Model):
         if days_to_birthday < 90 and years % 2:
             group += ' (Moving up on %s)' % this_years_birthday.strftime('%d/%m/%Y')
         return group
+
+
+class Season(models.Model):
+    name = models.CharField(max_length=255)
+    start_date = models.DateField()
+    end_date = models.DateField()
+
+    def __str__(self):
+        return self.name
