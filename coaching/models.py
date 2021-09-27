@@ -3,7 +3,6 @@ from django.utils.text import slugify
 
 from wallingford_castle.models import AGE_CHOICES
 
-
 DAY_CHOICES = (
     (0, 'Monday'),
     (1, 'Tuesday'),
