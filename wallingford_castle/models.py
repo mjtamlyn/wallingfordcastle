@@ -291,7 +291,7 @@ class SeasonManager(models.Manager):
         today = timezone.now().date()
         try:
             return self.get(start_date__lte=today, end_date__gte=today)
-        except self.DoesNotExist:
+        except self.model.DoesNotExist:
             return self.order_by('-start_date').first()
 
 
