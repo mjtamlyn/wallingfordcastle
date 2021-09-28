@@ -38,7 +38,8 @@ class GroupReport(CurrentSeasonMixin, DetailView):
         season = self.get_current_season()
         days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
         day, level = self.kwargs['group'].split('-', 1)
-        levels = TrainingGroupType.objects.annotate(name_lower=Lower('name')).filter(name_lower__in=level.split('-'))
+        names = map(lambda s: s.replace('_', ' '), level.split('-'))
+        levels = TrainingGroupType.objects.annotate(name_lower=Lower('name')).filter(name_lower__in=names)
         possible_groups = TrainingGroup.objects.filter(season=season).filter(
             session_day=days.index(day),
         )

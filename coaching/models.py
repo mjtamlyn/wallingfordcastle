@@ -36,10 +36,10 @@ class TrainingGroup(models.Model):
 
     @property
     def slug(self):
-        return slugify('%s-%s' % (
-            self.get_session_day_display(),
-            ' '.join(map(str, self.level.all())),
-        ))
+        return '%s-%s' % (
+            self.get_session_day_display().lower(),
+            '-'.join(map(lambda s: str(s).replace(' ', '_').lower(), self.level.all())),
+        )
 
     @property
     def time(self):
