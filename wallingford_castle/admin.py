@@ -111,7 +111,7 @@ class ArcherDataMixin(object):
     archer_agb_number.short_description = 'AGB number'
 
     def archer_date_of_birth(self, obj):
-        return obj.archer.date_of_birth
+        return obj.archer.date_of_birth.strftime('%d %b %Y')
     archer_date_of_birth.short_description = 'DOB'
 
     def archer_age_group(self, obj):
