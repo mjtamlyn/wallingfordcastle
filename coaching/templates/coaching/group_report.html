@@ -15,7 +15,7 @@
     <thead>
     {% for archer in archers %}
     <tr>
-        <td>{{ archer }}</td>
+        <td data-email="{{ archer.user.email }}">{{ archer }}</td>
         <td>{{ archer.date_of_birth }}</td>
         <td>{{ archer.agb_number }}</td>
         <td>
@@ -35,4 +35,20 @@
         {{ coach }}
     {% endfor %}
 </p>
+{% if user.is_superuser %}
+<a id="email" href="#">Copy group emails</a>
+<script type="text/javascript">
+    document.getElementById('email').addEventListener('click', function(ev) {
+        ev.preventDefault();
+        var emails = [];
+        document.body.querySelectorAll(('[data-email]')).forEach(function(el) {
+            emails.push(el.dataset.email);
+        });
+        navigator.clipboard.writeText(emails.join(' ')).then(function() {
+            ev.target.innerHTML = 'Done!';
+        });
+    });
+</script>
+{% endif %}
+
 {% endblock %}
