@@ -8,11 +8,12 @@ class BookableDate {
 }
 
 class Slot {
-    constructor({ start, end, duration, target, numberOfTargets = 1, booked = false, details = '', groupName = '', editable = false }) {
+    constructor({ start, end, duration, target, face = '', numberOfTargets = 1, booked = false, details = '', groupName = '', editable = false }) {
         this.start = start;
         this.end = end;
         this.duration = duration;  // in minutes
         this.target = target;
+        this.face = face || '';
         this.numberOfTargets = numberOfTargets;
         this.booked = booked;
         this.details = details;
@@ -21,7 +22,7 @@ class Slot {
     }
 
     reference() {
-        return `${this.start.split('T')[1]}/${this.target}`;
+        return `${this.start.split('T')[1]}/${this.target}${this.face}`;
     }
 }
 

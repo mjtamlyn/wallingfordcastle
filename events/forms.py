@@ -45,6 +45,7 @@ class BookSlotForm(forms.Form):
     date = forms.DateField()
     time = forms.TimeField()
     target = forms.IntegerField()
+    face = forms.CharField(required=False)
     distance = forms.CharField(required=False)
     archers = JSONField()
 
@@ -70,10 +71,14 @@ class BookSlotForm(forms.Form):
         target = data['target']
         distance = data['distance']
         archers = data['archers']
+        face = None
+        if data['face']:
+            face = {'A': 1, 'B': 2}[data['face']]
         slot = BookedSlot.objects.create(
             start=start,
             duration=duration,
             target=target,
+            face=face,
             distance=distance,
         )
         slot.archers.set(a.archer for a in archers)
@@ -84,6 +89,7 @@ class CancelSlotForm(forms.Form):
     date = forms.DateField()
     time = forms.TimeField()
     target = forms.IntegerField()
+    face = forms.CharField(required=False)
 
     def __init__(self, user, **kwargs):
         self.user = user
@@ -93,9 +99,13 @@ class CancelSlotForm(forms.Form):
         data = self.cleaned_data
         start = datetime.datetime.combine(data['date'], data['time'])
         start = settings.TZ.localize(start)
+        face = None
+        if data['face']:
+            face = {'A': 1, 'B': 2}[data['face']]
         slot = BookedSlot.objects.get(
             start=start,
             target=data['target'],
+            face=face,
         )
         # TODO: check I have the right to delete this
         data['slot'] = slot

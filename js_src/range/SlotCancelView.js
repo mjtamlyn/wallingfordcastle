@@ -7,8 +7,8 @@ import store from 'utils/store';
 class SlotCancelView extends React.Component {
     constructor(props) {
         super(props);
-        const { date, target, time } = props.match.params;
-        this.submitData = { date, target, time };
+        const { date, target, face, time } = props.match.params;
+        this.submitData = { date, target, face, time };
         this.state = {
             submitting: false,
             done: false,
@@ -51,7 +51,7 @@ class SlotCancelView extends React.Component {
             <Modal className="booking-modal" close={ ::this.close }>
                 <h4 className="booking-modal__title">Cancel your session?</h4>
                 <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
-                <p className="booking-modal__text">You are booked for target { this.submitData.target} at { this.submitData.time }.</p>
+                <p className="booking-modal__text">You are booked for target { this.submitData.target }{ this.submitData.face } at { this.submitData.time }.</p>
                 <div className="booking-modal__row">
                     <input className="booking-modal__button" type="submit" value="Confirm" disabled={ submitDisabled } onClick={ ::this.submit } />
                 </div>

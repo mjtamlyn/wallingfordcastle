@@ -13,10 +13,6 @@ class Modal extends React.Component {
         this.el = document.createElement('div');
     }
 
-    componentWillMount() {
-        this.modalRoot = document.getElementById('modal-container');
-    }
-
     componentDidMount() {
         // The portal element is inserted in the DOM tree after
         // the Modal's children are mounted, meaning that children
@@ -26,6 +22,7 @@ class Modal extends React.Component {
         // DOM node, or uses 'autoFocus' in a descendant, add
         // state to Modal and only render the children when Modal
         // is inserted in the DOM tree.
+        this.modalRoot = document.getElementById('modal-container');
         this.modalRoot.appendChild(this.el);
         Mousetrap.bind('esc', this.props.close);
         disableBodyScroll(this.el);

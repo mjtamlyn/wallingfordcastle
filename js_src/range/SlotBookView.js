@@ -11,8 +11,8 @@ import Modal from 'utils/Modal';
 class SlotBookView extends React.Component {
     constructor(props) {
         super(props);
-        const { date, target, time } = props.match.params;
-        this.submitData = { date, target, time };
+        const { date, target, time, face } = props.match.params;
+        this.submitData = { date, target, time, face };
         this.state = {
             archers: [],
             distance: null,
@@ -63,6 +63,7 @@ class SlotBookView extends React.Component {
     render() {
         const { distanceRequired, multipleArchersPermitted } = this.props.options;
         const { date, target, time } = this.props.match.params;
+        const face = this.props.match.params.face || '';
         const dateUrl = `/${date}/`;
 
         if (this.state.done) {
@@ -75,7 +76,7 @@ class SlotBookView extends React.Component {
 
         return (
             <Modal className="booking-modal" close={ ::this.close }>
-                <h4 className="booking-modal__title">Booking target { target } at { time }</h4>
+                <h4 className="booking-modal__title">Booking target { target }{ face } at { time }</h4>
                 <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
                 <div className="booking-modal__row">
                     <ArcherComponent onChange={ ::this.setArchers } />

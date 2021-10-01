@@ -42,12 +42,12 @@ class DateView extends Loader {
             <div className="date-view">
                 { title }
                 { notes }
-                <Schedule schedule={ data.schedule } date={ date } />
+                <Schedule schedule={ data.schedule } date={ date } abFaces={ data.options.abFaces } />
                 <Switch>
-                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:target(\d+)/">
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:target(\d+):face(A|B)?/">
                         <SlotBookView options={ data.options } />
                     </Route>
-                    <Route path="/:date(\d{4}-\d{2}-\d{2})/cancel/:time(\d{2}:\d{2})/:target(\d+)/">
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/cancel/:time(\d{2}:\d{2})/:target(\d+):face(A|B)?/">
                         <SlotCancelView schedule={ data.schedule } />
                     </Route>
                 </Switch>

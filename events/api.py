@@ -58,6 +58,7 @@ def date_slots(request, date):
         'options': {
             'distanceRequired': template.distance_required,
             'multipleArchersPermitted': template.multiple_archers_permitted,
+            'abFaces': template.ab_faces,
         },
     }
     return JsonResponse(response)

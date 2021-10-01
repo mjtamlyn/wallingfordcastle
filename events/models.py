@@ -80,6 +80,7 @@ class BookedSlot(models.Model):
     start = models.DateTimeField()
     duration = models.DurationField()
     target = models.PositiveIntegerField()
+    face = models.IntegerField(choices=((1, 'A'), (2, 'B')), blank=True, null=True, default=None)
     distance = models.CharField(max_length=100, default='', blank=True)
     archers = models.ManyToManyField(Archer, blank=True)
 
@@ -89,7 +90,7 @@ class BookedSlot(models.Model):
     number_of_targets = models.PositiveIntegerField(default=1)
 
     class Meta:
-        unique_together = ('start', 'target')
+        unique_together = ('start', 'target', 'face')
 
     def __str__(self):
         return 'Slot booked on target %s at %s' % (self.target, self.start)
@@ -104,6 +105,7 @@ class BookedSlot(models.Model):
             start=self.start,
             duration=self.duration,
             target=self.target,
+            face=self.get_face_display(),
             number_of_targets=self.number_of_targets,
             booked=True,
             details=self,
@@ -120,6 +122,7 @@ class BookingTemplate(models.Model):
     targets = models.PositiveIntegerField()
     booking_duration = models.DurationField()
     multiple_archers_permitted = models.BooleanField(default=True)
+    ab_faces = models.BooleanField(default=False)
     distance_required = models.BooleanField(default=True)
 
     def __str__(self):
@@ -137,6 +140,7 @@ class BookingTemplate(models.Model):
             targets=self.targets,
             slot_duration=self.booking_duration,
             booked_slots=slots,
+            ab_faces=self.ab_faces,
         )
 
     @property
