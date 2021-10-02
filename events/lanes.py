@@ -78,7 +78,7 @@ class Template:
     start_times = attr.ib()
     targets = attr.ib()
     slot_duration = attr.ib()
-    ab_faces = attr.ib()
+    ab_faces = attr.ib(default=False)
     booked_slots = attr.ib(default=attr.Factory(list))
 
     @cached_property
