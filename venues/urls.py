@@ -7,5 +7,6 @@ app_name = 'venues'
 
 
 urlpatterns = [
-    path('', views.Venues.as_view(), name='index'),
+    path('', views.VenueList.as_view(), name='index'),
+    path('<slug:slug>/', views.VenueDetail.as_view(), name='detail'),
 ]

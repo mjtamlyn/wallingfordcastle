@@ -3,6 +3,7 @@ import json
 
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
+from django.urls import reverse
 from django.utils import timezone
 
 from membership.models import Member
@@ -16,7 +17,7 @@ def date_list(request):
     today = timezone.now().date()
     prebooking_limit = today + datetime.timedelta(days=7)
 
-    templates = BookingTemplate.objects.order_by('date').filter(date__gte=today)
+    templates = BookingTemplate.objects.order_by('date').select_related('venue').filter(date__gte=today)
     if not request.user.is_superuser:
         templates = templates.filter(date__lte=prebooking_limit)
     response = {
@@ -46,6 +47,13 @@ def date_slots(request, date):
     except BookingTemplate.DoesNotExist:
         raise Http404('No bookings for that date')
 
+    venue = None
+    if template.venue:
+        venue = {
+            'name': template.venue.name,
+            'link': reverse('venues:detail', kwargs={'slug': template.venue.slug}),
+        }
+
     response = {
         'date': {
             '__type': 'BookableDate',
@@ -54,6 +62,7 @@ def date_slots(request, date):
             'title': template.title or None,
             'notes': template.notes or None,
         },
+        'venue': venue,
         'schedule': template.template.serialize(user=request.user),
         'options': {
             'distanceRequired': template.distance_required,

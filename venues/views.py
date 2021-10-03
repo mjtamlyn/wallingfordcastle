@@ -1,9 +1,9 @@
-from django.views.generic import ListView
+from django.views.generic import DetailView, ListView
 
 from .models import Venue
 
 
-class Venues(ListView):
+class VenueList(ListView):
     template_name = 'venues/venue_list.html'
     model = Venue
 
@@ -21,3 +21,11 @@ class Venues(ListView):
                 outdoor.append(venue)
         context.update(indoor=indoor, outdoor=outdoor)
         return context
+
+
+class VenueDetail(DetailView):
+    template_name = 'venues/venue_detail.html'
+    model = Venue
+
+    def get_queryset(self):
+        return Venue.objects.filter(active=True)
