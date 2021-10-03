@@ -5,7 +5,7 @@ from django.contrib.postgres.fields import ArrayField, HStoreField
 from django.db import models
 from django.utils.functional import cached_property
 
-from wallingford_castle.models import Archer
+from wallingford_castle.models import Archer, Season
 
 from .lanes import Slot, Template
 
@@ -152,6 +152,47 @@ class BookingTemplate(models.Model):
             start__gte=midnight,
             start__lt=midnight + datetime.timedelta(days=1),
         )
+
+    def update_from_coaching(self):
+        from coaching.models import TrainingGroup
+        from courses.models import Session
+
+        # Delete pre-existing groups and recreate them
+        self.slots.filter(is_group=True).delete()
+
+        # Minis
+        sessions = Session.objects.filter(start_time__date=self.date)
+        for session in sessions:
+            attendees = session.course.attendee_set.select_related('archer')
+            new_slot = BookedSlot.objects.create(
+                start=session.start_time,
+                duration=session.duration,
+                target=1,
+                face=1 if self.ab_faces else None,
+                is_group=True,
+                group_name=session.course,
+                number_of_targets=len(attendees) / 2 + (len(attendees) % 2 > 0),
+            )
+            new_slot.archers.set([a.archer for a in attendees])
+
+        # Training groups
+        season = Season.objects.get_current()
+        groups = TrainingGroup.objects.filter(season=season, session_day=self.date.weekday())
+        for group in groups:
+            archers = group.participants.all()
+            number_of_targets = len(archers) / 2 + (len(archers) % 2 > 0)
+            if self.targets < 5 or group.level.first().age_group == 'junior':
+                number_of_targets = self.targets
+            new_slot = BookedSlot.objects.create(
+                start=datetime.datetime.combine(self.date, group.session_start_time),
+                duration=self.booking_duration,
+                target=1,
+                face=1 if self.ab_faces else None,
+                is_group=True,
+                group_name='%s (%ss)' % (group.group_name, group.get_session_day_display()),
+                number_of_targets=number_of_targets,
+            )
+            new_slot.archers.set(archers)
 
     def create_next(self, date=None):
         if date is None:

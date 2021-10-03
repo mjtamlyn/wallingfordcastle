@@ -99,7 +99,7 @@ class BookedSlotAdmin(admin.ModelAdmin):
 class BookingTemplateAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['date', 'start_times', 'targets']
     ordering = ['-date']
-    actions = objectactions = ['create_next']
+    actions = change_actions = ['create_next', 'update_from_coaching']
 
     @takes_instance_or_queryset
     def create_next(self, request, queryset):
@@ -107,3 +107,10 @@ class BookingTemplateAdmin(DjangoObjectActions, admin.ModelAdmin):
             template.create_next()
     create_next.short_description = 'Create next week'
     create_next.label = 'Create next week'
+
+    @takes_instance_or_queryset
+    def update_from_coaching(self, request, queryset):
+        for template in queryset:
+            template.update_from_coaching()
+    update_from_coaching.short_description = 'Update from coaching'
+    update_from_coaching.label = 'Update from coaching'
