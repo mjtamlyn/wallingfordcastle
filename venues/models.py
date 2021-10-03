@@ -1,6 +1,5 @@
 from django.db import models
 
-
 INDOOR_OUTDOOR = (
     ('indoor', 'Indoor'),
     ('outdoor', 'Outdoor'),
