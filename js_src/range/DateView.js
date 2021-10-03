@@ -31,17 +31,22 @@ class DateView extends Loader {
 
         let title = null;
         let notes = null;
+        let venue = null;
         if (data.date.title) {
             title = <h3 className="date-view__title">{ data.date.title }</h3>;
         }
         if (data.date.notes) {
-            notes = <p className="date-view__notes">{ data.date.notes }</p>
+            notes = <p className="date-view__notes">{ data.date.notes }</p>;
+        }
+        if (data.venue) {
+            venue = <p className="date-view__venue"><a href={ data.venue.link }>Directions to { data.venue.name }</a></p>;
         }
 
         return (
             <div className="date-view">
                 { title }
                 { notes }
+                { venue }
                 <Schedule schedule={ data.schedule } date={ date } abFaces={ data.options.abFaces } />
                 <Switch>
                     <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:target(\d+):face(A|B)?/">

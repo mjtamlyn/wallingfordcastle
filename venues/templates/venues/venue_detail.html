@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ venue }} | Venues | {% endblock %}
+{% block og_image %}wsp-rainbow{% endblock %}
+
+{% block hero %}
+<div class="hero hero--wsp-rainbow">
+    <h1>{{ venue }}</h1>
+</div>
+{% endblock %}
+
+{% block content %}
+<h2>{{ venue }}</h2>
+<p>{{ venue.description|linebreaksbr }}</p>
+<iframe
+    width="100%"
+    height="300"
+    frameborder="0" style="border:0"
+    src="{{ venue.google_maps_link }}" allowfullscreen>
+</iframe>
+{% endblock %}

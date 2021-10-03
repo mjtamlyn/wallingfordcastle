@@ -117,6 +117,7 @@ class BookedSlot(models.Model):
 class BookingTemplate(models.Model):
     date = models.DateField()
     title = models.CharField(max_length=200, blank=True, default='')
+    venue = models.ForeignKey('venues.Venue', blank=True, null=True, on_delete=models.SET_NULL)
     notes = models.TextField(blank=True, default='')
     start_times = ArrayField(models.TimeField())
     targets = models.PositiveIntegerField()
