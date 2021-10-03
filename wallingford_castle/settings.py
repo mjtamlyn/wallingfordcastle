@@ -33,6 +33,7 @@ INSTALLED_APPS = (
     'events',
     'records',
     'tournaments',
+    'venues',
 
     'custom_user',
     'django_object_actions',

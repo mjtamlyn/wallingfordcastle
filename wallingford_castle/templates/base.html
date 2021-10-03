@@ -36,11 +36,7 @@
                 <a class="nav__link" href="{% url 'join' %}">Join the club</a>
                 <a class="nav__link" href="{% url 'bookings:index' %}">Events</a>
                 <a class="nav__link" href="{% url 'tournaments:home' %}">Tournaments</a>
-                {% comment %}
-                <a class="nav__link">Juniors</a>
-                <a class="nav__link">Seniors</a>
-                {% endcomment %}
-                <a class="nav__link" href="{% url 'venues' %}">Venues and sessions</a>
+                <a class="nav__link" href="{% url 'venues:index' %}">Venues</a>
             </nav>
         </div>
         {% block hero %}

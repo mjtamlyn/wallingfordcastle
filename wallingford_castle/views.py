@@ -63,10 +63,6 @@ class MembershipInterestView(MessageMixin, CreateView):
         return response
 
 
-class Venues(TemplateView):
-    template_name = 'venues.html'
-
-
 class Login(LoginView):
     def get_redirect_url(self):
         user = self.request.user

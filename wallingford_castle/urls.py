@@ -22,7 +22,7 @@ urlpatterns = [
     path('api/range/', include(range_api_urlpatterns)),
     path('tournaments/', include('tournaments.urls', namespace='tournaments')),
     path('events/', include('bookings.urls', namespace='bookings')),
-    path('venues/', views.Venues.as_view(), name='venues'),
+    path('venues/', include('venues.urls', namespace='venues')),
     # TODO: Style header links
     path('accounts/login/', views.Login.as_view(), name='login'),
     path('accounts/', include('django.contrib.auth.urls')),
