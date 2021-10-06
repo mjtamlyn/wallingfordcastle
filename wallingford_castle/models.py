@@ -193,7 +193,7 @@ class User(AbstractEmailUser):
             for price, quantity in prices.items():
                 new_items.append({'price': price, 'quantity': quantity})
             subscription.items = new_items
-            subscription.prorate = True
+            subscription.prorate = False
             subscription.save()
         else:
             new_items = []
