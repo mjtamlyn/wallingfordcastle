@@ -205,6 +205,7 @@ class BookingTemplate(models.Model):
             start_times=self.start_times,
             targets=self.targets,
             booking_duration=self.booking_duration,
+            ab_faces=self.ab_faces,
             multiple_archers_permitted=self.multiple_archers_permitted,
             distance_required=self.distance_required,
         )
