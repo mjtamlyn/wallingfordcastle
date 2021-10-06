@@ -207,19 +207,19 @@ class BookingTemplate(models.Model):
             multiple_archers_permitted=self.multiple_archers_permitted,
             distance_required=self.distance_required,
         )
-        slots = self.slots.filter(is_group=True)
-        for slot in slots:
-            start = settings.TZ.normalize(slot.start)
-            start_time = datetime.datetime.combine(new.date, start.time())
-            start_time = settings.TZ.localize(start_time)
-            new_slot = BookedSlot.objects.create(
-                start=start_time,
-                duration=slot.duration,
-                target=slot.target,
-                distance=slot.distance,
-                is_group=slot.is_group,
-                group_name=slot.group_name,
-                number_of_targets=slot.number_of_targets,
-            )
-            new_slot.archers.set(slot.archers.all())
+        # slots = self.slots.filter(is_group=True)
+        # for slot in slots:
+        #     start = settings.TZ.normalize(slot.start)
+        #     start_time = datetime.datetime.combine(new.date, start.time())
+        #     start_time = settings.TZ.localize(start_time)
+        #     new_slot = BookedSlot.objects.create(
+        #         start=start_time,
+        #         duration=slot.duration,
+        #         target=slot.target,
+        #         distance=slot.distance,
+        #         is_group=slot.is_group,
+        #         group_name=slot.group_name,
+        #         number_of_targets=slot.number_of_targets,
+        #     )
+        #     new_slot.archers.set(slot.archers.all())
         return new

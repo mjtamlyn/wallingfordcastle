@@ -97,31 +97,31 @@ class TestBookingTemplate(TestCase):
         new = template.create_next(date=date)
         self.assertEqual(new.date, date)
 
-    def test_create_next_copies_group_slots(self):
-        archer_1 = ArcherFactory.create()
-        archer_2 = ArcherFactory.create()
+    # def test_create_next_copies_group_slots(self):
+    #     archer_1 = ArcherFactory.create()
+    #     archer_2 = ArcherFactory.create()
 
-        template = BookingTemplateFactory.create(targets=2)
-        start_time = datetime.datetime.combine(template.date, template.start_times[0])
-        start_time = start_time.astimezone(settings.TZ)
-        booked_group = BookedSlotFactory.create(
-            start=start_time,
-            target=1,
-            is_group=True,
-            archers=[archer_1],
-        )
-        BookedSlotFactory.create(
-            start=start_time,
-            target=2,
-            is_group=False,
-            archers=[archer_2],
-        )
+    #     template = BookingTemplateFactory.create(targets=2)
+    #     start_time = datetime.datetime.combine(template.date, template.start_times[0])
+    #     start_time = start_time.astimezone(settings.TZ)
+    #     booked_group = BookedSlotFactory.create(
+    #         start=start_time,
+    #         target=1,
+    #         is_group=True,
+    #         archers=[archer_1],
+    #     )
+    #     BookedSlotFactory.create(
+    #         start=start_time,
+    #         target=2,
+    #         is_group=False,
+    #         archers=[archer_2],
+    #     )
 
-        new = template.create_next()
-        next_start_time = start_time + datetime.timedelta(days=7)
-        new_slots = new.slots.filter(start=next_start_time)
-        self.assertEqual(new_slots.count(), 1)
-        new_slot = new_slots.get()
-        self.assertTrue(new_slot.is_group)
-        self.assertEqual(new_slot.target, booked_group.target)
-        self.assertSequenceEqual(new_slot.archers.all(), [archer_1])
+    #     new = template.create_next()
+    #     next_start_time = start_time + datetime.timedelta(days=7)
+    #     new_slots = new.slots.filter(start=next_start_time)
+    #     self.assertEqual(new_slots.count(), 1)
+    #     new_slot = new_slots.get()
+    #     self.assertTrue(new_slot.is_group)
+    #     self.assertEqual(new_slot.target, booked_group.target)
+    #     self.assertSequenceEqual(new_slot.archers.all(), [archer_1])
