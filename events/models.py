@@ -201,6 +201,7 @@ class BookingTemplate(models.Model):
             date=date,
             title=self.title,
             notes=self.notes,
+            venue=self.venue,
             start_times=self.start_times,
             targets=self.targets,
             booking_duration=self.booking_duration,
