@@ -16,6 +16,7 @@ DAY_CHOICES = (
 class TrainingGroupType(models.Model):
     name = models.CharField(max_length=255)
     age_group = models.CharField(max_length=20, choices=AGE_CHOICES)
+    trial_fee = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -46,3 +47,16 @@ class TrainingGroup(models.Model):
 
     def __str__(self):
         return '%s group (%s)' % (self.group_name, self.season)
+
+
+class Trial(models.Model):
+    archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
+    group = models.ForeignKey(TrainingGroup, on_delete=models.CASCADE)
+    session_1 = models.DateTimeField()
+    session_2 = models.DateTimeField()
+    session_3 = models.DateTimeField()
+    session_4 = models.DateTimeField()
+    paid = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '%s trial at %s' % (self.archer, self.group)

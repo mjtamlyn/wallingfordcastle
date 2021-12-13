@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import TrainingGroup, TrainingGroupType
+from .models import TrainingGroup, TrainingGroupType, Trial
 
 
 @admin.register(TrainingGroup)
@@ -16,3 +16,8 @@ class TrainingGroupAdmin(admin.ModelAdmin):
 @admin.register(TrainingGroupType)
 class TrainingGroupTypeAdmin(admin.ModelAdmin):
     list_display = ['name', 'age_group']
+
+
+@admin.register(Trial)
+class TrialAdmin(admin.ModelAdmin):
+    list_display = ['archer', 'group', 'session_1', 'paid']
