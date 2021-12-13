@@ -1,0 +1,34 @@
+{% block subject %}Welcome to Wallingford Castle Archers!{% endblock %}
+
+{% block plain %}
+Hi!
+
+Thanks for your booking trial sessions with Wallingford Castle Archers. We're delighted to have you!
+
+{% if register_url %}
+You can confirm your place and pay here by clicking below, or if you have any questions just reply to this email and we'll be in touch.
+{{ register_url }}
+{% else %}
+To pay, please click here:
+{% url 'membership:overview' %}
+{% endif %}
+
+Wallingford Castle Archers Committee
+{% endblock %}
+
+{% block html %}
+<p>Hi!</p>
+
+<p>Thanks for booking trial sessions with Wallingford Castle Archers. We're delighted to have you!</p>
+
+{% if register_url %}
+You can <a href="{{ register_url }}">confirm your place and pay here</a>, or if you have any questions just reply to this email and we'll be in touch.
+{% else %}
+<a href="https://www.wallingfordcastle.co.uk{% url 'membership:overview' %}">Pay on the club website</a>
+{% endif %}
+
+<p>
+Wallingford Castle Archers Committee
+</p>
+{% endblock %}
+

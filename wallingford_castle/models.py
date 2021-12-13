@@ -148,6 +148,17 @@ class User(AbstractEmailUser):
             },
         )
 
+    def send_trial_email(self, request=None, new_user=True):
+        url = self.generate_register_url(request)
+        send_templated_mail(
+            template_name='trial',
+            from_email='hello@wallingfordcastle.co.uk',
+            recipient_list=[self.email],
+            context={
+                'register_url': url if new_user else None,
+            },
+        )
+
     def send_welcome_email(self, request=None):
         send_templated_mail(
             template_name='welcome',

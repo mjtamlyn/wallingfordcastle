@@ -441,9 +441,9 @@ class BookTrialForm(forms.Form):
             interest.processed = True
             interest.save()
         for user in new_users:
-            user.send_course_email(request=self.request, new_user=True)
+            user.send_trial_email(request=self.request, new_user=True)
         for user in existing_users:
-            user.send_course_email(request=self.request, new_user=False)
+            user.send_trial_email(request=self.request, new_user=False)
 
 
 class AdminBookTrialView(FormView):
