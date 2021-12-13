@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 from wallingford_castle.models import AGE_CHOICES
 
@@ -49,6 +50,11 @@ class TrainingGroup(models.Model):
         return '%s group (%s)' % (self.group_name, self.season)
 
 
+class TrialQuerySet(models.QuerySet):
+    def filter_ongoing(self):
+        return self.filter(session_4__gte=timezone.now().date())
+
+
 class Trial(models.Model):
     archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
     group = models.ForeignKey(TrainingGroup, on_delete=models.CASCADE)
@@ -58,5 +64,11 @@ class Trial(models.Model):
     session_4 = models.DateTimeField()
     paid = models.BooleanField(default=False)
 
+    objects = models.Manager.from_queryset(TrialQuerySet)()
+
     def __str__(self):
         return '%s trial at %s' % (self.archer, self.group)
+
+    @property
+    def fee(self):
+        return self.group.level.order_by('-trial_fee').first().trial_fee or 0

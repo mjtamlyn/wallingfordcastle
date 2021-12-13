@@ -1,12 +1,16 @@
 from django.db.models.functions import Lower
-from django.http import Http404
-from django.views.generic import DetailView, TemplateView
+from django.http import Http404, HttpResponseRedirect
+from django.urls import reverse
+from django.views.generic import DetailView, TemplateView, View
+
+import stripe
+from braces.views import MessageMixin
 
 from records.models import Achievement
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
 
-from .models import TrainingGroup, TrainingGroupType
+from .models import TrainingGroup, TrainingGroupType, Trial
 
 
 class CurrentSeasonMixin(FullMemberRequired):
@@ -69,3 +73,35 @@ class GroupReport(CurrentSeasonMixin, DetailView):
             archer.best_wa_18 = Achievement.objects.best_wa_18(archer)
             archer.best_beginner = Achievement.objects.best_beginner(archer)
         return context
+
+
+class TrialPayment(MessageMixin, View):
+    def post(self, request, *args, **kwargs):
+        token = request.POST['stripeToken']
+        if self.request.user.customer_id:
+            customer = stripe.Customer.retrieve(self.request.user.customer_id)
+            source = customer.sources.create(source=token)
+            customer.default_source = source.id
+            customer.save()
+        else:
+            customer = stripe.Customer.create(
+                source=token,
+                email=self.request.user.email,
+            )
+            self.request.user.customer_id = customer.id
+            self.request.user.save()
+        trials = Trial.objects.filter(
+            archer__user=self.request.user,
+            paid=False,
+        )
+        amount = sum(trial.fee for trial in trials)
+        description = '; '.join('%s Archery Trial' % trial.archer for trial in trials)
+        stripe.Charge.create(
+            amount=amount * 100,
+            currency='gbp',
+            customer=customer.id,
+            description=description,
+        )
+        trials.update(paid=True)
+        self.messages.success('Thanks! You will receive a confirmation email soon.')
+        return HttpResponseRedirect(reverse('membership:overview'))
