@@ -179,12 +179,17 @@ class BookingTemplate(models.Model):
         season = Season.objects.get_current()
         groups = TrainingGroup.objects.filter(season=season, session_day=self.date.weekday())
         for group in groups:
-            archers = group.participants.all()
+            archers = list(group.participants.all())
+            trials = group.trial_set.all()
+            start = settings.TZ.localize(datetime.datetime.combine(self.date, group.session_start_time))
+            for trial in trials:
+                if start in [trial.session_1, trial.session_2, trial.session_3, trial.session_4]:
+                    archers.append(trial.archer)
             number_of_targets = len(archers) / 2 + (len(archers) % 2 > 0)
             if self.targets < 5 or group.level.first().age_group == 'junior':
                 number_of_targets = self.targets
             new_slot = BookedSlot.objects.create(
-                start=datetime.datetime.combine(self.date, group.session_start_time),
+                start=start,
                 duration=self.booking_duration,
                 target=1,
                 face=1 if self.ab_faces else None,
