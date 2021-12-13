@@ -121,10 +121,10 @@ TEMPLATES = [{
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 if not DEBUG:
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = os.environ.get('MAILGUN_SMTP_SERVER')
-    EMAIL_HOST_USER = os.environ.get('MAILGUN_SMTP_LOGIN')
-    EMAIL_HOST_PASSWORD = os.environ.get('MAILGUN_SMTP_PASSWORD')
-    EMAIL_PORT = os.environ.get('MAILGUN_SMTP_PORT')
+    EMAIL_HOST = os.environ.get('EMAIL_HOST')
+    EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+    EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+    EMAIL_PORT = os.environ.get('EMAIL_PORT')
 TEMPLATED_EMAIL_BACKEND = 'templated_email.backends.vanilla_django'
 
 AUTH_USER_MODEL = 'wallingford_castle.User'
