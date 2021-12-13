@@ -1,8 +1,10 @@
+import datetime
 import functools
 
 from django import forms
 from django.contrib import admin
 from django.contrib.admin.helpers import AdminForm
+from django.contrib.admin.widgets import AdminDateWidget
 from django.db import transaction
 from django.db.models import Count
 from django.http import HttpResponseRedirect
@@ -15,6 +17,7 @@ from django_object_actions import (
     DjangoObjectActions, takes_instance_or_queryset,
 )
 
+from coaching.models import TrainingGroup
 from events.models import Event
 from wallingford_castle.admin import ArcherDataMixin
 from wallingford_castle.models import User
@@ -388,11 +391,101 @@ class AdminAllocateCourseView(FormView):
         return reverse('admin:courses_interest_changelist')
 
 
+class GroupChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return '%s group on %s' % (obj.group_name, obj.time)
+
+
+class BookTrialForm(forms.Form):
+    group = GroupChoiceField(
+        TrainingGroup.objects.order_by('season', 'session_day', 'session_start_time'),
+        widget=forms.RadioSelect,
+    )
+    start_date = forms.DateField(
+        widget=AdminDateWidget,
+    )
+
+    def __init__(self, interests, request, **kwargs):
+        self.request = request
+        self.interests = interests
+        super().__init__(**kwargs)
+
+    def clean(self):
+        group = self.cleaned_data['group']
+        start_date = self.cleaned_data['start_date']
+        if start_date.weekday() != group.session_day:
+            raise forms.ValidationError('Start date is on the wrong day for that group')
+        return self.cleaned_data
+
+    def save(self):
+        group = self.cleaned_data['group']
+        start_date = self.cleaned_data['start_date']
+        dates = [datetime.datetime.combine(start_date, group.session_start_time)]
+        for i in range(1, 4):
+            dates.append(dates[0] + datetime.timedelta(days=7 * i))
+
+        new_users = set()
+        existing_users = set()
+        for interest in self.interests:
+            user, created = User.objects.get_or_create(
+                email=interest.contact_email,
+                defaults={
+                    'is_active': False,
+                }
+            )
+            if created:
+                new_users.add(user)
+            else:
+                existing_users.add(user)
+            interest.book_trial(user=user, group=group, dates=dates)
+            interest.processed = True
+            interest.save()
+        for user in new_users:
+            user.send_course_email(request=self.request, new_user=True)
+        for user in existing_users:
+            user.send_course_email(request=self.request, new_user=False)
+
+
+class AdminBookTrialView(FormView):
+    template_name = 'admin/courses/interest/book_trial.html'
+    form_class = BookTrialForm
+    media = None
+
+    def get_interests(self):
+        selected = self.request.GET['ids'].split(',')
+        return Interest.objects.filter(id__in=selected)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['opts'] = Interest._meta
+        context['title'] = 'Book a trial'
+        context['interests'] = self.get_interests()
+        context['media'] = self.media
+        return context
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['interests'] = self.get_interests()
+        kwargs['request'] = self.request
+        return kwargs
+
+    def form_valid(self, form):
+        try:
+            with transaction.atomic():
+                form.save()
+        except ValueError:
+            return self.form_invalid(form)
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('admin:courses_interest_changelist')
+
+
 @admin.register(Interest)
 class InterestAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['name', 'course_type', 'contact_email', 'date_of_birth', 'processed']
     list_filter = ['processed', 'course_type']
-    actions = change_actions = ['allocate_to_course']
+    actions = change_actions = ['allocate_to_course', 'book_trial']
 
     def get_urls(self):
         urls = super().get_urls()
@@ -409,6 +502,10 @@ class InterestAdmin(DjangoObjectActions, admin.ModelAdmin):
             0,
             path('allocate/', wrap(AdminAllocateCourseView.as_view()), name='%s_%s_allocate' % info),
         )
+        urls.insert(
+            0,
+            path('book-trial/', wrap(AdminBookTrialView.as_view(media=self.media)), name='%s_%s_book_trial' % info),
+        )
         return urls
 
     @takes_instance_or_queryset
@@ -417,6 +514,13 @@ class InterestAdmin(DjangoObjectActions, admin.ModelAdmin):
         return HttpResponseRedirect(url + '?ids=%s' % ','.join(str(item.pk) for item in queryset))
     allocate_to_course.short_description = 'Allocate to a course'
     allocate_to_course.label = 'Allocate to a course'
+
+    @takes_instance_or_queryset
+    def book_trial(self, request, queryset):
+        url = reverse('admin:%s_%s_book_trial' % (self.model._meta.app_label, self.model._meta.model_name))
+        return HttpResponseRedirect(url + '?ids=%s' % ','.join(str(item.pk) for item in queryset))
+    book_trial.short_description = 'Book trial'
+    book_trial.label = 'Book trial'
 
 
 @admin.register(AttendeeSession)

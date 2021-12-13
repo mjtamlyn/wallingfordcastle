@@ -2,10 +2,12 @@
 
 {% block content %}
 
+{% if members %}
 <h2>Range bookings</h2>
 <p>
 <a href="{% url 'membership:range-booking' %}">Book a target ></a>
 </p>
+{% endif %}
 
 {% if beginners %}
 <h2>Beginners courses</h2>
@@ -62,7 +64,44 @@
 {% endif %}
 {% endif %}
 
-<h2>Courses</h2>
+{% if trials or course_attendees or bookable_courses %}
+<h2>Coaching</h2>
+{% endif %}
+
+{% if trials %}
+<h3>Trials</h3>
+{% for trial in trials %}
+<p>{{ trial.archer }} is booked in for a trial of {{ trial.group }} at the following times:
+<ul>
+    <li>{{ trial.session_1 }}</li>
+    <li>{{ trial.session_2 }}</li>
+    <li>{{ trial.session_3 }}</li>
+    <li>{{ trial.session_4 }}</li>
+</ul>
+{% if trial.paid %}<p><small>✅PAID</small></p>{% endif %}
+{% endfor %}
+
+{% if trials_to_pay %}
+<h2>Pay £{{ trials_to_pay }}</h2>
+<form action="{% url 'coaching:trial-payment' %}" method="POST">
+    {% csrf_token %}
+    <script
+        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+        data-key="{{ STRIPE_KEY }}"
+        data-email="{{ user.email }}"
+        data-currency="GBP"
+        data-amount="{{ trials_to_pay }}00"
+        data-name="Wallingford Castle Archers"
+        data-description="Trial sessions"
+        data-locale="auto">
+    </script>
+</form>
+{% endif %}
+{% endif %}
+
+{% if course_attendees or bookable_courses %}
+<h3>Courses</h3>
+{% endif %}
 {% if course_attendees %}
 <div class="table-wrapper">
     <table>
@@ -107,16 +146,17 @@
 </form>
 {% endif %}
 
-{% if members %}
-    <p>
-    <a href="{% url 'courses:members-course-list' %}">Book a club member on a course ></a>
-    </p>
-{% else %}
-    <p>
-    <a href="{% url 'courses:non-members-course-list' %}">Book a new course ></a>
-    </p>
+{% if bookable_courses %}
+    {% if members %}
+        <p>
+        <a href="{% url 'courses:members-course-list' %}">Book a club member on a course ></a>
+        </p>
+    {% else %}
+        <p>
+        <a href="{% url 'courses:non-members-course-list' %}">Book a new course ></a>
+        </p>
+    {% endif %}
 {% endif %}
-
 
 {% if members %}
     <h2>Events</h2>

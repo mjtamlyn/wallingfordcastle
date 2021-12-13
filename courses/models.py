@@ -150,6 +150,21 @@ class Interest(models.Model):
         )
         return archer
 
+    def book_trial(self, user, group, dates):
+        from coaching.models import Trial
+
+        archer = self.convert_to_archer(user)
+        trial = Trial.objects.create(
+            archer=archer,
+            group=group,
+            session_1=dates[0],
+            session_2=dates[1],
+            session_3=dates[2],
+            session_4=dates[3],
+            paid=False
+        )
+        return trial
+
 
 class Summer2018Signup(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
