@@ -12,7 +12,9 @@ from django.utils.http import urlsafe_base64_encode
 import stripe
 from custom_user.models import AbstractEmailUser
 from dateutil.relativedelta import relativedelta
-from templated_email import send_templated_mail
+
+from .mail import send_mail
+
 
 AGE_CHOICES = (
     ('junior', 'Junior'),
@@ -128,10 +130,9 @@ class User(AbstractEmailUser):
 
     def send_new_user_email(self, request=None):
         url = self.generate_register_url(request)
-        send_templated_mail(
+        send_mail(
             template_name='new_user',
-            from_email='hello@wallingfordcastle.co.uk',
-            recipient_list=[self.email],
+            to_emails=self.email,
             context={
                 'register_url': url,
             },
@@ -139,10 +140,9 @@ class User(AbstractEmailUser):
 
     def send_course_email(self, request=None, new_user=True):
         url = self.generate_register_url(request)
-        send_templated_mail(
+        send_mail(
             template_name='course',
-            from_email='hello@wallingfordcastle.co.uk',
-            recipient_list=[self.email],
+            to_emails=self.email,
             context={
                 'register_url': url if new_user else None,
             },
@@ -150,21 +150,18 @@ class User(AbstractEmailUser):
 
     def send_trial_email(self, request=None, new_user=True):
         url = self.generate_register_url(request)
-        send_templated_mail(
+        send_mail(
             template_name='trial',
-            from_email='hello@wallingfordcastle.co.uk',
-            recipient_list=[self.email],
+            to_emails=self.email,
             context={
                 'register_url': url if new_user else None,
             },
         )
 
     def send_welcome_email(self, request=None):
-        send_templated_mail(
+        send_mail(
             template_name='welcome',
-            from_email='hello@wallingfordcastle.co.uk',
-            recipient_list=[self.email],
-            context={},
+            to_emails=self.email,
         )
 
     def send_beginners_course_email(self, request, beginners, course, created):
@@ -172,10 +169,9 @@ class User(AbstractEmailUser):
             register_url = self.generate_register_url(request)
         else:
             register_url = None
-        send_templated_mail(
+        send_mail(
             template_name='beginners_course',
-            from_email='hello@wallingfordcastle.co.uk',
-            recipient_list=[self.email],
+            to_emails=self.email,
             context={
                 'beginners': beginners,
                 'course': course,
