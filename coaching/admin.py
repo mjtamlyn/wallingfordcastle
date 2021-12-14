@@ -5,12 +5,15 @@ from .models import TrainingGroup, TrainingGroupType, Trial
 
 @admin.register(TrainingGroup)
 class TrainingGroupAdmin(admin.ModelAdmin):
-    list_display = ['group_name', 'season', 'time', 'number_of_archers']
-    list_filter = ['season']
+    list_display = ['group_name', 'season', 'time', 'number_of_archers', 'current_trials']
+    list_filter = ['season', 'level']
     autocomplete_fields = ['coaches', 'participants']
 
     def number_of_archers(self, instance):
         return instance.participants.count()
+
+    def current_trials(self, instance):
+        return instance.trial_set.filter_ongoing().count()
 
 
 @admin.register(TrainingGroupType)
