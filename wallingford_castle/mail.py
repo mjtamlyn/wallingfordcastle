@@ -2,8 +2,7 @@ from django.conf import settings
 
 from render_block import render_block_to_string
 from sendgrid import SendGridAPIClient
-from sendgrid.helpers.mail import Mail, From
-
+from sendgrid.helpers.mail import From, Mail
 
 api_client = SendGridAPIClient(settings.SENDGRID_API_KEY)
 

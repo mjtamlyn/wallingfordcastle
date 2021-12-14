@@ -15,7 +15,6 @@ from dateutil.relativedelta import relativedelta
 
 from .mail import send_mail
 
-
 AGE_CHOICES = (
     ('junior', 'Junior'),
     ('senior', 'Senior'),
