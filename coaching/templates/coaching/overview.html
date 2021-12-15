@@ -16,7 +16,13 @@
                 {{ coach }}
             {% endfor %}
         </p>
-        <p>Participants: {{ group.participants.count }}</p>
+        <p>
+        Participants: {{ group.participants.count }}
+        {% if group.trial_set.filter_ongoing.count %}
+        <br>
+        Current trials: {{ group.trial_set.filter_ongoing.count }}
+        </p>
+        {% endif %}
         <p><a href="{% url 'coaching:group-report' group=group.slug %}">View report ></a></p>
     </section>
 {% endfor %}

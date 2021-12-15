@@ -17,7 +17,7 @@
     <tr>
         <td data-email="{{ archer.user.email }}">{{ archer }}</td>
         <td>{{ archer.date_of_birth }}</td>
-        <td>{{ archer.agb_number }}</td>
+        <td>{% if archer.agb_number %}{{ archer.agb_number }}{% else %}Pending{% endif %}</td>
         <td>
             Outdoor: {{ archer.best_outdoor.name|default:"None" }}<br>
             Portsmouth: {{ archer.best_portsmouth.name|default:"None" }}<br>
@@ -25,6 +25,13 @@
             Beginner: {{ archer.best_beginner.name|default:"None" }}
         </td>
     </tr>
+    {% endfor %}
+    {% for trial in current_trials %}
+        <td data-email="{{ trial.archer.user.email }}">
+            {{ trial.archer }}
+        </td>
+        <td>{{ trial.archer.date_of_birth }}</td>
+        <td>Trial ends {{ trial.session_4.date }}</td>
     {% endfor %}
 </table>
 

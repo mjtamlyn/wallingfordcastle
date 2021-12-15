@@ -66,7 +66,10 @@ class GroupReport(CurrentSeasonMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         group = self.object
-        context['archers'] = group.participants.order_by('name')
+        context['archers'] = group.participants.order_by('name').select_related('user')
+        context['current_trials'] = group.trial_set.filter_ongoing().order_by(
+            'archer__name',
+        ).select_related('archer__user')
         for archer in context['archers']:
             archer.best_outdoor = Achievement.objects.best_outdoor(archer)
             archer.best_portsmouth = Achievement.objects.best_portsmouth(archer)
