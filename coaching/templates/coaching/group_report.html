@@ -27,11 +27,13 @@
     </tr>
     {% endfor %}
     {% for trial in current_trials %}
+    <tr>
         <td data-email="{{ trial.archer.user.email }}">
             {{ trial.archer }}
         </td>
         <td>{{ trial.archer.date_of_birth }}</td>
         <td>Trial ends {{ trial.session_4.date }}</td>
+    </tr>
     {% endfor %}
 </table>
 
