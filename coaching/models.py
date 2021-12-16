@@ -69,7 +69,7 @@ class TrainingGroup(models.Model):
 
 class GroupSessionQuerySet(models.QuerySet):
     def filter_running(self):
-        return self.exclude(cancelled_because='')
+        return self.filter(cancelled_because='')
 
 
 class GroupSession(models.Model):
