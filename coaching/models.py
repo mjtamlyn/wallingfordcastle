@@ -66,7 +66,7 @@ class TrainingGroup(models.Model):
         while first_date.weekday() != self.session_day:
             first_date += datetime.timedelta(days=1)
         dates = [first_date]
-        while dates[-1] < self.season.end_date:
+        while dates[-1] <= self.season.end_date - datetime.timedelta(days=7):
             dates.append(dates[-1] + datetime.timedelta(days=7))
         return dates
 
