@@ -87,6 +87,7 @@ class BookedSlotAdmin(admin.ModelAdmin):
     list_display = ['start', 'end', 'target', 'distance', 'archer_names']
     list_filter = ['start', 'target']
     autocomplete_fields = ['archers']
+    search_fields = ['start']
 
     def end(self, instance):
         return instance.end
