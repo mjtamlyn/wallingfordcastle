@@ -52,7 +52,7 @@
                 </div>
                 <div class="members__section__actions">
                     {% if member.coaching_group %}
-                        <a class="members__action members__action--primary">View schedule</a>
+                        <a class="members__action members__action--primary" href="{% url 'coaching:group-schedule' group=member.coaching_group.slug %}">View schedule</a>
                     {% else %}
                         <a class="members__action" href="mailto:hello@wallingfordcastle.co.uk">Enquire about joining</a>
                     {% endif %}

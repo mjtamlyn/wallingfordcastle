@@ -1,6 +1,7 @@
 from django.db.models.functions import Lower
 from django.http import Http404, HttpResponseRedirect
 from django.urls import reverse
+from django.utils import timezone
 from django.views.generic import DetailView, TemplateView, View
 
 import stripe
@@ -33,8 +34,7 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
         return super().get_context_data(coached_groups=groups, **kwargs)
 
 
-class GroupReport(CurrentSeasonMixin, DetailView):
-    template_name = 'coaching/group_report.html'
+class GroupMixin(CurrentSeasonMixin):
     context_object_name = 'group'
     model = TrainingGroup
 
@@ -59,6 +59,14 @@ class GroupReport(CurrentSeasonMixin, DetailView):
             group = possible_groups[0]
         else:
             raise Http404('No group found')
+        return group
+
+
+class GroupReport(GroupMixin, DetailView):
+    template_name = 'coaching/group_report.html'
+
+    def get_object(self):
+        group = super().get_object()
         if not (set(group.coaches.all()) & set(Archer.objects.managed_by(self.request.user))):
             raise Http404('You don\'t have access to this group')
         return group
@@ -75,6 +83,20 @@ class GroupReport(CurrentSeasonMixin, DetailView):
             archer.best_portsmouth = Achievement.objects.best_portsmouth(archer)
             archer.best_wa_18 = Achievement.objects.best_wa_18(archer)
             archer.best_beginner = Achievement.objects.best_beginner(archer)
+        return context
+
+
+class GroupSchedule(GroupMixin, DetailView):
+    template_name = 'coaching/group_schedule.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['sessions'] = self.object.groupsession_set.order_by('start').filter(
+            start__date__gte=timezone.now().date(),
+        )
+        context['is_coach'] = self.request.user in [
+            archer.user for archer in self.object.coaches.all()
+        ]
         return context
 
 
