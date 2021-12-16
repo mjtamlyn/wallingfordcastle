@@ -16,7 +16,7 @@
                             <div class="members__booking__title">
                                 {% if booking.is_group %}{{ booking.group_name }}{% else %}Open session{% endif %}
                             </div>
-                            <div>{{ booking.start|date:"D dS M g:ia" }}</div>
+                            <div>{{ booking.start|date:"D jS M g:ia" }}</div>
                             <div><a href="{{ booking.booking_template.venue.get_absolute_url }}">{{ booking.booking_template.venue }}</a></div>
                         </div>
                     {% empty %}
@@ -45,7 +45,7 @@
                         {% with member.coaching_group.coaches.all as coaches %}
                         <p>Your coach{{ coaches|pluralize:"es" }} {{ coaches|pluralize:"is,are" }} {% for coach in coaches %}{{ coach }}{% if not forloop.last %}, {% endif%}{% endfor %}.</p>
                         {% endwith %}
-                        <p>Your next scheduled session is on {{ member.coaching_group.next_session.start|date:"dS F" }}.</p>
+                        <p>Your next scheduled session is on {{ member.coaching_group.next_session.start|date:"jS F" }}.</p>
                     {% else %}
                         <p>You are not currently a member of a coaching group.</p>
                     {% endif %}
