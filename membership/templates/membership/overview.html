@@ -3,10 +3,94 @@
 {% block content %}
 
 {% if members %}
-<h2>Range bookings</h2>
-<p>
-<a href="{% url 'membership:range-booking' %}">Book a target ></a>
-</p>
+<div class="members">
+    {% for member in members %}
+    <div class="members__member">
+        <h3 class="members__heading members__heading--main">{{ member }}</h3>
+        <div class="members__sections">
+            <div class="members__section">
+                <h4 class="members__heading">Upcoming bookings</h4>
+                <div class="members__section__content">
+                    {% for booking in member.upcoming_bookings %}
+                        <div class="members__booking">
+                            <div class="members__booking__title">
+                                {% if booking.is_group %}{{ booking.group_name }}{% else %}Open session{% endif %}
+                            </div>
+                            <div>{{ booking.start|date:"D dS M g:ia" }}</div>
+                            <div><a href="{{ booking.booking_template.venue.get_absolute_url }}">{{ booking.booking_template.venue }}</a></div>
+                        </div>
+                    {% empty %}
+                    <p>You are not currently booked for any shooting in the next week.</p>
+                    <p>We hope to see you soon.</p>
+                    {% endfor %}
+                </div>
+                <div class="members__section__actions">
+                    <a class="members__action members__action--primary" href="{% url 'membership:range-booking' %}">Book</a>
+                    <a class="members__action" href="{% url 'membership:member-attendance' member_id=member.pk %}">Attendance</a>
+                </div>
+            </div>
+            <div class="members__section">
+                <h4 class="members__heading">Coaching group</h4>
+                <div class="members__section__content">
+                    {% if member.coaching_group %}
+                        <p>
+                        You are currently a member of
+                        <strong>{{ member.coaching_group.group_name }}</strong>,
+                        meeting on
+                        {{ member.coaching_group.get_session_day_display }}s 
+                        between {{ member.coaching_group.session_start_time }}
+                        and {{ member.coaching_group.session_end_time }} at
+                        {{ member.coaching_group.venue }}.
+                        </p>
+                        {% with member.coaching_group.coaches.all as coaches %}
+                        <p>Your coach{{ coaches|pluralize:"es" }} {{ coaches|pluralize:"is,are" }} {% for coach in coaches %}{{ coach }}{% if not forloop.last %}, {% endif%}{% endfor %}.</p>
+                        {% endwith %}
+                        <p>Your next scheduled session is on {{ member.coaching_group.next_session.start|date:"dS F" }}.</p>
+                    {% else %}
+                        <p>You are not currently a member of a coaching group.</p>
+                    {% endif %}
+                </div>
+                <div class="members__section__actions">
+                    {% if member.coaching_group %}
+                        <a class="members__action members__action--primary">View schedule</a>
+                    {% else %}
+                        <a class="members__action" href="mailto:hello@wallingfordcastle.co.uk">Enquire about joining</a>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="members__section">
+                <h4 class="members__heading">Membership information</h4>
+                <div class="members__section__content">
+                    <dl>
+                        <dt>Age Group</dt>
+                        <dd>{{ member.archer.get_age_display }} {% if member.archer.date_of_birth %}({{ member.archer.date_of_birth }}){% endif %}</dd>
+                        <dt>Membership</dt>
+                        <dd>{{ member.get_membership_type_display }}</dd>
+                        <dt>Monthly fee</dt>
+                        <dd>£{{ member.plan_cost }}</dd>
+                    </dl>
+                </div>
+                <div class="members__section__actions">
+                    <a class="members__action members__action--primary" href="{% url 'membership:member-update' member_id=member.pk %}">Edit</a>
+                </div>
+            </div>
+            {% if member.achievements %}
+                <div class="members__section">
+                    <h4 class="members__heading">Achievements</h4>
+                    <div class="members__section__content">
+                        <p>You have earned the following badges:</p>
+                        <ul>
+                            {% for achievement in member.achievements %}
+                            <li>{{ achievement.get_badge_display }} {% if achievement.date_awarded %}<small>{{ achievement.date_awarded }}</small>{% endif %}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endif %}
 
 {% if beginners %}
@@ -163,41 +247,6 @@
     <p>
         <a href="{% url 'events:event-list' %}">Book a club event ></a>
     </p>
-
-    <h2>Members</h2>
-    <div class="flex-sections">
-        {% for member in members %}
-        <section>
-            <div class="member-block">
-                <dl>
-                    <dt>Name</dt>
-                    <dd>{{ member.archer.name }}</dd>
-                    <dt>Age</dt>
-                    <dd>{{ member.archer.get_age_display }} {% if member.archer.date_of_birth %}({{ member.archer.date_of_birth }}){% endif %}</dd>
-                    <dt>Membership</dt>
-                    <dd>{{ member.get_membership_type_display }}</dd>
-                    <dt>ArcheryGB number</dt>
-                    <dd>{{ member.archer.agb_number|default:"Unknown" }}</dd>
-                    <dt>Coaching subscription</dt>
-                    <dd>{% if member.coaching_subscription %}{% if member.archer.age == 'junior' %}Junior coaching{% else %}Adult coaching{% endif %}{% else %}None{% endif %}</dd>
-                    <dt>Monthly Fee</dt>
-                    <dd>£{{ member.plan_cost }}</dd>
-                    <dt>Attendance</dt>
-                    <dd><a href="{% url 'membership:member-attendance' member_id=member.pk %}">View attendance record ></a></dd>
-                </dl>
-                <a class="btn btn-small" href="{% url 'membership:member-update' member_id=member.pk %}">Edit details</a>
-                {% if member.achievements %}
-                    <h3>Badges</h3>
-                    <ul>
-                        {% for achievement in member.achievements %}
-                        <li>{{ achievement.get_badge_display }} {% if achievement.date_awarded %}<small>{{ achievement.date_awarded }}</small>{% endif %}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            </div>
-        </section>
-        {% endfor %}
-    </div>
 
     <h2>Club clothing</h2>
     <p>

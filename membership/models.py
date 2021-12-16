@@ -1,8 +1,9 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.utils.functional import cached_property
 
-from wallingford_castle.models import MEMBERSHIP_CHOICES
+from wallingford_castle.models import MEMBERSHIP_CHOICES, Season
 
 
 class MemberManager(models.Manager):
@@ -62,3 +63,17 @@ class Member(models.Model):
     @property
     def plan_cost(self):
         return sum(price['price'] for price in self.prices)
+
+    def upcoming_bookings(self):
+        today = timezone.now().date()
+        return self.archer.bookedslot_set.filter(start__date__gte=today).order_by('start')
+
+    @cached_property
+    def coaching_group(self):
+        from coaching.models import TrainingGroup
+
+        season = Season.objects.get_current()
+        try:
+            return self.archer.training_groups.get(season=season)
+        except TrainingGroup.DoesNotExist:
+            return None

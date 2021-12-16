@@ -113,6 +113,10 @@ class BookedSlot(models.Model):
             group_name=self.group_name,
         )
 
+    @cached_property
+    def booking_template(self):
+        return BookingTemplate.objects.get(date=self.start.date())
+
 
 class BookingTemplate(models.Model):
     date = models.DateField()

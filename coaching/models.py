@@ -51,6 +51,13 @@ class TrainingGroup(models.Model):
         return '%ss at %s' % (self.get_session_day_display(), self.session_start_time.strftime('%H:%M'))
 
     @property
+    def session_end_time(self):
+        today = timezone.now().date()
+        possible_start = datetime.datetime.combine(today, self.session_start_time)
+        possible_end = possible_start + self.session_duration
+        return possible_end.time()
+
+    @property
     def session_minutes(self):
         return int(self.session_duration.seconds / 60)
 
@@ -62,6 +69,12 @@ class TrainingGroup(models.Model):
         while dates[-1] < self.season.end_date:
             dates.append(dates[-1] + datetime.timedelta(days=7))
         return dates
+
+    def next_session(self):
+        today = timezone.now().date()
+        return self.groupsession_set.filter_running().filter(
+            start__date__gte=today,
+        ).first()
 
     def __str__(self):
         return '%s %s group (%s)' % (self.get_session_day_display(), self.group_name, self.season)
@@ -84,7 +97,7 @@ class GroupSession(models.Model):
         unique_together = ['group', 'start']
 
     def __str__(self):
-        return '%s group session on %s' % (self.group, self.start)
+        return '%s session on %s' % (self.group, self.start)
 
 
 class TrialQuerySet(models.QuerySet):

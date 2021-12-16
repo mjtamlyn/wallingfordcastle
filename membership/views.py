@@ -44,6 +44,7 @@ class Overview(FullMemberRequired, TemplateView):
         context['course_attendees'] = Attendee.objects.filter(
             archer__user=self.request.user,
             course__can_book_individual_sessions=False,
+            member=False,
         ).order_by('course').select_related('archer', 'course')
         context['course_fees_to_pay'] = sum(
             attendee.fee for attendee in context['course_attendees'] if not attendee.paid
