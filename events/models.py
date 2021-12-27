@@ -5,7 +5,7 @@ from django.contrib.postgres.fields import ArrayField, HStoreField
 from django.db import models
 from django.utils.functional import cached_property
 
-from wallingford_castle.models import Archer, Season
+from wallingford_castle.models import Archer
 
 from .lanes import Slot, Template
 
@@ -113,6 +113,10 @@ class BookedSlot(models.Model):
             group_name=self.group_name,
         )
 
+    @cached_property
+    def booking_template(self):
+        return BookingTemplate.objects.get(date=self.start.date())
+
 
 class BookingTemplate(models.Model):
     date = models.DateField()
@@ -154,43 +158,26 @@ class BookingTemplate(models.Model):
         )
 
     def update_from_coaching(self):
-        from coaching.models import TrainingGroup
-        from courses.models import Session
+        from coaching.models import GroupSession
 
         # Delete pre-existing groups and recreate them
         self.slots.filter(is_group=True).delete()
 
-        # Minis
-        sessions = Session.objects.filter(start_time__date=self.date)
-        for session in sessions:
-            attendees = session.course.attendee_set.select_related('archer')
-            new_slot = BookedSlot.objects.create(
-                start=session.start_time,
-                duration=session.duration,
-                target=1,
-                face=1 if self.ab_faces else None,
-                is_group=True,
-                group_name=session.course,
-                number_of_targets=len(attendees) / 2 + (len(attendees) % 2 > 0),
-            )
-            new_slot.archers.set([a.archer for a in attendees])
-
         # Training groups
-        season = Season.objects.get_current()
-        groups = TrainingGroup.objects.filter(season=season, session_day=self.date.weekday())
-        for group in groups:
+        sessions = GroupSession.objects.filter_running().filter(start__date=self.date)
+        for session in sessions:
+            group = session.group
             archers = list(group.participants.all())
             trials = group.trial_set.all()
-            start = settings.TZ.localize(datetime.datetime.combine(self.date, group.session_start_time))
             for trial in trials:
-                if start in [trial.session_1, trial.session_2, trial.session_3, trial.session_4]:
+                if session.start in [trial.session_1, trial.session_2, trial.session_3, trial.session_4]:
                     archers.append(trial.archer)
             number_of_targets = len(archers) / 2 + (len(archers) % 2 > 0)
             if self.targets < 5 or group.level.first().age_group == 'junior':
                 number_of_targets = self.targets
             new_slot = BookedSlot.objects.create(
-                start=start,
-                duration=self.booking_duration,
+                start=session.start,
+                duration=group.session_duration,
                 target=1,
                 face=1 if self.ab_faces else None,
                 is_group=True,
@@ -198,6 +185,8 @@ class BookingTemplate(models.Model):
                 number_of_targets=number_of_targets,
             )
             new_slot.archers.set(archers)
+            session.booked_slot = new_slot
+            session.save()
 
     def create_next(self, date=None):
         if date is None:

@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.utils import timezone
 
@@ -30,6 +32,8 @@ class TrainingGroup(models.Model):
     participants = models.ManyToManyField('wallingford_castle.Archer', related_name='training_groups')
     session_day = models.SmallIntegerField(choices=DAY_CHOICES)
     session_start_time = models.TimeField()
+    session_duration = models.DurationField(default=datetime.timedelta(minutes=90))
+    venue = models.ForeignKey('venues.Venue', blank=True, null=True, on_delete=models.SET_NULL)
 
     @property
     def group_name(self):
@@ -46,8 +50,54 @@ class TrainingGroup(models.Model):
     def time(self):
         return '%ss at %s' % (self.get_session_day_display(), self.session_start_time.strftime('%H:%M'))
 
+    @property
+    def session_end_time(self):
+        today = timezone.now().date()
+        possible_start = datetime.datetime.combine(today, self.session_start_time)
+        possible_end = possible_start + self.session_duration
+        return possible_end.time()
+
+    @property
+    def session_minutes(self):
+        return int(self.session_duration.seconds / 60)
+
+    def possible_dates(self, after=None):
+        first_date = after or self.season.start_date
+        while first_date.weekday() != self.session_day:
+            first_date += datetime.timedelta(days=1)
+        dates = [first_date]
+        while dates[-1] <= self.season.end_date - datetime.timedelta(days=7):
+            dates.append(dates[-1] + datetime.timedelta(days=7))
+        return dates
+
+    def next_session(self):
+        today = timezone.now().date()
+        return self.groupsession_set.filter_running().filter(
+            start__date__gte=today,
+        ).first()
+
     def __str__(self):
-        return '%s group (%s)' % (self.group_name, self.season)
+        return '%s %s group (%s)' % (self.get_session_day_display(), self.group_name, self.season)
+
+
+class GroupSessionQuerySet(models.QuerySet):
+    def filter_running(self):
+        return self.filter(cancelled_because='')
+
+
+class GroupSession(models.Model):
+    group = models.ForeignKey(TrainingGroup, on_delete=models.CASCADE)
+    start = models.DateTimeField()
+    cancelled_because = models.TextField(blank=True, default='')
+    booked_slot = models.ForeignKey('events.BookedSlot', blank=True, null=True, on_delete=models.SET_NULL)
+
+    objects = models.Manager.from_queryset(GroupSessionQuerySet)()
+
+    class Meta:
+        unique_together = ['group', 'start']
+
+    def __str__(self):
+        return '%s session on %s' % (self.group, self.start)
 
 
 class TrialQuerySet(models.QuerySet):

@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ group }} - {{ season }}{% endblock %}
+
+{% block content %}
+
+<p>
+    {% if is_coach %}
+    <a href="{% url 'coaching:group-report' group=group.slug %}">< Back to group</a>
+    {% else %}
+    <a href="{% url 'membership:overview' %}">< Back to membership overview</a>
+    {% endif %}
+</p>
+
+<h2>{{ group }} schedule</h2>
+<p>Upcoming sessions, up to {{ season.end_date }}. Session venues and timings may change each season.</p>
+<p>Sessions take place at {{ group.venue }}, between {{ group.session_start_time }} and {{ group.session_end_time }} on {{ group.get_session_day_display }}s.</p>
+
+<ul>
+{% for session in sessions %}
+<li>
+    {% if session.cancelled_because %}<em>{% endif %}
+    {{ session.start.date }}
+    <small>{% if session.cancelled_because %} Not running due to {{ session.cancelled_because }}.{% endif %}</small>
+    {% if session.cancelled_because %}</em>{% endif %}
+</li>
+{% endfor %}
+</ul>
+
+{% endblock %}

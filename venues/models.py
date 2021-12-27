@@ -1,4 +1,5 @@
 from django.db import models
+from django.urls import reverse
 
 INDOOR_OUTDOOR = (
     ('indoor', 'Indoor'),
@@ -16,3 +17,6 @@ class Venue(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('venues:detail', kwargs={'slug': self.slug})

@@ -468,20 +468,126 @@ table th {
   text-align: left;
 }
 
-/* line 1, ../../sass/_membership.sass */
-.member-block {
-  background-color: #fafafa;
-  margin: 0 -15px 15px;
-  padding: 15px;
-  border-radius: 5px;
-}
-/* line 7, ../../sass/_membership.sass */
-.member-block > :first-child {
-  margin-top: 0;
+/* line 2, ../../sass/_membership.sass */
+.members__member {
+  border: 1px solid #ddd;
+  box-shadow: 1px 3px 3px #ddd;
+  background-color: #eee;
+  margin: 30px 0;
+  border-radius: 8px;
+  overflow: hidden;
 }
 /* line 10, ../../sass/_membership.sass */
-.member-block > :last-child {
+.members__member > :first-child {
+  margin-top: 0;
+}
+/* line 12, ../../sass/_membership.sass */
+.members__member > :last-child {
   margin-bottom: 0;
+}
+/* line 15, ../../sass/_membership.sass */
+.members__heading {
+  padding: 0.5em 10px;
+  margin: 0;
+  background-color: white;
+  box-shadow: 0 0 2px #ddd inset;
+  border-bottom: 1px solid #ddd;
+}
+/* line 22, ../../sass/_membership.sass */
+.members__heading--main {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+/* line 26, ../../sass/_membership.sass */
+.members__sections {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 15px;
+  padding: 15px;
+}
+@media (max-width: 750px) {
+  /* line 26, ../../sass/_membership.sass */
+  .members__sections {
+    grid-template-columns: 1fr;
+    grid-gap: 5px;
+    padding: 5px 0;
+  }
+}
+/* line 37, ../../sass/_membership.sass */
+.members__section {
+  background-color: #fafafa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+@media (max-width: 750px) {
+  /* line 37, ../../sass/_membership.sass */
+  .members__section {
+    border-radius: 0;
+    border: none;
+  }
+}
+/* line 49, ../../sass/_membership.sass */
+.members__section__content {
+  padding: 10px;
+  flex-grow: 1;
+}
+/* line 53, ../../sass/_membership.sass */
+.members__section__content > :first-child {
+  margin-top: 0;
+}
+/* line 55, ../../sass/_membership.sass */
+.members__section__content > :last-child {
+  margin-bottom: 0;
+}
+/* line 58, ../../sass/_membership.sass */
+.members__section__actions {
+  display: flex;
+}
+/* line 61, ../../sass/_membership.sass */
+.members__action {
+  display: block;
+  background-color: #ddd;
+  padding: 10px;
+  font-weight: bold;
+  flex-grow: 1;
+  text-align: center;
+  box-shadow: 0 0 2px rgba(0, 0, 0, 0.3) inset;
+}
+/* line 70, ../../sass/_membership.sass */
+.members__action:hover {
+  text-decoration: none;
+  background-color: #ccc;
+  cursor: pointer;
+}
+/* line 75, ../../sass/_membership.sass */
+.members__action--primary {
+  background-color: #CA4984;
+  color: white;
+}
+/* line 79, ../../sass/_membership.sass */
+.members__action--primary:hover {
+  background-color: #ad336b;
+}
+/* line 82, ../../sass/_membership.sass */
+.members__booking {
+  padding: 5px 0;
+  border-bottom: 1px solid #ddd;
+}
+/* line 86, ../../sass/_membership.sass */
+.members__booking:first-child {
+  padding-top: 0;
+}
+/* line 88, ../../sass/_membership.sass */
+.members__booking:last-child {
+  padding-bottom: 0;
+  border-bottom: none;
+}
+/* line 92, ../../sass/_membership.sass */
+.members__booking__title {
+  font-weight: bold;
 }
 
 /* line 1, ../../sass/_typography.sass */
