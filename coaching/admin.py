@@ -3,7 +3,7 @@ import functools
 
 from django import forms
 from django.conf import settings
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.http import HttpResponseRedirect
 from django.urls import path, reverse
 from django.utils import timezone
@@ -80,7 +80,7 @@ class TrainingGroupAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_display = ['group_name', 'season', 'time', 'number_of_archers', 'current_trials']
     list_filter = ['season', 'level']
     autocomplete_fields = ['coaches', 'participants']
-    change_actions = ['create_sessions']
+    change_actions = ['create_sessions', 'bill_participants']
     search_fields = ['group_name']
 
     def number_of_archers(self, instance):
@@ -110,6 +110,22 @@ class TrainingGroupAdmin(DjangoObjectActions, admin.ModelAdmin):
         url = reverse(
             'admin:%s_%s_create_sessions' % (self.model._meta.app_label, self.model._meta.model_name),
             kwargs={'pk': instance.pk},
+        )
+        return HttpResponseRedirect(url)
+
+    def bill_participants(self, request, instance):
+        errors = []
+        for archer in instance.participants.all():
+            if not archer.user.customer_id or not archer.user.subscription_id:
+                errors.append(archer.name)
+        if errors:
+            for archer in errors:
+                messages.error(request, '%s does not have an active subscription' % archer)
+            return
+
+        url = (
+            reverse('admin:wallingford_castle_archer_invoice_item') +
+            '?ids=%s' % ','.join(str(archer.pk) for archer in instance.participants.all())
         )
         return HttpResponseRedirect(url)
 
