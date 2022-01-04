@@ -30,7 +30,7 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
         groups = TrainingGroup.objects.filter(
             season=season,
             coaches__in=Archer.objects.managed_by(self.request.user),
-        )
+        ).order_by('session_day', 'session_start_time')
         return super().get_context_data(coached_groups=groups, **kwargs)
 
 
