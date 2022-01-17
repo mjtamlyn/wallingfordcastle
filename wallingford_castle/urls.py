@@ -1,5 +1,7 @@
 from django.contrib import admin
-from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
+from django.contrib.auth.views import (
+    PasswordResetConfirmView, PasswordResetView,
+)
 from django.urls import include, path, reverse_lazy
 
 from events.urls import range_api_urlpatterns

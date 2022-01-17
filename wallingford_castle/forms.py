@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
+from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.template import loader
 
 import floppyforms.__future__ as forms
@@ -7,8 +7,8 @@ from sendgrid.helpers.mail import From, Mail
 
 from wallingford_castle.models import User
 
-from .models import MembershipInterest
 from .mail import api_client
+from .models import MembershipInterest
 
 
 class MembershipInterestForm(forms.ModelForm):
