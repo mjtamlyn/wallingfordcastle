@@ -36,7 +36,7 @@ class SendgridPasswordResetForm(PasswordResetForm):
         body = loader.render_to_string(email_template_name, context)
 
         message = Mail(
-            from_email=From(from_email, 'Wallingford Castle Archers'),
+            from_email=From(from_email or 'hello@wallingfordcastle.co.uk', 'Wallingford Castle Archers'),
             to_emails=[to_email],
             subject=subject,
             plain_text_content=body,
