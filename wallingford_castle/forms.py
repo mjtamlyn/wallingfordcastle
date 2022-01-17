@@ -1,10 +1,14 @@
-from django.contrib.auth.forms import SetPasswordForm
+from django.conf import settings
+from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
+from django.template import loader
 
 import floppyforms.__future__ as forms
+from sendgrid.helpers.mail import From, Mail
 
 from wallingford_castle.models import User
 
 from .models import MembershipInterest
+from .mail import api_client
 
 
 class MembershipInterestForm(forms.ModelForm):
@@ -19,6 +23,28 @@ class MembershipInterestForm(forms.ModelForm):
     class Meta:
         model = MembershipInterest
         exclude = ['status', 'coaching_subscription']
+
+
+class SendgridPasswordResetForm(PasswordResetForm):
+    def send_mail(
+            self, subject_template_name, email_template_name,
+            context, from_email, to_email, html_email_template_name=None
+            ):
+
+        subject = loader.render_to_string(subject_template_name, context)
+        subject = ''.join(subject.splitlines())
+        body = loader.render_to_string(email_template_name, context)
+
+        message = Mail(
+            from_email=From(from_email, 'Wallingford Castle Archers'),
+            to_emails=[to_email],
+            subject=subject,
+            plain_text_content=body,
+        )
+        if settings.SENDGRID_API_KEY:
+            api_client.send(message)
+        else:
+            print(message)
 
 
 class RegisterForm(SetPasswordForm):

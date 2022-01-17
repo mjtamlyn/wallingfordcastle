@@ -1,11 +1,11 @@
 from django.contrib import admin
-from django.contrib.auth.views import PasswordResetConfirmView
+from django.contrib.auth.views import PasswordResetView, PasswordResetConfirmView
 from django.urls import include, path, reverse_lazy
 
 from events.urls import range_api_urlpatterns
 
 from . import views
-from .forms import RegisterForm
+from .forms import RegisterForm, SendgridPasswordResetForm
 
 admin.autodiscover()
 
@@ -25,6 +25,9 @@ urlpatterns = [
     path('venues/', include('venues.urls', namespace='venues')),
     # TODO: Style header links
     path('accounts/login/', views.Login.as_view(), name='login'),
+    path('accounts/password_reset/', PasswordResetView.as_view(
+        form_class=SendgridPasswordResetForm,
+    ), name='password_reset'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/register/<uidb64>/<token>/', PasswordResetConfirmView.as_view(
         form_class=RegisterForm,
