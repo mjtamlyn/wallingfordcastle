@@ -81,7 +81,7 @@ class TrainingGroupAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_filter = ['season', 'level']
     autocomplete_fields = ['coaches', 'participants']
     change_actions = ['create_sessions', 'bill_participants']
-    search_fields = ['group_name']
+    search_fields = ['level__name']
 
     def number_of_archers(self, instance):
         return instance.participants.count()
