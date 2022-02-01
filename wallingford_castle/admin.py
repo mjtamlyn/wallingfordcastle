@@ -134,7 +134,7 @@ class ArcherDataMixin(object):
 
 @admin.register(MembershipInterest)
 class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
-    list_display = ['name', 'age', 'membership_type', 'status']
+    list_display = ['name', 'age', 'membership_type', 'status', 'coaching_subscription']
     list_filter = ['status', 'membership_type', 'age']
     actions = change_actions = ['make_member', 'send_to_beginners']
     readonly_fields = ['created', 'modified']
