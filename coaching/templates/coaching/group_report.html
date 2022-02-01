@@ -10,14 +10,14 @@
 <table class="table">
     <thead>
         <th>Name</th>
-        <th>DOB</th>
+        <th>Age</th>
         <th>AGB number</th>
         <th>Badges</th>
     <thead>
     {% for archer in archers %}
     <tr>
         <td data-email="{{ archer.user.email }}">{{ archer }}</td>
-        <td>{{ archer.date_of_birth }}</td>
+        <td>{{ archer.age_group }}<br><small>{{ archer.date_of_birth }}</small></td>
         <td>{% if archer.agb_number %}{{ archer.agb_number }}{% else %}Pending{% endif %}</td>
         <td>
             Outdoor: {{ archer.best_outdoor.name|default:"None" }}<br>
