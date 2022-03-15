@@ -31,6 +31,7 @@ INSTALLED_APPS = (
     'coaching',
     'courses',
     'events',
+    'payments',
     'records',
     'tournaments',
     'venues',

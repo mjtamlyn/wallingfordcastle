@@ -16,6 +16,7 @@ from braces.views import LoginRequiredMixin, MessageMixin
 
 from events.models import Event
 from membership.models import Member
+from payments.models import PaymentIntent
 
 from .forms import EntryForm, RegisterForm
 from .models import Entry, Tournament
@@ -56,7 +57,6 @@ class TournamentDetail(TournamentMixin, TemplateView):
                 waiting_list=False,
                 tournament=self.tournament,
             ).count() * self.tournament.entry_fee
-            context['STRIPE_KEY'] = settings.STRIPE_KEY
             context['entry_form'] = EntryForm(tournament=self.tournament)
             if not self.request.user.tournament_only:
                 context['members'] = Member.objects.managed_by(self.request.user)
@@ -158,32 +158,35 @@ class EntryDelete(LoginRequiredMixin, TournamentMixin, DeleteView):
         return self.get_tournament().get_absolute_url()
 
 
-class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
-    def post(self, request, *args, **kwargs):
-        token = request.POST['stripeToken']
+class Pay(LoginRequiredMixin, TournamentMixin, View):
+    def get(self, request, *args, **kwargs):
         tournament = self.get_tournament()
-        if self.request.user.customer_id:
-            customer = stripe.Customer.retrieve(self.request.user.customer_id)
-            source = customer.sources.create(source=token)
-            customer.save()
-        else:
-            customer = stripe.Customer.create(
-                email=self.request.user.email,
-            )
-            source = customer.sources.create(source=token)
-            self.request.user.customer_id = customer.id
-            self.request.user.save()
-        to_pay = self.request.user.entry_set.filter(
+        customer_id = self.request.user.customer_id or None
+        entries_to_pay_for = self.request.user.entry_set.filter(
             paid=False,
             tournament=tournament,
-        ).count() * 100 * tournament.entry_fee
-        stripe.Charge.create(
-            amount=to_pay,
-            currency="GBP",
-            description="Wallingford Castle Archers Tournament Fee",
-            customer=customer.id,
-            source=source.id,
         )
-        to_pay = self.request.user.entry_set.filter(tournament=tournament).update(paid=True)
-        self.messages.success('Thanks! You will receive a confirmation email soon.')
-        return redirect(tournament.get_absolute_url())
+        if not entries_to_pay_for:
+            # TODO: Message user
+            return redirect(tournament.get_absolute_url())
+        session = stripe.checkout.Session.create(
+            line_items=[{
+                'price_data': {
+                    'currency': 'gbp',
+                    'product_data': {
+                        'name': '%s entry to %s' % (entry, tournament),
+                    },
+                    'unit_amount': tournament.entry_fee * 100,
+                },
+                'quantity': 1,
+            } for entry in entries_to_pay_for],
+            mode='payment',
+            customer=customer_id,
+            customer_email=self.request.user.email,
+            success_url='http://localhost:8000' + tournament.get_absolute_url(),
+            cancel_url='http://localhost:8000' + tournament.get_absolute_url(),
+        )
+        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent)
+        for entry in entries_to_pay_for:
+            intent.lineitemintent_set.create(item=entry)
+        return redirect(session.url, status_code=303)

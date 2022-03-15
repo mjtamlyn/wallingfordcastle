@@ -90,20 +90,8 @@
             </ul>
             {% if to_pay %}
             {% if not user.subscription_id %}
-            <form action="{% url 'tournaments:pay' tournament_slug=tournament.slug %}" method="POST">
-                <p>To pay: £{{ to_pay }}</p>
-                {% csrf_token %}
-                <script
-                    src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                    data-key="{{ STRIPE_KEY }}"
-                    data-email="{{ user.email }}"
-                    data-currency="GBP"
-                    data-amount="{{ to_pay }}00"
-                    data-name="Wallingford Castle Archers"
-                    data-description="Tournament Entry"
-                    data-locale="auto">
-                </script>
-            </form>
+            <p>To pay: £{{ to_pay }}</p>
+            <a href="{% url 'tournaments:pay' tournament_slug=tournament.slug %}" class="btn">Pay now</a>
             <p><small>
             Payments are processed securely using Stripe. Wallingford Castle Archers does
             not store your credit card details. If you have any problems, please

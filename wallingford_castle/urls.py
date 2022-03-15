@@ -37,5 +37,6 @@ urlpatterns = [
         success_url=reverse_lazy('membership:overview'),
     ), name='register'),
     path('admin/', admin.site.urls),
+    path('webhooks/stripe/', include('payments.urls', namespace='payments')),
     path('', include('courses.urls', namespace='courses')),
 ]
