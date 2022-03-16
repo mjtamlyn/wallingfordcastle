@@ -11,6 +11,7 @@ tournament_patterns = [
     path('entry/<int:pk>/', views.EntryUpdate.as_view(), name='entry-update'),
     path('enter/<int:pk>/delete/', views.EntryDelete.as_view(), name='entry-delete'),
     path('pay/', views.Pay.as_view(), name='pay'),
+    path('pay/success/', views.PaymentSuccess.as_view(), name='pay-success'),
 ]
 
 urlpatterns = [

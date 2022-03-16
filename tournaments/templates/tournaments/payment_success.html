@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="flex-sections">
+    <section>
+        <h2>{{ tournament }}</h2>
+        <p>Payment recieved, thank you!</p>
+        <p>
+        The Target List and final information will be distributed in the
+        week before the event.
+        </p>
+        <p>
+        If you have any problems, please contact the tournament organisers at
+        <a href="mailto:{{ tournament.tournament_organiser_email }}">
+            {{ tournament.tournament_organiser_email }}
+        </a>.
+        </p>
+        <p>
+        <a class="btn" href="{{ tournament.get_absolute_url }}">< Back to event</a>
+        </p>
+    <section>
+</div>
+{% endblock %}

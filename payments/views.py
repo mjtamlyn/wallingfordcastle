@@ -18,4 +18,8 @@ class StripeWebhook(View):
         if event.type == 'payment_intent.succeeded':
             intent = PaymentIntent.objects.get(stripe_id=event.data.object.id)
             intent.mark_as_paid()
+            if not intent.user.customer_id:
+                intent.user.customer_id = event.data.object.customer
+                intent.user.save()
+            # TODO: Update customer
         return HttpResponse('ok')

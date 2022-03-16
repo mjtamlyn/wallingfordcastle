@@ -5,6 +5,7 @@ from django.db import models
 
 class PaymentIntent(models.Model):
     stripe_id = models.CharField(max_length=64)
+    user = models.ForeignKey('wallingford_castle.User', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.stripe_id

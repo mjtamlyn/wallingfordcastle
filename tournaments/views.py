@@ -158,7 +158,7 @@ class EntryDelete(LoginRequiredMixin, TournamentMixin, DeleteView):
         return self.get_tournament().get_absolute_url()
 
 
-class Pay(LoginRequiredMixin, TournamentMixin, View):
+class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
     def get(self, request, *args, **kwargs):
         tournament = self.get_tournament()
         customer_id = self.request.user.customer_id or None
@@ -167,7 +167,7 @@ class Pay(LoginRequiredMixin, TournamentMixin, View):
             tournament=tournament,
         )
         if not entries_to_pay_for:
-            # TODO: Message user
+            self.messages.error('You have no entries to pay for.')
             return redirect(tournament.get_absolute_url())
         session = stripe.checkout.Session.create(
             line_items=[{
@@ -182,11 +182,22 @@ class Pay(LoginRequiredMixin, TournamentMixin, View):
             } for entry in entries_to_pay_for],
             mode='payment',
             customer=customer_id,
-            customer_email=self.request.user.email,
-            success_url='http://localhost:8000' + tournament.get_absolute_url(),
-            cancel_url='http://localhost:8000' + tournament.get_absolute_url(),
+            customer_email=None if customer_id else self.request.user.email,
+            success_url=request.build_absolute_uri(
+                reverse('tournaments:pay-success', kwargs={'tournament_slug': tournament.slug}),
+            ),
+            cancel_url=request.build_absolute_uri(tournament.get_absolute_url()),
         )
-        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent)
+        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent, user=request.user)
         for entry in entries_to_pay_for:
             intent.lineitemintent_set.create(item=entry)
         return redirect(session.url, status_code=303)
+
+
+class PaymentSuccess(LoginRequiredMixin, TournamentMixin, TemplateView):
+    template_name = 'tournaments/payment_success.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['tournament'] = self.get_tournament()
+        return context
