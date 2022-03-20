@@ -33,7 +33,7 @@ class TrainingGroup(models.Model):
     session_day = models.SmallIntegerField(choices=DAY_CHOICES)
     session_start_time = models.TimeField()
     session_duration = models.DurationField(default=datetime.timedelta(minutes=90))
-    venue = models.ForeignKey('venues.Venue', blank=True, null=True, on_delete=models.SET_NULL)
+    venue = models.ForeignKey('venues.Venue', on_delete=models.PROTECT)
 
     @property
     def group_name(self):
