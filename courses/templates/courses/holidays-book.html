@@ -39,6 +39,14 @@
     <section>
         <h2>Pay for outstanding sessions</h2>
         <p>You have a total of £{{ to_pay }} to pay</p>
+        {% if user.subscription_id %}
+        <form action="{% url 'courses:holidays-book' %}" method="POST">
+            <input type="hidden" name="form" value="add-to-subscription" />
+            {% csrf_token %}
+            <input type="submit" value="Add to membership" class="btn" />
+            <p><small>The additional fee will go out with your next monthly membership payment</small></p>
+        </form>
+        {% else %}
         <form action="{% url 'courses:holidays-book' %}" method="POST">
             <input type="hidden" name="form" value="payment" />
             {% csrf_token %}
@@ -53,6 +61,7 @@
                 data-locale="auto">
             </script>
         </form>
+        {% endif %}
     </section>
     {% endif %}
 

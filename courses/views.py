@@ -156,6 +156,34 @@ class HolidaysBook(MessageMixin, TemplateView):
                     )
                     form.add_error(None, msg)
                     context['errored_booking_forms'] = {archer_id: form}
+        elif form == 'add-to-subscription':
+            if self.request.user.subscription_id:
+                members = self.get_members()
+                archers = self.get_archers(members)
+                for member in members:
+                    member.archer = self.annotate_with_details(member.archer)
+                for archer in archers:
+                    self.annotate_with_details(archer)
+                description = 'Holiday archery'
+                amount = self.get_to_pay(archers, members)
+                self.request.user.add_invoice_item(
+                    amount=amount,
+                    description=description,
+                )
+                for member in members:
+                    for session in getattr(member.archer, 'sessions_booked', []):
+                        session.paid = True
+                        session.save()
+                for archer in archers:
+                    for session in getattr(archer, 'sessions_booked', []):
+                        session.paid = True
+                        session.save()
+                self.messages.success(
+                    'Thanks for booking your holiday session! We will contact you '
+                    'soon with more details.'
+                )
+            else:
+                self.messages.error('You do not seem to have an active membership.')
         elif form == 'payment':
             token = request.POST['stripeToken']
             if self.request.user.customer_id:
