@@ -21,5 +21,4 @@ class StripeWebhook(View):
             if not intent.user.customer_id:
                 intent.user.customer_id = event.data.object.customer
                 intent.user.save()
-            # TODO: Update customer
         return HttpResponse('ok')
