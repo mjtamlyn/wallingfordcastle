@@ -167,7 +167,7 @@ class HolidaysBook(MessageMixin, TemplateView):
                 description = 'Holiday archery'
                 amount = self.get_to_pay(archers, members)
                 self.request.user.add_invoice_item(
-                    amount=amount,
+                    amount=amount * 100,
                     description=description,
                 )
                 for member in members:
