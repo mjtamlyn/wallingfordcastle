@@ -15,23 +15,38 @@ from .models import TrainingGroup, TrainingGroupType, Trial
 
 
 class CurrentSeasonMixin(FullMemberRequired):
+    def get_season(self):
+        return self.get_current_season()
+
     def get_current_season(self):
         return Season.objects.get_current()
 
+    def get_upcoming_season(self):
+        return Season.objects.get_upcoming()
+
     def get_context_data(self, **kwargs):
-        return super().get_context_data(season=self.get_current_season(), **kwargs)
+        return super().get_context_data(season=self.get_season(), **kwargs)
 
 
 class GroupsOverview(CurrentSeasonMixin, TemplateView):
     template_name = 'coaching/overview.html'
 
     def get_context_data(self, **kwargs):
-        season = self.get_current_season()
+        context = {}
+        season = self.get_season()
         groups = TrainingGroup.objects.filter(
             season=season,
             coaches__in=Archer.objects.managed_by(self.request.user),
         ).order_by('session_day', 'session_start_time')
-        return super().get_context_data(coached_groups=groups, **kwargs)
+        context['coached_groups'] = groups
+        upcoming = self.get_upcoming_season()
+        if upcoming:
+            upcoming_groups = TrainingGroup.objects.filter(
+                season=upcoming,
+                coaches__in=Archer.objects.managed_by(self.request.user),
+            ).order_by('session_day', 'session_start_time')
+            context.update(upcoming=upcoming, upcoming_groups=upcoming_groups)
+        return super().get_context_data(**context, **kwargs)
 
 
 class GroupMixin(CurrentSeasonMixin):
@@ -39,7 +54,7 @@ class GroupMixin(CurrentSeasonMixin):
     model = TrainingGroup
 
     def get_object(self):
-        season = self.get_current_season()
+        season = self.get_season()
         days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
         day, level = self.kwargs['group'].split('-', 1)
         names = map(lambda s: s.replace('_', ' '), level.split('-'))
@@ -64,6 +79,7 @@ class GroupMixin(CurrentSeasonMixin):
 
 class GroupReport(GroupMixin, DetailView):
     template_name = 'coaching/group_report.html'
+    schedule_url_name = 'group-schedule'
 
     def get_object(self):
         group = super().get_object()
@@ -83,7 +99,15 @@ class GroupReport(GroupMixin, DetailView):
             archer.best_portsmouth = Achievement.objects.best_portsmouth(archer)
             archer.best_wa_18 = Achievement.objects.best_wa_18(archer)
             archer.best_beginner = Achievement.objects.best_beginner(archer)
+        context['schedule_url_name'] = 'coaching:' + self.schedule_url_name
         return context
+
+
+class UpcomingGroupReport(GroupReport):
+    schedule_url_name = 'upcoming-group-schedule'
+
+    def get_season(self):
+        return self.get_upcoming_season()
 
 
 class GroupSchedule(GroupMixin, DetailView):
@@ -98,6 +122,11 @@ class GroupSchedule(GroupMixin, DetailView):
             archer.user for archer in self.object.coaches.all()
         ]
         return context
+
+
+class UpcomingGroupSchedule(GroupSchedule):
+    def get_season(self):
+        return self.get_upcoming_season()
 
 
 class TrialPayment(MessageMixin, View):

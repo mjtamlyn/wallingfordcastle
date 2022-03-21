@@ -302,6 +302,13 @@ class SeasonManager(models.Manager):
         except self.model.DoesNotExist:
             return self.order_by('-start_date').first()
 
+    def get_upcoming(self):
+        two_weeks_away = timezone.now().date() + datetime.timedelta(days=14)
+        try:
+            return self.get(start_date__lte=two_weeks_away, end_date__gte=two_weeks_away)
+        except self.models.DoesNotExist:
+            return None
+
 
 class Season(models.Model):
     name = models.CharField(max_length=255)

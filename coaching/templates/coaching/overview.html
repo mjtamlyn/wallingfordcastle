@@ -31,4 +31,30 @@
 <p>This page is for coaches only at present</p>
 {% endif %}
 
+{% if upcoming %}
+<h2>Upcoming - {{ upcoming }}</h2>
+<h3>Groups you are coaching</h3>
+<div class="flex-sections">
+{% for group in upcoming_groups %}
+    <section class="coaching__group-details">
+        <h3>{{ group.group_name }} </h3>
+        <p>Meets on {{ group.time }}</p>
+        <p>Coached by:
+            {% for coach in group.coaches.all %}
+                {{ coach }}
+            {% endfor %}
+        </p>
+        <p>
+        Participants: {{ group.participants.count }}
+        {% if group.trial_set.filter_ongoing.count %}
+        <br>
+        Current trials: {{ group.trial_set.filter_ongoing.count }}
+        </p>
+        {% endif %}
+        <p><a href="{% url 'coaching:upcoming-group-report' group=group.slug %}">View report ></a></p>
+    </section>
+{% endfor %}
+</div>
+{% endif %}
+
 {% endblock content %}
