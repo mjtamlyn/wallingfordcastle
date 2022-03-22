@@ -168,7 +168,7 @@ class BookingTemplate(models.Model):
         self.slots.filter(is_group=True).delete()
 
         # Training groups
-        sessions = GroupSession.objects.filter_running().filter(start__date=self.date)
+        sessions = GroupSession.objects.filter_running().filter(start__date=self.date).select_related('group')
         for session in sessions:
             group = session.group
             archers = list(group.participants.all())
@@ -183,6 +183,7 @@ class BookingTemplate(models.Model):
                 start=session.start,
                 duration=group.session_duration,
                 target=1,
+                b_range=group.b_range,
                 face=1 if self.ab_faces else None,
                 is_group=True,
                 group_name='%s (%ss)' % (group.group_name, group.get_session_day_display()),
