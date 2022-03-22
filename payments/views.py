@@ -16,7 +16,10 @@ class StripeWebhook(View):
         data = json.loads(request.body)
         event = stripe.Event.construct_from(data, key=stripe.api_key)
         if event.type == 'payment_intent.succeeded':
-            intent = PaymentIntent.objects.get(stripe_id=event.data.object.id)
+            try:
+                intent = PaymentIntent.objects.get(stripe_id=event.data.object.id)
+            except PaymentIntent.DoesNotExist:
+                return HttpResponse('not found but ok')
             intent.mark_as_paid()
             if not intent.user.customer_id:
                 intent.user.customer_id = event.data.object.customer
