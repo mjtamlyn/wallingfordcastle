@@ -45,6 +45,7 @@ class BookSlotForm(forms.Form):
     date = forms.DateField()
     time = forms.TimeField()
     target = forms.IntegerField()
+    bRange = forms.BooleanField(required=False)
     face = forms.CharField(required=False)
     distance = forms.CharField(required=False)
     archers = JSONField()
@@ -69,8 +70,10 @@ class BookSlotForm(forms.Form):
         start = settings.TZ.localize(start)
         duration = datetime.timedelta(minutes=90)  # TODO: submit this somehow?
         target = data['target']
+        b_range = data['bRange']
         distance = data['distance']
         archers = data['archers']
+
         face = None
         if data['face']:
             face = {'A': 1, 'B': 2}[data['face']]
@@ -80,6 +83,7 @@ class BookSlotForm(forms.Form):
             target=target,
             face=face,
             distance=distance,
+            b_range=b_range,
         )
         slot.archers.set(a.archer for a in archers)
         return slot
@@ -89,6 +93,7 @@ class CancelSlotForm(forms.Form):
     date = forms.DateField()
     time = forms.TimeField()
     target = forms.IntegerField()
+    bRange = forms.BooleanField(required=False)
     face = forms.CharField(required=False)
 
     def __init__(self, user, **kwargs):
@@ -106,6 +111,7 @@ class CancelSlotForm(forms.Form):
             start=start,
             target=data['target'],
             face=face,
+            b_range=data['bRange'],
         )
         # TODO: check I have the right to delete this
         data['slot'] = slot

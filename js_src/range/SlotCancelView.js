@@ -7,8 +7,9 @@ import store from 'utils/store';
 class SlotCancelView extends React.Component {
     constructor(props) {
         super(props);
-        const { date, target, face, time } = props.match.params;
+        const { date, target, face, time, range } = props.match.params;
         this.submitData = { date, target, face, time };
+        this.submitData.bRange = (range === 'B');
         this.state = {
             submitting: false,
             done: false,

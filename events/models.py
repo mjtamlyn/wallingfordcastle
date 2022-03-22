@@ -80,6 +80,7 @@ class BookedSlot(models.Model):
     start = models.DateTimeField()
     duration = models.DurationField()
     target = models.PositiveIntegerField()
+    b_range = models.BooleanField(default=False)
     face = models.IntegerField(choices=((1, 'A'), (2, 'B')), blank=True, null=True, default=None)
     distance = models.CharField(max_length=100, default='', blank=True)
     archers = models.ManyToManyField(Archer, blank=True)
@@ -105,6 +106,7 @@ class BookedSlot(models.Model):
             start=self.start,
             duration=self.duration,
             target=self.target,
+            b_range=self.b_range,
             face=self.get_face_display(),
             number_of_targets=self.number_of_targets,
             booked=True,
@@ -125,6 +127,7 @@ class BookingTemplate(models.Model):
     notes = models.TextField(blank=True, default='')
     start_times = ArrayField(models.TimeField())
     targets = models.PositiveIntegerField()
+    b_targets = models.PositiveIntegerField(blank=True, null=True, help_text='Enables a split range')
     booking_duration = models.DurationField()
     multiple_archers_permitted = models.BooleanField(default=True)
     ab_faces = models.BooleanField(default=False)
@@ -143,6 +146,7 @@ class BookingTemplate(models.Model):
         return Template(
             start_times=start_times,
             targets=self.targets,
+            b_targets=self.b_targets,
             slot_duration=self.booking_duration,
             booked_slots=slots,
             ab_faces=self.ab_faces,

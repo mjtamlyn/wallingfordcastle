@@ -42,17 +42,29 @@ class DateView extends Loader {
             venue = <p className="date-view__venue"><a href={ data.venue.link }>Directions to { data.venue.name }</a></p>;
         }
 
+        let schedule = null;
+        if (data.options.bRange) {
+            schedule = <>
+                <h3 className="date-view__title">Left Range</h3>
+                <Schedule schedule={ data.schedule.mainRange } date={ date } abFaces={ data.options.abFaces } bRange={ false } />
+                <h3 className="date-view__title">Right Range</h3>
+                <Schedule schedule={ data.schedule.bRange } date={ date } abFaces={ data.options.abFaces } bRange={ true } />
+            </>;
+        } else {
+            schedule = <Schedule schedule={ data.schedule.mainRange } date={ date } abFaces={ data.options.abFaces } bRange={ false } />;
+        }
+
         return (
             <div className="date-view">
                 { title }
                 { notes }
                 { venue }
-                <Schedule schedule={ data.schedule } date={ date } abFaces={ data.options.abFaces } />
+                { schedule }
                 <Switch>
-                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:target(\d+):face(A|B)?/">
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:range(B)?:target(\d+):face(A|B)?/">
                         <SlotBookView options={ data.options } />
                     </Route>
-                    <Route path="/:date(\d{4}-\d{2}-\d{2})/cancel/:time(\d{2}:\d{2})/:target(\d+):face(A|B)?/">
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/cancel/:time(\d{2}:\d{2})/:range(B)?:target(\d+):face(A|B)?/">
                         <SlotCancelView schedule={ data.schedule } />
                     </Route>
                 </Switch>

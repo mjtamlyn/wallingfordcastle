@@ -68,6 +68,7 @@ def date_slots(request, date):
             'distanceRequired': template.distance_required,
             'multipleArchersPermitted': template.multiple_archers_permitted,
             'abFaces': template.ab_faces,
+            'bRange': bool(template.b_targets),
         },
     }
     return JsonResponse(response)

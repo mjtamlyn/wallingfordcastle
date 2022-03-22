@@ -17,6 +17,7 @@ class Slot:
     start = attr.ib()
     duration = attr.ib()
     target = attr.ib()
+    b_range = attr.ib(default=False)
     face = attr.ib(default=None)
     number_of_targets = attr.ib(default=1)
     booked = attr.ib(default=False)
@@ -64,6 +65,7 @@ class Slot:
             'end': serialize_time(self.end),
             'duration': self.duration.seconds // 60,
             'target': self.target,
+            'bRange': self.b_range,
             'face': self.face,
             'numberOfTargets': self.number_of_targets,
             'booked': self.booked,
@@ -77,18 +79,28 @@ class Slot:
 class Template:
     start_times = attr.ib()
     targets = attr.ib()
+    b_targets = attr.ib()
     slot_duration = attr.ib()
     ab_faces = attr.ib(default=False)
     booked_slots = attr.ib(default=attr.Factory(list))
 
     @cached_property
     def slots(self):
+        return self._slots(b_range=False)
+
+    @cached_property
+    def b_slots(self):
+        return self._slots(b_range=True)
+
+    def _slots(self, b_range):
         schedule = []
         start_times = copy.copy(self.start_times)
 
         exact_lookup = {}
         target_lookup = defaultdict(list)
         for booking in self.booked_slots:
+            if not booking.b_range == b_range:
+                continue
             start = booking.start.astimezone(settings.TZ)
             if start not in start_times:
                 start_times.append(start)
@@ -102,10 +114,11 @@ class Template:
                     target_lookup[(booking.target + i, None)].append(booking)
         start_times.sort()
 
+        targets = self.b_targets if b_range else self.targets
         for start_time in start_times:
             slots = []
             if self.ab_faces:
-                for i in range(1, self.targets + 1):
+                for i in range(1, targets + 1):
                     booked_a = exact_lookup.get((start_time, i, 'A'))
                     if booked_a:
                         slots.append(booked_a)
@@ -137,7 +150,7 @@ class Template:
                     else:
                         slots.append(None)
             else:
-                for i in range(1, self.targets + 1):
+                for i in range(1, targets + 1):
                     booked = exact_lookup.get((start_time, i, None))
                     if booked:
                         slots.append(booked)
@@ -159,8 +172,17 @@ class Template:
         return schedule
 
     def serialize(self, user=None):
-        return [{
-            'startTime': serialize_time(row['start_time']),
-            'endTime': serialize_time(row['start_time'] + self.slot_duration),
-            'slots': [slot.personalize(user=user).serialize() if slot else None for slot in row['slots']],
-        } for row in self.slots]
+        data = {
+            'mainRange': [{
+                'startTime': serialize_time(row['start_time']),
+                'endTime': serialize_time(row['start_time'] + self.slot_duration),
+                'slots': [slot.personalize(user=user).serialize() if slot else None for slot in row['slots']],
+            } for row in self.slots],
+        }
+        if self.b_targets:
+            data['bRange'] = [{
+                'startTime': serialize_time(row['start_time']),
+                'endTime': serialize_time(row['start_time'] + self.slot_duration),
+                'slots': [slot.personalize(user=user).serialize() if slot else None for slot in row['slots']],
+            } for row in self.b_slots]
+        return data
