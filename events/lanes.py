@@ -79,8 +79,8 @@ class Slot:
 class Template:
     start_times = attr.ib()
     targets = attr.ib()
-    b_targets = attr.ib()
     slot_duration = attr.ib()
+    b_targets = attr.ib(default=None)
     ab_faces = attr.ib(default=False)
     booked_slots = attr.ib(default=attr.Factory(list))
 
