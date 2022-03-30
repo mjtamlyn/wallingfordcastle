@@ -303,9 +303,10 @@ class SeasonManager(models.Manager):
             return self.order_by('-start_date').first()
 
     def get_upcoming(self):
-        two_weeks_away = timezone.now().date() + datetime.timedelta(days=14)
+        today = timezone.now().date()
+        two_weeks_away = today + datetime.timedelta(days=14)
         try:
-            return self.get(start_date__lte=two_weeks_away, end_date__gte=two_weeks_away)
+            return self.get(start_date__gt=today, start_date__lte=two_weeks_away, end_date__gte=today)
         except self.models.DoesNotExist:
             return None
 
