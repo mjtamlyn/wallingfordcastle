@@ -307,7 +307,7 @@ class SeasonManager(models.Manager):
         two_weeks_away = today + datetime.timedelta(days=14)
         try:
             return self.get(start_date__gt=today, start_date__lte=two_weeks_away, end_date__gte=today)
-        except self.models.DoesNotExist:
+        except self.model.DoesNotExist:
             return None
 
 
