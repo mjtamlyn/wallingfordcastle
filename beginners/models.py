@@ -37,7 +37,7 @@ class BeginnersCourse(models.Model):
 class BeginnersCourseSession(models.Model):
     course = models.ForeignKey(BeginnersCourse, on_delete=models.CASCADE)
     start_time = models.DateTimeField()
-    duration = models.DurationField(default=datetime.timedelta(minutes=90))
+    duration = models.DurationField(default=datetime.timedelta(minutes=120))
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
