@@ -2,14 +2,18 @@
   display: block
   cursor: pointer
   min-width: 100px
-  background-color: $grey
-  color: $pink
-  border-color: $pink
-  padding: 5px
-  border: 1px solid $pink
-  border-radius: 5px
+  background-color: $pink
+  box-shadow: 0 0 2px rgba(255, 255, 255, 0.6) inset
+  color: white
+  font-weight: bold
+  padding: 8px 5px
+  border-radius: 4px
   text-align: center
   white-space: nowrap
+
+  &:hover
+    text-decoration: none
+    background-color: darken($pink, 10%)
 
   &.btn-small
     font-size: smaller
