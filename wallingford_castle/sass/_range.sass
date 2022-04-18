@@ -80,6 +80,48 @@
     font-size: 14px
     margin: 5px 0
 
+  &__tools
+    position: absolute
+    right: 0
+    top: 0
+    padding: 5px 7px 5px 9px
+    user-select: none
+    cursor: pointer
+    background-color: $pink
+    color: white
+    border-radius: 0 0 0 4px
+    &--active
+      background-color: darken($pink, 10%)
+      border-radius: 0
+    &:hover
+      background-color: darken($pink, 10%)
+      text-decoration: none
+
+  &__menu
+    position: absolute
+    right: 0
+    top: 29px
+    text-align: right
+    color: white
+    background-color: lighten($pink, 10%)
+    border-radius: 4px 0 0 4px
+    overflow: hidden
+    z-index: 2
+
+    &__list
+      margin: 0
+      padding: 0
+      list-style: none
+
+    &__item
+      padding: 3px 7px 5px 9px
+      user-select: none
+      cursor: pointer
+      &:not(:last-child)
+        border-bottom: 1px solid $pink
+      &:hover
+        background-color: $pink
+
   &__book
     position: absolute
     top: 0
