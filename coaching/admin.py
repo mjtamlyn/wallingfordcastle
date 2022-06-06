@@ -12,6 +12,8 @@ from django.views.generic.detail import SingleObjectMixin
 
 from django_object_actions import DjangoObjectActions
 
+from wallingford_castle.admin import ArcherDataMixin
+
 from .models import GroupSession, TrainingGroup, TrainingGroupType, Trial
 
 
@@ -144,5 +146,6 @@ class GroupSessionAdmin(admin.ModelAdmin):
 
 
 @admin.register(Trial)
-class TrialAdmin(admin.ModelAdmin):
-    list_display = ['archer', 'group', 'session_1', 'paid']
+class TrialAdmin(ArcherDataMixin, admin.ModelAdmin):
+    list_display = ['archer', 'archer_email', 'group', 'session_1', 'paid']
+    readonly_fields = ['archer_email', 'archer_age_group', 'archer_contact_number']
