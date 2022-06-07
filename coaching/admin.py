@@ -145,7 +145,42 @@ class GroupSessionAdmin(admin.ModelAdmin):
     autocomplete_fields = ['group', 'booked_slot']
 
 
+class TrialStatusListFilter(admin.SimpleListFilter):
+    title = 'status'
+    parameter_name = 'status'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('future', 'Future'),
+            ('in-progress', 'In progress'),
+            ('joined', 'Joined'),
+            ('completed', 'Completed'),
+        )
+
+    def queryset(self, request, queryset):
+        today = timezone.now()
+        if self.value() == 'future':
+            return queryset.filter(session_1__gt=today)
+        if self.value() == 'in-progress':
+            return queryset.filter(session_1__lt=today, session_4__gt=today)
+        if self.value() == 'completed':
+            return queryset.filter(session_4__lt=today, archer__member__isnull=True)
+        if self.value() == 'joined':
+            return queryset.filter(session_4__lt=today, archer__member__isnull=False)
+
+
 @admin.register(Trial)
 class TrialAdmin(ArcherDataMixin, admin.ModelAdmin):
-    list_display = ['archer', 'archer_email', 'group', 'session_1', 'paid']
+    list_display = ['archer', 'status', 'paid', 'group', 'session_1']
+    list_filter = [TrialStatusListFilter]
     readonly_fields = ['archer_email', 'archer_age_group', 'archer_contact_number']
+
+    def status(self, instance):
+        today = timezone.now()
+        if instance.session_1 > today:
+            return 'Future'
+        elif instance.session_4 > today:
+            return 'In progress'
+        elif instance.archer.member_set.exists():
+            return 'Joined'
+        return 'Completed'
