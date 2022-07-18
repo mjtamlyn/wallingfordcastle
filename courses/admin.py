@@ -207,6 +207,10 @@ class CourseReport(DetailView):
             context['revenue'] = sum(sum(
                 session.fee for session in attendee.session_set.all()
             ) for attendee in context['attendees'])
+            context['by_session'] = [{
+                'session': session,
+                'attendees': session.attendeesession_set.select_related('attendee__archer'),
+            } for session in self.object.session_set.order_by('start_time')]
         return context
 
 

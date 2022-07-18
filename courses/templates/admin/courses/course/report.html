@@ -135,5 +135,34 @@
     </div>
     {% endif %}
 
+    {% if by_session %}
+    <h2>By session</h2>
+    <div class="results">
+        <table id="result_list">
+            <thead>
+                <tr>
+                    <th>Session</th>
+                    <th>Type</th>
+                    <th>Attendees</th>
+                </th>
+            </thead>
+            <tbody>
+                {% for session in by_session %}
+                <tr>
+                    <td>{{ session.session.start_time }}</td>
+                    <td>{{ session.session.public_label }}</td>
+                    <td>
+                        {% for attendee in session.attendees %}
+                            {{ attendee.attendee.archer.name }}<br>
+                        {% endfor %}
+                        <strong>{{ session.attendees.count }} archer(s)</strong>
+                    </td>
+                </tr>
+                {% endfor %}
+            </thead>
+        </table>
+    </div>
+    {% endif %}
+
 </div>
 {% endblock %}
