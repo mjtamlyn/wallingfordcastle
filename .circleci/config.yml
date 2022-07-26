@@ -14,11 +14,6 @@ jobs:
           POSTGRES_DB: circle_test
     steps:
       - checkout
-      - run:
-          command: |
-            sudo chown -R circleci:circleci /usr/local/bin
-            sudo chown -R circleci:circleci /usr/local/lib/python3.9/site-packages
-          name: Set up folder permissions
       - restore_cache:
           key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
