@@ -2,6 +2,25 @@
 
 {% load i18n admin_urls %}
 
+{% block extrahead %}
+<script type="text/javascript" defer="defer">
+    document.addEventListener('DOMContentLoaded', (event) => {
+        Array.from(document.getElementsByClassName('email-link')).forEach((element) => {
+            element.addEventListener('click', function(ev) {
+                ev.preventDefault();
+                var emails = [];
+                Array.from(element.closest('tr').querySelectorAll('[data-email]')).forEach(function(el) {
+                    emails.push(el.dataset.email);
+                });
+                navigator.clipboard.writeText(emails.join(' ')).then(function() {
+                    ev.target.innerHTML = 'Done!';
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}
+
 {% block breadcrumbs %}
 <div class="breadcrumbs">
     <a href="{% url 'admin:index' %}">{% trans 'Home' %}</a>
@@ -144,6 +163,7 @@
                     <th>Session</th>
                     <th>Type</th>
                     <th>Attendees</th>
+                    <th>Emails</th>
                 </th>
             </thead>
             <tbody>
@@ -153,9 +173,15 @@
                     <td>{{ session.session.public_label }}</td>
                     <td>
                         {% for attendee in session.attendees %}
-                            {{ attendee.attendee.archer.name }}<br>
+                            <span data-email="{{ attendee.attendee.archer.user.email }}">
+                                {{ attendee.attendee.archer.name }}
+                                <small>{{ attendee.paid|yesno:",NOT PAID" }}</small>
+                            </span><br>
                         {% endfor %}
                         <strong>{{ session.attendees.count }} archer(s)</strong>
+                    </td>
+                    <td>
+                        <a class="email-link" href="#">Copy group emails</a>
                     </td>
                 </tr>
                 {% endfor %}
