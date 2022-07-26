@@ -18,8 +18,10 @@ jobs:
           key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
       - run:
           command: |
-            sudo pip install pipenv
-            pipenv install
+            python3 -m venv .venv
+            source .venv/bin/activate
+            pip install pipenv
+            pipenv install --ignore-pipfile
           name: Install requirements
       - save_cache:
           key: deps9-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
