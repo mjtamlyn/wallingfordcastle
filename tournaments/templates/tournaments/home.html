@@ -34,17 +34,21 @@
         to find out first when we open entries.
         {% endfor %}
     </section>
-    <section>
+    <section class="double">
         <h2>Past open tournaments</h2>
         <p>
         Wallingford Castle Archers run a wide range of open Tournaments, aimed
         at a range of ages and abilities. We also run events on behalf of
         Oxfordshire and Archery GB.
         </p>
-        <ul>
-            {% for tournament in past_tournaments %}
-            <li><a href="{{ tournament.get_absolute_url }}">{{ tournament }}</a> - {{ tournament.date|date:"jS F Y" }}</li>
-            {% endfor %}
+        {% for tournament in past_tournaments %}
+        {% ifchanged tournament.date.year %}
+        <h3>{{ tournament.date.year }}</h3>
+        {% endifchanged %}
+        <dt class="inline">{{ tournament.date|date:"jS F" }}</dt>
+        <dd class="inline"><a href="{{ tournament.get_absolute_url }}">{{ tournament }}</a></dd>
+        <br>
+        {% endfor %}
         </ul>
     </section>
 </div>

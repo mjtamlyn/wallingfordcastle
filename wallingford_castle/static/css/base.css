@@ -306,14 +306,30 @@ footer {
   }
 }
 @media (max-width: 750px) {
-  /* line 127, ../../sass/_layout.sass */
+  /* line 126, ../../sass/_layout.sass */
   .flex-sections section {
     width: 100%;
     padding: 0;
   }
 }
+/* line 130, ../../sass/_layout.sass */
+.flex-sections section.double {
+  width: 66.666%;
+}
+@media (max-width: 1200px) {
+  /* line 133, ../../sass/_layout.sass */
+  .flex-sections section.double {
+    width: 50%;
+  }
+}
+@media (max-width: 750px) {
+  /* line 136, ../../sass/_layout.sass */
+  .flex-sections section.double {
+    width: 100%;
+  }
+}
 
-/* line 131, ../../sass/_layout.sass */
+/* line 139, ../../sass/_layout.sass */
 .hero {
   height: 400px;
   color: white;
@@ -327,12 +343,12 @@ footer {
   z-index: 0;
 }
 @media (max-width: 750px) {
-  /* line 144, ../../sass/_layout.sass */
+  /* line 152, ../../sass/_layout.sass */
   .hero {
     height: 300px;
   }
 }
-/* line 147, ../../sass/_layout.sass */
+/* line 155, ../../sass/_layout.sass */
 .hero:before {
   content: "";
   position: absolute;
@@ -344,7 +360,7 @@ footer {
   background-position: center center;
   z-index: -2;
 }
-/* line 158, ../../sass/_layout.sass */
+/* line 166, ../../sass/_layout.sass */
 .hero:after {
   content: "";
   position: absolute;
@@ -355,55 +371,55 @@ footer {
   background-color: rgba(0, 0, 0, 0.3);
   z-index: -1;
 }
-/* line 168, ../../sass/_layout.sass */
+/* line 176, ../../sass/_layout.sass */
 .hero--scas:before {
   background-image: url(../img/scas.jpg);
 }
-/* line 171, ../../sass/_layout.sass */
+/* line 179, ../../sass/_layout.sass */
 .hero--wca-720:before {
   background-image: url(../img/wca-720.jpg);
 }
-/* line 174, ../../sass/_layout.sass */
+/* line 182, ../../sass/_layout.sass */
 .hero--scoring:before {
   background-image: url(../img/scoring.jpg);
 }
-/* line 177, ../../sass/_layout.sass */
+/* line 185, ../../sass/_layout.sass */
 .hero--targets:before {
   background-image: url(../img/targets.jpg);
 }
-/* line 180, ../../sass/_layout.sass */
+/* line 188, ../../sass/_layout.sass */
 .hero--wsp-rainbow:before {
   background-image: url(../img/wsp-rainbow-sm.jpg);
 }
-/* line 183, ../../sass/_layout.sass */
+/* line 191, ../../sass/_layout.sass */
 .hero--coaching:before {
   background-image: url(../img/coaching.jpg);
 }
-/* line 186, ../../sass/_layout.sass */
+/* line 194, ../../sass/_layout.sass */
 .hero--juniors:before {
   background-image: url(../img/juniors-jinu19.jpg);
 }
-/* line 189, ../../sass/_layout.sass */
+/* line 197, ../../sass/_layout.sass */
 .hero--photocrowd:before {
   background-image: url(../img/photocrowd.jpg);
 }
-/* line 192, ../../sass/_layout.sass */
+/* line 200, ../../sass/_layout.sass */
 .hero--diana:before {
   background-image: url(../img/diana.jpg);
 }
-/* line 195, ../../sass/_layout.sass */
+/* line 203, ../../sass/_layout.sass */
 .hero h1 {
   font-size: 34px;
   text-align: center;
 }
 
-/* line 199, ../../sass/_layout.sass */
+/* line 207, ../../sass/_layout.sass */
 .intro {
   margin: 30px auto;
   max-width: 600px;
 }
 
-/* line 203, ../../sass/_layout.sass */
+/* line 211, ../../sass/_layout.sass */
 .modal {
   position: fixed;
   top: 0;
@@ -412,7 +428,7 @@ footer {
   height: 100%;
   z-index: 2;
 }
-/* line 211, ../../sass/_layout.sass */
+/* line 219, ../../sass/_layout.sass */
 .modal__background {
   z-index: -1;
   position: absolute;
@@ -422,7 +438,7 @@ footer {
   height: 100%;
   background-color: rgba(0, 0, 0, 0.8);
 }
-/* line 220, ../../sass/_layout.sass */
+/* line 228, ../../sass/_layout.sass */
 .modal__content {
   width: 350px;
   background-color: white;
@@ -433,11 +449,11 @@ footer {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-/* line 230, ../../sass/_layout.sass */
+/* line 238, ../../sass/_layout.sass */
 .modal__content > :first-child {
   margin-top: 0;
 }
-/* line 233, ../../sass/_layout.sass */
+/* line 241, ../../sass/_layout.sass */
 .modal__content > :last-child {
   margin-bottom: 0;
 }
@@ -643,36 +659,50 @@ h2 {
 }
 
 /* line 27, ../../sass/_typography.sass */
+h3 {
+  font-size: 18px;
+  margin: 1em 0 0.5em;
+}
+
+/* line 31, ../../sass/_typography.sass */
 p {
   font-size: 18px;
   margin: 1em 0;
 }
 @media (max-width: 750px) {
-  /* line 27, ../../sass/_typography.sass */
+  /* line 31, ../../sass/_typography.sass */
   p {
     font-size: 16px;
     margin: 0.5em 0;
   }
 }
 
-/* line 35, ../../sass/_typography.sass */
+/* line 39, ../../sass/_typography.sass */
 sup {
   vertical-align: top;
   font-size: small;
 }
 
-/* line 39, ../../sass/_typography.sass */
+/* line 43, ../../sass/_typography.sass */
 dt {
   font-weight: bold;
 }
-/* line 42, ../../sass/_typography.sass */
+/* line 46, ../../sass/_typography.sass */
+dt.inline {
+  display: inline;
+}
+/* line 49, ../../sass/_typography.sass */
 dt:not(:first-child) {
   margin-top: 0.5em;
 }
 
-/* line 45, ../../sass/_typography.sass */
+/* line 52, ../../sass/_typography.sass */
 dd {
   margin: 0;
+}
+/* line 55, ../../sass/_typography.sass */
+dd.inline {
+  display: inline;
 }
 
 /* line 1, ../../sass/_range.sass */
