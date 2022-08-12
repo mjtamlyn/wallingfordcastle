@@ -52,13 +52,26 @@
     <section>
         {% if tournament.entry_is_open %}
         <h2>Enter now</h2>
-        {% else %}
+        {% elif tournament.is_future %}
         <h2>Entry information</h2>
+        {% else %}
+        <h2>Results</h2>
         {% endif %}
 
-        {{ tournament.entry_information|linebreaks }}
+        {% if tournament.tamlynscore_id %}
+        {% if tournament.is_future %}
+        <p><a class="btn" href="https://tamlynscore.co.uk/tournaments/{{ tournament.tamlynscore_id }}/target-list/">View Target List</a></p>
+        {% else %}
+        <p><a class="btn" href="https://tamlynscore.co.uk/tournaments/{{ tournament.tamlynscore_id }}/results/by-round/html/">Results on TamlynScore</a></p>
+        {% endif %}
+        {% endif %}
+
+        {% if tournament.full_results_document %}
+        <p><a class="btn" href="{{ tournament.full_results_document|safe }}">Full results document</a></p>
+        {% endif %}
 
         {% if tournament.is_future %}
+        {{ tournament.entry_information|linebreaks }}
         <p>
         Entry fee is £{{ tournament.entry_fee }}.
         {% if tournament.entry_will_open %}
@@ -105,7 +118,7 @@
             {% endif %}
         {% endif %}
 
-        {% if tournament.waiting_list_enabled %}
+        {% if tournament.is_future and tournament.waiting_list_enabled %}
             <p><strong>
                 We are now operating a waiting list. You may enter your details
                 below but will not be able to pay. If we are able to offer you
@@ -114,7 +127,7 @@
                 pay. Thank you for your patience and rest assured we will do
                 our best to accommodate you.
             </strong></p>
-        {% elif not tournament.entry_is_open and not tournament.entry_will_open %}
+        {% elif tournament.is_future and not tournament.entry_is_open and not tournament.entry_will_open %}
             <p><strong>
                 The competition is now full. Please contact the
                 <a href="mailto:{{ tournament.tournament_organiser_email }}">Tournament Organiser</a> to

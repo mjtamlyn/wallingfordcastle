@@ -45,6 +45,10 @@ class Tournament(models.Model):
     entries_close = models.DateTimeField()
     waiting_list_enabled = models.BooleanField(default=False)
 
+    # Results etc
+    tamlynscore_id = models.SlugField(blank=True, default='')
+    full_results_document = models.URLField(blank=True, default='')
+
     def __str__(self):
         return self.name
 
