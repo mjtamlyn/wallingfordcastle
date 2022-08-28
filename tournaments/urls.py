@@ -14,10 +14,16 @@ tournament_patterns = [
     path('pay/success/', views.PaymentSuccess.as_view(), name='pay-success'),
 ]
 
+series_patterns = [
+    path('', views.SeriesDetail.as_view(), name='series-detail'),
+    path('register/', views.SeriesRegistration.as_view(), name='series-register'),
+    path('enter/', views.SeriesEntryCreate.as_view(), name='series-enter'),
+    path('pay/', views.SeriesPay.as_view(), name='series-pay'),
+    path('pay/success/', views.SeriesPaymentSuccess.as_view(), name='series-pay-success'),
+]
+
 urlpatterns = [
     path('', views.TournamentList.as_view(), name='home'),
-    path('series/<series_slug>/', views.SeriesDetail.as_view(), name='series-detail'),
-    path('series/<series_slug>/register/', views.SeriesRegistration.as_view(), name='series-register'),
-    path('series/<series_slug>/enter/', views.SeriesEntryCreate.as_view(), name='series-enter'),
+    path('series/<series_slug>/', include(series_patterns)),
     path('<tournament_slug>/', include(tournament_patterns)),
 ]

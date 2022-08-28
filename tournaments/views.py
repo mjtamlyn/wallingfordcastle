@@ -57,6 +57,9 @@ class TournamentDetail(TournamentMixin, TemplateView):
         context['register_url'] = reverse('tournaments:register', kwargs={
             'tournament_slug': self.tournament.slug,
         })
+        context['payment_url'] = reverse('tournaments:pay', kwargs={
+            'tournament_slug': self.tournament.slug,
+        })
         if self.request.user.is_authenticated:
             context['existing_entries'] = self.request.user.entry_set.filter(
                 tournament=self.tournament,
@@ -174,34 +177,44 @@ class EntryDelete(LoginRequiredMixin, TournamentMixin, DeleteView):
 
 
 class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
-    def get(self, request, *args, **kwargs):
-        tournament = self.get_tournament()
-        customer_id = self.request.user.customer_id or None
-        entries_to_pay_for = self.request.user.entry_set.filter(
+    def get_entries(self, event):
+        return self.request.user.entry_set.filter(
             paid=False,
-            tournament=tournament,
+            tournament=event,
+            series_entry=False,
         )
+
+    def get_event(self):
+        return self.get_tournament()
+
+    def get_success_url(self, event):
+        return reverse('tournaments:pay-success', kwargs={
+            'tournament_slug': event.slug,
+        })
+
+    def get(self, request, *args, **kwargs):
+        event = self.get_event()
+        customer_id = self.request.user.customer_id or None
+        entries_to_pay_for = self.get_entries(event)
         if not entries_to_pay_for:
             self.messages.error('You have no entries to pay for.')
-            return redirect(tournament.get_absolute_url())
+            return redirect(event.get_absolute_url())
         session = stripe.checkout.Session.create(
             line_items=[{
                 'price_data': {
                     'currency': 'gbp',
                     'product_data': {
-                        'name': '%s entry to %s' % (entry, tournament),
+                        'name': '%s entry to %s' % (entry, event),
                     },
-                    'unit_amount': tournament.entry_fee * 100,
+                    'unit_amount': event.entry_fee * 100,
                 },
                 'quantity': 1,
             } for entry in entries_to_pay_for],
             mode='payment',
             customer=customer_id,
             customer_email=None if customer_id else self.request.user.email,
-            success_url=request.build_absolute_uri(
-                reverse('tournaments:pay-success', kwargs={'tournament_slug': tournament.slug}),
-            ),
-            cancel_url=request.build_absolute_uri(tournament.get_absolute_url()),
+            success_url=request.build_absolute_uri(self.get_success_url(event)),
+            cancel_url=request.build_absolute_uri(event.get_absolute_url()),
         )
         intent = PaymentIntent.objects.create(stripe_id=session.payment_intent, user=request.user)
         for entry in entries_to_pay_for:
@@ -212,9 +225,12 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
 class PaymentSuccess(LoginRequiredMixin, TournamentMixin, TemplateView):
     template_name = 'tournaments/payment_success.html'
 
+    def get_event(self):
+        return self.get_tournament()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['tournament'] = self.get_tournament()
+        context['tournament'] = self.get_event()
         return context
 
 
@@ -238,6 +254,9 @@ class SeriesDetail(SeriesMixin, TemplateView):
             'series_slug': self.series.slug,
         })
         context['register_url'] = reverse('tournaments:series-register', kwargs={
+            'series_slug': self.series.slug,
+        })
+        context['payment_url'] = reverse('tournaments:series-pay', kwargs={
             'series_slug': self.series.slug,
         })
         if self.request.user.is_authenticated:
@@ -302,3 +321,25 @@ class SeriesEntryCreate(LoginRequiredMixin, SeriesMixin, MessageMixin, CreateVie
 
     def get_success_url(self):
         return self.get_series().get_absolute_url()
+
+
+class SeriesPay(SeriesMixin, Pay):
+    def get_event(self):
+        return self.get_series()
+
+    def get_entries(self, event):
+        return self.request.user.entry_set.filter(
+            paid=False,
+            tournament__series=event,
+            series_entry=True,
+        )
+
+    def get_success_url(self, event):
+        return reverse('tournaments:series-pay-success', kwargs={
+            'series_slug': event.slug,
+        })
+
+
+class SeriesPaymentSuccess(SeriesMixin, PaymentSuccess):
+    def get_event(self):
+        return self.get_series()
