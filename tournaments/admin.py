@@ -1,6 +1,13 @@
 from django.contrib import admin
 
-from .models import Entry, Tournament
+from .models import Entry, Series, Tournament
+
+
+@admin.register(Series)
+class SeriesAdmin(admin.ModelAdmin):
+    list_display = ['name']
+    prepopulated_fields = {'slug': ('name',)}
+    autocomplete_fields = ['rounds']
 
 
 @admin.register(Tournament)

@@ -16,5 +16,8 @@ tournament_patterns = [
 
 urlpatterns = [
     path('', views.TournamentList.as_view(), name='home'),
+    path('series/<series_slug>/', views.SeriesDetail.as_view(), name='series-detail'),
+    path('series/<series_slug>/register/', views.SeriesRegistration.as_view(), name='series-register'),
+    path('series/<series_slug>/enter/', views.SeriesEntryCreate.as_view(), name='series-enter'),
     path('<tournament_slug>/', include(tournament_patterns)),
 ]

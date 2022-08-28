@@ -26,13 +26,22 @@
         {% endfor %}
         </p>
         <a href="{{ tournament.get_absolute_url }}" class="btn">Find out more</a>
-        {% empty %}
+        {% endfor %}
+
+        {% for series in upcoming_series %}
+        <h3>{{ series }}</h3>
+        <p><strong>Starting {{ series.date|date:"jS F Y" }}</strong></p>
+        {{ series.event_format|linebreaks }}
+        <a href="{{ series.get_absolute_url }}" class="btn">Find out more</a>
+        {% endfor %}
+
+        {% if not upcoming_tournaments and not upcoming_series %}
         <p>
         We don't have any future shoots confirmed yet, but watch this space and
         follow us on
         <a href="https://www.facebook.com/wallingfordcastlearchers/">Facebook</a>
         to find out first when we open entries.
-        {% endfor %}
+        {% endif %}
     </section>
     <section class="double">
         <h2>Past open tournaments</h2>
