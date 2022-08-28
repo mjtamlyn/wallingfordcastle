@@ -19,7 +19,7 @@ from membership.models import Member
 from payments.models import PaymentIntent
 
 from .forms import EntryForm, RegisterForm, SeriesEntryForm
-from .models import Entry, Tournament, Series
+from .models import Entry, Series, Tournament
 
 
 class TournamentList(TemplateView):
