@@ -17,7 +17,7 @@
 
         {% for t in tournament.tournament_set.all %}
         <dt class="inline">{{ t.date|date:"jS F" }}</dt>
-        <dd class="inline"><a href="{{ t.get_absolute_url }}">{{ t }}</a></dd>
+        <dd class="inline"><a href="{{ t.get_absolute_url }}">{{ t }}</a></dd><br>
         {% endfor %}
 
         <h3>Rounds</h3>
