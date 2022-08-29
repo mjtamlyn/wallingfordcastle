@@ -192,6 +192,11 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
             'tournament_slug': event.slug,
         })
 
+    def create_intents(self, stripe_id, entries):
+        intent = PaymentIntent.objects.create(stripe_id=stripe_id, user=self.request.user)
+        for entry in entries:
+            intent.lineitemintent_set.create(item=entry)
+
     def get(self, request, *args, **kwargs):
         event = self.get_event()
         customer_id = self.request.user.customer_id or None
@@ -216,9 +221,7 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
             success_url=request.build_absolute_uri(self.get_success_url(event)),
             cancel_url=request.build_absolute_uri(event.get_absolute_url()),
         )
-        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent, user=request.user)
-        for entry in entries_to_pay_for:
-            intent.lineitemintent_set.create(item=entry)
+        self.create_intents(stripe_id=session.payment_intent, entries=entries_to_pay_for)
         return redirect(session.url, status_code=303)
 
 
@@ -263,15 +266,15 @@ class SeriesDetail(SeriesMixin, TemplateView):
             context['entry_form'] = EntryForm(tournament=self.series)
             if not self.request.user.tournament_only:
                 context['members'] = Member.objects.managed_by(self.request.user)
-            context['existing_entries'] = self.request.user.entry_set.filter(
+            context['series_entries'] = self.request.user.entry_set.filter(
                 tournament__series=self.series,
                 series_entry=True,
-            )
+            ).distinct('agb_number')
             context['to_pay'] = self.request.user.entry_set.filter(
                 paid=False,
                 waiting_list=False,
                 tournament__series=self.series,
-            ).distinct('name').count() * self.series.entry_fee
+            ).distinct('agb_number').count() * self.series.entry_fee
         else:
             context['register_form'] = RegisterForm()
         return context
@@ -332,12 +335,22 @@ class SeriesPay(SeriesMixin, Pay):
             paid=False,
             tournament__series=event,
             series_entry=True,
-        )
+        ).distinct('agb_number')
 
     def get_success_url(self, event):
         return reverse('tournaments:series-pay-success', kwargs={
             'series_slug': event.slug,
         })
+
+    def create_intents(self, stripe_id, entries):
+        intent = PaymentIntent.objects.create(stripe_id=stripe_id, user=self.request.user)
+        all_entries = self.request.user.entry_set.filter(
+            paid=False,
+            tournament__series=entries[0].tournament.series,
+            series_entry=True,
+        )
+        for entry in all_entries:
+            intent.lineitemintent_set.create(item=entry)
 
 
 class SeriesPaymentSuccess(SeriesMixin, PaymentSuccess):

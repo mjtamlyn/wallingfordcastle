@@ -122,7 +122,7 @@
                 <li>
                     <strong>{{ entry.name }}</strong>
                     Entered for the whole series.
-                    {% if not entry.paid %}
+                    {% if not entry.paid and not tournament.is_series %}
                     <br><a href="{{ entry.tournament.series.get_absolute_url }}">Pay via series page.</a>
                     {% endif %}
                 </li>
