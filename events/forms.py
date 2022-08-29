@@ -2,7 +2,6 @@ import datetime
 
 from django import forms
 from django.conf import settings
-from django.contrib.postgres.forms import JSONField
 
 from membership.models import Member
 
@@ -48,7 +47,7 @@ class BookSlotForm(forms.Form):
     bRange = forms.BooleanField(required=False)
     face = forms.CharField(required=False)
     distance = forms.CharField(required=False)
-    archers = JSONField()
+    archers = forms.JSONField()
 
     def __init__(self, user, **kwargs):
         self.user = user
