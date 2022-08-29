@@ -14,7 +14,7 @@ GENDER_CHOICES = (
 )
 
 
-class Tournament(models.Model):
+class TournamentDetailsBase(models.Model):
     name = models.CharField(max_length=200)
     slug = models.SlugField()
     date = models.DateField()
@@ -45,15 +45,11 @@ class Tournament(models.Model):
     entries_close = models.DateTimeField()
     waiting_list_enabled = models.BooleanField(default=False)
 
-    # Results etc
-    tamlynscore_id = models.SlugField(blank=True, default='')
-    full_results_document = models.URLField(blank=True, default='')
+    class Meta:
+        abstract = True
 
     def __str__(self):
         return self.name
-
-    def get_absolute_url(self):
-        return reverse('tournaments:tournament-detail', kwargs={'tournament_slug': self.slug})
 
     @property
     def is_future(self):
@@ -62,17 +58,37 @@ class Tournament(models.Model):
         return date > timezone.now()
 
     @property
+    def entry_is_open(self):
+        return self.entries_open < timezone.now() < self.entries_close
+
+
+class Tournament(TournamentDetailsBase):
+    tamlynscore_id = models.SlugField(blank=True, default='')
+    full_results_document = models.URLField(blank=True, default='')
+    series = models.ForeignKey('tournaments.Series', blank=True, null=True, on_delete=models.SET_NULL)
+
+    def get_absolute_url(self):
+        return reverse('tournaments:tournament-detail', kwargs={'tournament_slug': self.slug})
+
+    @property
     def entry_will_open(self):
         return timezone.now() < self.entries_open
 
-    @property
-    def entry_is_open(self):
-        return self.entries_open < timezone.now() < self.entries_close
+
+class Series(TournamentDetailsBase):
+    is_series = True
+
+    def get_absolute_url(self):
+        return reverse('tournaments:series-detail', kwargs={'series_slug': self.slug})
+
+    class Meta:
+        verbose_name_plural = 'series'
 
 
 class Entry(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, blank=True, null=True)
+    series_entry = models.BooleanField(default=False)
     name = models.CharField(max_length=200)
     agb_number = models.CharField('ArcheryGB number', max_length=50)
     club = models.CharField(max_length=200)

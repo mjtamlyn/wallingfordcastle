@@ -7,9 +7,19 @@
     <section>
         <h2>Tournament prospectus</h2>
         <p>
-        {{ tournament }}, {% if tournament.is_future %}to be {% endif %}held on
+        {{ tournament }}, {% if tournament.is_future %}to be {% endif %}held {% if tournament.tournament_set.all %}from {% else %}on {% endif %}
         {{ tournament.date|date:"jS F Y" }}.
         </p>
+
+        {% if tournament.series %}
+        <p>This event is a part of <strong><a href="{{ tournament.series.get_absolute_url }}">{{ tournament.series }}</a></strong>. Enter all events for a discount!</p>
+        {% endif %}
+
+        {% for t in tournament.tournament_set.all %}
+        <dt class="inline">{{ t.date|date:"jS F" }}</dt>
+        <dd class="inline"><a href="{{ t.get_absolute_url }}">{{ t }}</a></dd>
+        {% endfor %}
+
         <h3>Rounds</h3>
         <p>
         {% for round in tournament.rounds.all %}
@@ -19,6 +29,7 @@
         </p>
         <h3>Event Format</h3>
         {{ tournament.event_format|linebreaks }}
+
         <h3>Judges</h3>
         {{ tournament.judges|linebreaks }}
         <h3>Awards</h3>
@@ -72,6 +83,10 @@
 
         {% if tournament.is_future %}
         {{ tournament.entry_information|linebreaks }}
+
+        <p>
+            If you are having problems entering, please contact the <a href="mailto:{{ tournament.tournament_organiser_email }}">Tournament Organiser</a>.
+        </p>
         <p>
         Entry fee is £{{ tournament.entry_fee }}.
         {% if tournament.entry_will_open %}
@@ -82,7 +97,7 @@
         </p>
         {% endif %}
 
-        {% if existing_entries %}
+        {% if existing_entries or series_entries %}
             <h3>Entries</h3>
             <ul>
                 {% for entry in existing_entries %}
@@ -94,9 +109,21 @@
                     {% if entry.paid %}
                     Paid
                     {% endif %}
-                    <a href="{% url 'tournaments:entry-update' tournament_slug=tournament.slug pk=entry.pk %}">Edit</a>
-                    {% if not entry.paid %}
-                    <a href="{% url 'tournaments:entry-delete' tournament_slug=tournament.slug pk=entry.pk %}">Remove</a>
+                    {% if not tournament.series and not tournament.is_series %}
+                        <a href="{% url 'tournaments:entry-update' tournament_slug=tournament.slug pk=entry.pk %}">Edit</a>
+                        {% if not entry.paid %}
+                        <a href="{% url 'tournaments:entry-delete' tournament_slug=tournament.slug pk=entry.pk %}">Remove</a>
+                        {% endif %}
+                    {% endif %}
+                </li>
+                {% endfor %}
+
+                {% for entry in series_entries %}
+                <li>
+                    <strong>{{ entry.name }}</strong>
+                    Entered for the whole series.
+                    {% if not entry.paid and not tournament.is_series %}
+                    <br><a href="{{ entry.tournament.series.get_absolute_url }}">Pay via series page.</a>
                     {% endif %}
                 </li>
                 {% endfor %}
@@ -104,7 +131,7 @@
             {% if to_pay %}
             {% if not user.subscription_id %}
             <p>To pay: £{{ to_pay }}</p>
-            <a href="{% url 'tournaments:pay' tournament_slug=tournament.slug %}" class="btn">Pay now</a>
+            <a href="{{ payment_url }}" class="btn">Pay now</a>
             <p><small>
             Payments are processed securely using Stripe. Wallingford Castle Archers does
             not store your credit card details. If you have any problems, please
@@ -137,7 +164,7 @@
 
         {% if tournament.entry_is_open %}
             {% if user.is_authenticated %}
-            <form id="tournament-entry" class="form page-form" action="{% url 'tournaments:enter' tournament_slug=tournament.slug %}" method="POST">
+            <form id="tournament-entry" class="form page-form" action="{{ enter_url }}" method="POST">
                 <h2>Add entry</h2>
                 {% if members %}
                 <div class="member-select">
@@ -160,7 +187,7 @@
                 </div>
             </form>
             {% else %}
-            <form class="form page-form" action="{% url 'tournaments:register' tournament_slug=tournament.slug %}" method="POST">
+            <form class="form page-form" action="{{ register_url }}" method="POST">
                 <h2>Register account</h2>
                 {% csrf_token %}
                 {% form register_form using 'floppyforms/layouts/p.html' %}

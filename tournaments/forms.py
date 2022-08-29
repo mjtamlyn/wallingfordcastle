@@ -18,7 +18,12 @@ class EntryForm(forms.ModelForm):
         self.fields['round'].choices = [('', '---------')] + [
             (r.pk, r.name) for r in self.tournament.rounds.all()
         ]
-        self.fields['round'].required = True
+        if len(self.fields['round'].choices) == 2:
+            self.fields['round'].choices = [self.fields['round'].choices[-1]]
+            self.fields['round'].initial = self.fields['round'].choices[-1][0]
+            self.fields['round'].disabled = True
+        else:
+            self.fields['round'].required = True
 
     class Meta:
         model = Entry
@@ -41,6 +46,19 @@ class EntryForm(forms.ModelForm):
         if self.tournament.waiting_list_enabled:
             self.instance.waiting_list = True
         super().save(**kwargs)
+
+
+class SeriesEntryForm(EntryForm):
+    def save(self, **kwargs):
+        series = self.tournament
+        if series.waiting_list_enabled:
+            self.instance.waiting_list = True
+        self.instance.series_entry = True
+        for tournament in series.tournament_set.all():
+            self.instance.pk = None
+            self.instance.tournament = tournament
+            self.instance.save()
+        super(forms.ModelForm, self).save(**kwargs)
 
 
 class RegisterForm(DirectRegisterForm):
