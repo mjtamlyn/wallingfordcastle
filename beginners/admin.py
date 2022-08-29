@@ -2,10 +2,9 @@ import collections
 import functools
 
 from django import forms
-from django.urls import path
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import path, reverse
 from django.views.generic import FormView
 
 from django_object_actions import (
