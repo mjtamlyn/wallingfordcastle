@@ -140,7 +140,7 @@ class BookingTemplate(models.Model):
     def template(self):
         slots = [slot.slot for slot in self.slots]
         start_times = [
-            settings.TZ.localize(datetime.datetime.combine(self.date, time))
+            datetime.datetime.combine(self.date, time, tzinfo=settings.TZ)
             for time in self.start_times
         ]
         return Template(
@@ -154,8 +154,7 @@ class BookingTemplate(models.Model):
 
     @property
     def slots(self):
-        midnight = datetime.datetime.combine(self.date, datetime.time(0))
-        midnight = settings.TZ.localize(midnight)
+        midnight = datetime.datetime.combine(self.date, datetime.time(0), tzinfo=settings.TZ)
         return BookedSlot.objects.filter(
             start__gte=midnight,
             start__lt=midnight + datetime.timedelta(days=1),

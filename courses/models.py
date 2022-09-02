@@ -50,7 +50,7 @@ class Session(models.Model):
 
     @property
     def local_start_time(self):
-        return settings.TZ.normalize(self.start_time)
+        return self.start_time.astimezone(settings.TZ)
 
     @property
     def end_time(self):
@@ -58,7 +58,7 @@ class Session(models.Model):
 
     @property
     def local_end_time(self):
-        return settings.TZ.normalize(self.end_time)
+        return self.end_time.astimezone(settings.TZ)
 
     @property
     def label(self):

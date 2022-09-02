@@ -7,7 +7,7 @@ from django.db import migrations
 def migrate_times(apps, editor):
     BeginnersCourseSession = apps.get_model('beginners', 'BeginnersCourseSession')
     for session in BeginnersCourseSession.objects.all():
-        session.start_time = settings.TZ.localize(session.start_time.replace(tzinfo=None))
+        session.start_time = session.start_time.replace(tzinfo=None).replace(tzinfo=settings.TZ)
         session.save(update_fields=['start_time'])
 
 

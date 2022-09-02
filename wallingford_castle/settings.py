@@ -1,9 +1,9 @@
 import os
+import zoneinfo
 
 from django.urls import reverse_lazy
 
 import dj_database_url
-import pytz
 import sentry_sdk
 import stripe
 from sentry_sdk.integrations.django import DjangoIntegration
@@ -73,7 +73,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 LANGUAGE_CODE = 'en-gb'
 TIME_ZONE = 'Europe/London'
-TZ = pytz.timezone(TIME_ZONE)
+TZ = zoneinfo.ZoneInfo(TIME_ZONE)
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True

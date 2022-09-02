@@ -65,8 +65,7 @@ class BookSlotForm(forms.Form):
 
     def save(self):
         data = self.cleaned_data
-        start = datetime.datetime.combine(data['date'], data['time'])
-        start = settings.TZ.localize(start)
+        start = datetime.datetime.combine(data['date'], data['time'], tzinfo=settings.TZ)
         duration = datetime.timedelta(minutes=90)  # TODO: submit this somehow?
         target = data['target']
         b_range = data['bRange']
@@ -101,8 +100,7 @@ class CancelSlotForm(forms.Form):
 
     def clean(self):
         data = self.cleaned_data
-        start = datetime.datetime.combine(data['date'], data['time'])
-        start = settings.TZ.localize(start)
+        start = datetime.datetime.combine(data['date'], data['time'], tzinfo=settings.TZ)
         face = None
         if data['face']:
             face = {'A': 1, 'B': 2}[data['face']]

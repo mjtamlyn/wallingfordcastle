@@ -36,7 +36,7 @@ class CreateSessionsForm(forms.Form):
     def save(self):
         for i, date in enumerate(self.possible_dates):
             self.training_group.groupsession_set.create(
-                start=settings.TZ.localize(datetime.datetime.combine(date, self.training_group.session_start_time)),
+                start=datetime.datetime.combine(date, self.training_group.session_start_time, tzinfo=settings.TZ),
                 cancelled_because=self.cleaned_data['cancel_%s' % i],
             )
 

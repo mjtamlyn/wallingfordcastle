@@ -7,7 +7,7 @@ from django.db import migrations
 def migrate_times(apps, editor):
     Event = apps.get_model('events', 'Event')
     for event in Event.objects.all():
-        event.date = settings.TZ.localize(event.date.replace(tzinfo=None))
+        event.date = event.date.replace(tzinfo=None).replace(tzinfo=settings.TZ)
         event.save(update_fields=['date'])
 
 class Migration(migrations.Migration):
