@@ -241,6 +241,10 @@ class SeriesMixin():
     def get_series(self):
         return get_object_or_404(Series, slug=self.kwargs['series_slug'])
 
+    def get_tournament(self):
+        # Easiest to just force overrride this as get_tournament will never work.
+        return self.get_series()
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         self.tournament = self.series = self.get_series()
