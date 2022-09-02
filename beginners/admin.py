@@ -2,10 +2,9 @@ import collections
 import functools
 
 from django import forms
-from django.conf.urls import url
 from django.contrib import admin
 from django.http import HttpResponseRedirect
-from django.urls import reverse
+from django.urls import path, reverse
 from django.views.generic import FormView
 
 from django_object_actions import (
@@ -115,7 +114,7 @@ class BeginnerAdmin(DjangoObjectActions, admin.ModelAdmin):
 
         urls.insert(
             0,
-            url(r'^allocate/$', wrap(AdminAllocateCourseView.as_view()), name='%s_%s_allocate' % info),
+            path('allocate/', wrap(AdminAllocateCourseView.as_view()), name='%s_%s_allocate' % info),
         )
         return urls
 
