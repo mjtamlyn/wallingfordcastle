@@ -17,8 +17,7 @@
             <li>{{ session.start_time }}</li>
             {% endfor %}
         </ul>
-        <h4>Book</h4>
-        <p>Course cost: £{{ course.members_price }}</p>
+        <p><strong>Fee:</strong> £{{ course.price }}</p>
         <p><a href="{% url 'courses:non-members-course-booking' pk=course.id %}" class="btn">Book</a></p>
         {% if course.registered_archers %}
             <p>Booked:</p>

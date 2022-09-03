@@ -381,7 +381,7 @@ class NonMembersCourseBooking(FullMemberRequired, SingleObjectMixin, FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('courses:non-members-course-list')
+        return reverse('membership:overview')
 
 
 class NonMembersPayment(MessageMixin, View):

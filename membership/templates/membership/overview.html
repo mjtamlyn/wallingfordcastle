@@ -160,9 +160,10 @@
         <a href="{% url 'courses:members-course-list' %}">Book a club member on a course ></a>
         </p>
     {% else %}
-        <p>
-        <a href="{% url 'courses:non-members-course-list' %}">Book a new course ></a>
-        </p>
+        <h3>Book a course</h3>
+        {% for course in bookable_courses %}
+        <a href="{% url 'courses:non-members-course-booking' pk=course.pk %}">{{ course }} ></a>
+        {% endfor %}
     {% endif %}
 {% endif %}
 

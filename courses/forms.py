@@ -89,6 +89,9 @@ class NonMembersBookCourseForm(forms.Form):
         super().__init__(**kwargs)
         self.archers = Archer.objects.filter(user=user)
         self.fields['archer'] = forms.ModelChoiceField(queryset=self.archers)
+        if len(self.archers) == 1:
+            self.fields['archer'].initial = self.archers[0].pk
+            self.fields['archer'].disabled = True
 
     def clean_archer(self):
         archer = self.cleaned_data['archer']
