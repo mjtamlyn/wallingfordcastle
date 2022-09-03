@@ -1,5 +1,6 @@
 from django.db.models.functions import Lower
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404
+from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, TemplateView, View
@@ -7,6 +8,7 @@ from django.views.generic import DetailView, TemplateView, View
 import stripe
 from braces.views import MessageMixin
 
+from payments.models import PaymentIntent
 from records.models import Achievement
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
@@ -130,32 +132,34 @@ class UpcomingGroupSchedule(GroupSchedule):
 
 
 class TrialPayment(MessageMixin, View):
-    def post(self, request, *args, **kwargs):
-        token = request.POST['stripeToken']
-        if self.request.user.customer_id:
-            customer = stripe.Customer.retrieve(self.request.user.customer_id)
-            source = customer.sources.create(source=token)
-            customer.default_source = source.id
-            customer.save()
-        else:
-            customer = stripe.Customer.create(
-                source=token,
-                email=self.request.user.email,
-            )
-            self.request.user.customer_id = customer.id
-            self.request.user.save()
+    def get(self, request, *args, **kwargs):
+        customer_id = self.request.user.customer_id or None
+        membership_overview_url = reverse('membership:overview')
         trials = Trial.objects.filter(
             archer__user=self.request.user,
             paid=False,
         )
-        amount = sum(trial.fee for trial in trials)
-        description = '; '.join('%s Archery Trial' % trial.archer for trial in trials)
-        stripe.Charge.create(
-            amount=amount * 100,
-            currency='gbp',
-            customer=customer.id,
-            description=description,
+        if not trials:
+            self.messages.error('You have no trials to pay for.')
+            return redirect(membership_overview_url)
+        session = stripe.checkout.Session.create(
+            line_items=[{
+                'price_data': {
+                    'currency': 'gbp',
+                    'product_data': {
+                        'name': '%s Archery Trial' % (trial.archer),
+                    },
+                    'unit_amount': trial.fee * 100,
+                },
+                'quantity': 1,
+            } for trial in trials],
+            mode='payment',
+            customer=customer_id,
+            customer_email=None if customer_id else self.request.user.email,
+            success_url=request.build_absolute_uri(membership_overview_url),
+            cancel_url=request.build_absolute_uri(membership_overview_url),
         )
-        trials.update(paid=True)
-        self.messages.success('Thanks! You will receive a confirmation email soon.')
-        return HttpResponseRedirect(reverse('membership:overview'))
+        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent, user=self.request.user)
+        for trial in trials:
+            intent.lineitemintent_set.create(item=trial)
+        return redirect(session.url, status_code=303)

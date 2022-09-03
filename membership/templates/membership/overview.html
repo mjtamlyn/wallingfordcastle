@@ -155,31 +155,20 @@
 {% if trials %}
 <h3>Trials</h3>
 {% for trial in trials %}
-<p>{{ trial.archer }} is booked in for a trial of {{ trial.group }} at the following times:
-<ul>
-    <li>{{ trial.session_1 }}</li>
-    <li>{{ trial.session_2 }}</li>
-    <li>{{ trial.session_3 }}</li>
-    <li>{{ trial.session_4 }}</li>
-</ul>
-{% if trial.paid %}<p><small>✅PAID</small></p>{% endif %}
+<p><strong>{{ trial.archer }}</strong> is booked in for a trial of <strong>{{ trial.group.group_name }}</strong>.
+<h4>Sessions</h4>
+{{ trial.session_1|date:"jS F Y, g:i a" }}<br />
+{{ trial.session_2|date:"jS F Y, g:i a" }}<br />
+{{ trial.session_3|date:"jS F Y, g:i a" }}<br />
+{{ trial.session_4|date:"jS F Y, g:i a" }}<br />
+<p>The sessions will take place at <a href="{{ trial.group.venue.get_absolute_url }}">{{ trial.group.venue }}</a>.</p>
+{% if trial.paid %}<p><small>✅ £{{ trial.fee }} paid</small></p>{% endif %}
 {% endfor %}
 
 {% if trials_to_pay %}
-<h2>Pay £{{ trials_to_pay }}</h2>
-<form action="{% url 'coaching:trial-payment' %}" method="POST">
-    {% csrf_token %}
-    <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="{{ STRIPE_KEY }}"
-        data-email="{{ user.email }}"
-        data-currency="GBP"
-        data-amount="{{ trials_to_pay }}00"
-        data-name="Wallingford Castle Archers"
-        data-description="Trial sessions"
-        data-locale="auto">
-    </script>
-</form>
+<p>
+<a class="btn btn-narrow" href="{% url 'coaching:trial-payment' %}">Pay £{{ trials_to_pay }}</a>
+</p>
 {% endif %}
 {% endif %}
 
