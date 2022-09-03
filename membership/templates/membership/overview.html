@@ -141,48 +141,17 @@
 {% if course_attendees or bookable_courses %}
 <h3>Courses</h3>
 {% endif %}
-{% if course_attendees %}
-<div class="table-wrapper">
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Member</th>
-                <th>Course</th>
-                <th>Fee</th>
-                <th>Paid</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for attendee in course_attendees %}
-            <tr>
-                <td>{{ attendee.archer.name }}</td>
-                <td>{{ attendee.member|yesno:"Yes,No" }}</td>
-                <td>{{ attendee.course }}</td>
-                <td>£{{ attendee.fee }}</td>
-                <td>{{ attendee.paid|yesno:"Yes,No" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endif %}
+{% for attendee in course_attendees %}
+    <p>
+        <strong>{{ attendee.archer }}</strong> {% if attendee.course.completed %}attended{% else %}is booked in for{% endif %} <strong>{{ attendee.course }}</strong>.<br />
+        <strong>Fee:</strong> £{{ attendee.fee }}{% if attendee.paid %} <small>✅ PAID</small>{% endif %}
+    </p>
+{% endfor %}
 
 {% if course_fees_to_pay %}
-<h4>You have £{{ course_fees_to_pay }} outstanding to pay for courses</h4>
-<form action="{% url 'courses:non-members-payment' %}" method="POST">
-    {% csrf_token %}
-    <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="{{ STRIPE_KEY }}"
-        data-email="{{ user.email }}"
-        data-currency="GBP"
-        data-amount="{{ course_fees_to_pay }}00"
-        data-name="Wallingford Castle Archers"
-        data-description="{{ courses_to_pay_description }}"
-        data-locale="auto">
-    </script>
-</form>
+<p>
+<a class="btn btn--narrow" href="{% url 'courses:non-members-payment' %}">Pay £{{ course_fees_to_pay }}</a>
+</p>
 {% endif %}
 
 {% if bookable_courses %}

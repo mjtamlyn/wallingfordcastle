@@ -31,6 +31,12 @@ class Course(models.Model):
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
 
+    def completed(self):
+        last_session = self.session_set.order_by('-start_time').first()
+        if not last_session:
+            return False
+        return last_session.start_time < timezone.now()
+
     def __str__(self):
         return self.name
 
