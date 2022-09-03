@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const BundleTracker = require('webpack-bundle-tracker');
 
 const devMode = process.env.NODE_ENV !== 'production';
-const devModeServer = 'http://wallingfordcastle.localhost:3000';
+const devModeServer = 'http://localhost:3000';
 
 const src = [
     path.resolve(__dirname, 'js_src'),
@@ -40,8 +40,7 @@ module.exports = {
     },
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
-        // devMode ? new webpack.HotModuleReplacementPlugin() : undefined,
-         new BundleTracker({ filename: 'build/webpack-stats.json' }),
+        new BundleTracker({ filename: 'build/webpack-stats.json' }),
     ].filter(plugin => !!plugin),
     resolve: {
         extensions: ['.js'],

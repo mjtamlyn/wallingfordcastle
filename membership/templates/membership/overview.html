@@ -95,56 +95,22 @@
 
 {% if beginners %}
 <h2>Beginners courses</h2>
-<div class="table-wrapper">
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Dates</th>
-                <th>Fee</th>
-                <th>Paid</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for beginner in beginners %}
-            <tr>
-                <td>{{ beginner.name }}</td>
-                <td>{{ beginner.get_age_display }} {% if beginner.date_of_birth %}({{ beginner.date_of_birth }}){% endif %}</td>
-                <td>
-                    {% if beginner.course %}
-                        {% for session in beginner.course.beginnerscoursesession_set.all %}
-                        {{ session.time_string }}<br>
-                        {% endfor %}
-                    {% elif beginner.is_fast_track %}
-                        Fast track course
-                    {% else %}
-                        No course dates yet
-                    {% endif %}
-                </td>
-                <td>£{{ beginner.fee }}</td>
-                <td>{{ beginner.paid|yesno:"Yes,No" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% for beginner in beginners %}
+    <p><strong>{{ beginner }}</strong> {% if beginner.course.completed %}attended{% else %}is booked in for{% endif %} a beginners course.
+    <h4>Sessions</h4>
+    {% for session in beginner.course.beginnerscoursesession_set.all %}
+        {{ session.time_string }}<br>
+    {% endfor %}
+    {% if beginner.course.venue %}
+    <p>The sessions will take place at <a href="{{ beginner.course.venue.get_absolute_url }}">{{ beginner.course.venue }}</a>.</p>
+    {% endif %}
+    <p><strong>Fee:</strong> £{{ beginner.fee }}{% if beginner.paid %} <small>✅ PAID</small>{% endif %}</p>
+{% endfor %}
 
 {% if beginners_to_pay %}
-<h2>Pay £{{ beginners_to_pay }}</h2>
-<form action="{% url 'beginners:payment' %}" method="POST">
-    {% csrf_token %}
-    <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="{{ STRIPE_KEY }}"
-        data-email="{{ user.email }}"
-        data-currency="GBP"
-        data-amount="{{ beginners_to_pay }}00"
-        data-name="Wallingford Castle Archers"
-        data-description="Beginners courses"
-        data-locale="auto">
-    </script>
-</form>
+<p>
+<a class="btn btn--narrow" href="{% url 'beginners:payment' %}">Pay £{{ beginners_to_pay }}</a>
+</p>
 {% endif %}
 {% endif %}
 
@@ -155,79 +121,37 @@
 {% if trials %}
 <h3>Trials</h3>
 {% for trial in trials %}
-<p>{{ trial.archer }} is booked in for a trial of {{ trial.group }} at the following times:
-<ul>
-    <li>{{ trial.session_1 }}</li>
-    <li>{{ trial.session_2 }}</li>
-    <li>{{ trial.session_3 }}</li>
-    <li>{{ trial.session_4 }}</li>
-</ul>
-{% if trial.paid %}<p><small>✅PAID</small></p>{% endif %}
+<p><strong>{{ trial.archer }}</strong> is booked in for a trial of <strong>{{ trial.group.group_name }}</strong>.
+<h4>Sessions</h4>
+{{ trial.session_1|date:"jS F Y, g:i a" }}<br />
+{{ trial.session_2|date:"jS F Y, g:i a" }}<br />
+{{ trial.session_3|date:"jS F Y, g:i a" }}<br />
+{{ trial.session_4|date:"jS F Y, g:i a" }}<br />
+<p>The sessions will take place at <a href="{{ trial.group.venue.get_absolute_url }}">{{ trial.group.venue }}</a>.</p>
+<p><strong>Fee:</strong> £{{ trial.fee }}{% if trial.paid %} <small>✅ PAID</small>{% endif %}</p>
 {% endfor %}
 
 {% if trials_to_pay %}
-<h2>Pay £{{ trials_to_pay }}</h2>
-<form action="{% url 'coaching:trial-payment' %}" method="POST">
-    {% csrf_token %}
-    <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="{{ STRIPE_KEY }}"
-        data-email="{{ user.email }}"
-        data-currency="GBP"
-        data-amount="{{ trials_to_pay }}00"
-        data-name="Wallingford Castle Archers"
-        data-description="Trial sessions"
-        data-locale="auto">
-    </script>
-</form>
+<p>
+<a class="btn btn--narrow" href="{% url 'coaching:trial-payment' %}">Pay £{{ trials_to_pay }}</a>
+</p>
 {% endif %}
 {% endif %}
 
 {% if course_attendees or bookable_courses %}
 <h3>Courses</h3>
 {% endif %}
-{% if course_attendees %}
-<div class="table-wrapper">
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Member</th>
-                <th>Course</th>
-                <th>Fee</th>
-                <th>Paid</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for attendee in course_attendees %}
-            <tr>
-                <td>{{ attendee.archer.name }}</td>
-                <td>{{ attendee.member|yesno:"Yes,No" }}</td>
-                <td>{{ attendee.course }}</td>
-                <td>£{{ attendee.fee }}</td>
-                <td>{{ attendee.paid|yesno:"Yes,No" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
-{% endif %}
+{% for attendee in course_attendees %}
+    <p>
+        <strong>{{ attendee.archer }}</strong> {% if attendee.course.completed %}attended{% else %}is booked in for{% endif %} <strong>{{ attendee.course }}</strong>.<br />
+        <strong>Fee:</strong> £{{ attendee.fee }}{% if attendee.paid %} <small>✅ PAID</small>{% endif %}
+    </p>
+{% endfor %}
 
 {% if course_fees_to_pay %}
-<h4>You have £{{ course_fees_to_pay }} outstanding to pay for courses</h4>
-<form action="{% url 'courses:non-members-payment' %}" method="POST">
-    {% csrf_token %}
-    <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="{{ STRIPE_KEY }}"
-        data-email="{{ user.email }}"
-        data-currency="GBP"
-        data-amount="{{ course_fees_to_pay }}00"
-        data-name="Wallingford Castle Archers"
-        data-description="{{ courses_to_pay_description }}"
-        data-locale="auto">
-    </script>
-</form>
+<p>
+<a class="btn btn--narrow" href="{% url 'courses:non-members-payment' %}">Pay £{{ course_fees_to_pay }}</a>
+</p>
 {% endif %}
 
 {% if bookable_courses %}
@@ -236,9 +160,10 @@
         <a href="{% url 'courses:members-course-list' %}">Book a club member on a course ></a>
         </p>
     {% else %}
-        <p>
-        <a href="{% url 'courses:non-members-course-list' %}">Book a new course ></a>
-        </p>
+        <h3>Book a course</h3>
+        {% for course in bookable_courses %}
+        <a href="{% url 'courses:non-members-course-booking' pk=course.pk %}">{{ course }} ></a>
+        {% endfor %}
     {% endif %}
 {% endif %}
 

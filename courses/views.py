@@ -5,7 +5,7 @@ from django.conf import settings
 from django.contrib.auth import login
 from django.contrib.auth.forms import AuthenticationForm
 from django.db.models import Prefetch, Q
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import (
     CreateView, FormView, ListView, TemplateView, View,
@@ -18,6 +18,7 @@ from braces.views import MessageMixin
 from dateutil.relativedelta import relativedelta
 
 from membership.models import Member
+from payments.models import PaymentIntent
 from wallingford_castle.forms import DirectRegisterForm
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer
@@ -41,7 +42,7 @@ class HolidaysBook(MessageMixin, TemplateView):
             self.course = Course.objects.get(can_book_individual_sessions=True, open_for_bookings=True)
         except Course.DoesNotExist:
             self.messages.error('Bookings are not currently open, sorry. Please contact us for more information.')
-            return HttpResponseRedirect(reverse('courses:holidays'))
+            return redirect('courses:holidays')
         return super().dispatch(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
@@ -380,41 +381,43 @@ class NonMembersCourseBooking(FullMemberRequired, SingleObjectMixin, FormView):
         return super().form_valid(form)
 
     def get_success_url(self):
-        return reverse('courses:non-members-course-list')
+        return reverse('membership:overview')
 
 
 class NonMembersPayment(MessageMixin, View):
-    def post(self, request, *args, **kwargs):
-        token = request.POST['stripeToken']
-        if self.request.user.customer_id:
-            customer = stripe.Customer.retrieve(self.request.user.customer_id)
-            source = customer.sources.create(source=token)
-            customer.default_source = source.id
-            customer.save()
-        else:
-            customer = stripe.Customer.create(
-                source=token,
-                email=self.request.user.email,
-            )
-            self.request.user.customer_id = customer.id
-            self.request.user.save()
+    def get(self, request, *args, **kwargs):
+        customer_id = self.request.user.customer_id or None
+        membership_overview_url = reverse('membership:overview')
         attendees = Attendee.objects.filter(
             archer__user=self.request.user,
             member=False,
             paid=False,
             course__can_book_individual_sessions=False,
         )
-        amount = sum(attendee.fee for attendee in attendees)
-        description = '; '.join('%s - %s' % (attendee.archer, attendee.course) for attendee in attendees)
-        stripe.Charge.create(
-            amount=amount * 100,
-            currency='gbp',
-            customer=customer.id,
-            description=description,
+        if not attendees:
+            self.messages.error('You have no courses to pay for.')
+            return redirect(membership_overview_url)
+        session = stripe.checkout.Session.create(
+            line_items=[{
+                'price_data': {
+                    'currency': 'gbp',
+                    'product_data': {
+                        'name': '%s - %s' % (attendee, attendee.course),
+                    },
+                    'unit_amount': attendee.fee * 100,
+                },
+                'quantity': 1,
+            } for attendee in attendees],
+            mode='payment',
+            customer=customer_id,
+            customer_email=None if customer_id else self.request.user.email,
+            success_url=request.build_absolute_uri(membership_overview_url),
+            cancel_url=request.build_absolute_uri(membership_overview_url),
         )
-        attendees.update(paid=True)
-        self.messages.success('Thanks! You will receive a confirmation email soon.')
-        return HttpResponseRedirect(reverse('membership:overview'))
+        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent, user=self.request.user)
+        for attendee in attendees:
+            intent.lineitemintent_set.create(item=attendee)
+        return redirect(session.url, status_code=303)
 
 
 class MinisInterestView(MessageMixin, CreateView):

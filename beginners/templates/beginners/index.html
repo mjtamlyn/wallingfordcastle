@@ -32,27 +32,25 @@
         If you would like to sign up for the next beginners course, please fill
         in the form below. The course have limited numbers due to the size of
         the hall and availability of targets, and places will be allocated on a
-        first come first served basis where possible. Payment is accepted
-        online before the course, or by cash or cheque (payable to Wallingford
-        Castle Archers) at the first session.
+        first come first served basis where possible. Once you have been
+        allocated a place, you will be sent a payment link.
         </p>
         <h3>Young archers</h3>
         <p>
         Secondary school aged archers may attend beginners courses, but under
-        16s may prefer to do a run of trial sessions with the junior arrows
-        club instead. Primary school archers must attend minis sessions first.
-        <a href="{% url 'juniors' %}">Find out more about trial
+        16s will typically attend a run of trial sessions with the junior
+        arrows club instead. Primary school archers must attend minis sessions
+        first. <a href="{% url 'juniors' %}">Find out more about trial
         sessions.</a>
         </p>
     </section>
     <section>
         <h3>Upcoming course dates</h3>
-        <ul>
-            {% for course in upcoming_courses %}
-            <li>{% for session in course.beginnerscoursesession_set.all %}{{ session.time_string }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</li>
-            {% endfor %}
-            <li>Courses run regularly throughout the year and will be arranged according to demand.</li>
-        </ul>
+        {% for course in upcoming_courses %}
+            <p>Course at <a href="{{ course.venue.get_absolute_url }}">{{ course.venue }}</a>.</p>
+            {% for session in course.beginnerscoursesession_set.all %}{{ session.time_string }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+        {% endfor %}
+        <p>Courses run regularly throughout the year and will be arranged according to demand.</p>
         {% if current_courses %}
         <h3>Current course dates</h3>
         <ul>

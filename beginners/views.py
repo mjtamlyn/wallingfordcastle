@@ -1,13 +1,15 @@
 import json
 
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, TemplateView, View
 
 import requests
 import stripe
 from braces.views import MessageMixin
+
+from payments.models import PaymentIntent
 
 from .forms import BeginnersInterestForm
 from .models import BeginnersCourse
@@ -53,28 +55,31 @@ class BeginnersInterestView(MessageMixin, CreateView):
 
 
 class Payment(MessageMixin, View):
-    def post(self, request, *args, **kwargs):
-        token = request.POST['stripeToken']
-        if self.request.user.customer_id:
-            customer = stripe.Customer.retrieve(self.request.user.customer_id)
-            source = customer.sources.create(source=token)
-            customer.default_source = source.id
-            customer.save()
-        else:
-            customer = stripe.Customer.create(
-                source=token,
-                email=self.request.user.email,
-            )
-            self.request.user.customer_id = customer.id
-            self.request.user.save()
+    def get(self, request, *args, **kwargs):
+        customer_id = self.request.user.customer_id or None
+        membership_overview_url = reverse('membership:overview')
         beginners = self.request.user.beginner_set.filter(paid=False)
-        amount = sum(beginner.fee for beginner in beginners)
-        charge = stripe.Charge.create(
-            amount=amount * 100,
-            currency='gbp',
-            customer=customer.id,
-            description='Beginners course at Wallingford Castle Archers',
+        if not beginners:
+            self.messages.error('You have no beginners to pay for.')
+            return redirect(membership_overview_url)
+        session = stripe.checkout.Session.create(
+            line_items=[{
+                'price_data': {
+                    'currency': 'gbp',
+                    'product_data': {
+                        'name': '%s Beginners Course' % (beginner),
+                    },
+                    'unit_amount': beginner.fee * 100,
+                },
+                'quantity': 1,
+            } for beginner in beginners],
+            mode='payment',
+            customer=customer_id,
+            customer_email=None if customer_id else self.request.user.email,
+            success_url=request.build_absolute_uri(membership_overview_url),
+            cancel_url=request.build_absolute_uri(membership_overview_url),
         )
-        beginners.update(invoice_id=charge.id, paid=True)
-        self.messages.success('Thanks! You will receive a confirmation email soon.')
-        return HttpResponseRedirect(reverse('membership:overview'))
+        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent, user=self.request.user)
+        for beginner in beginners:
+            intent.lineitemintent_set.create(item=beginner)
+        return redirect(session.url, status_code=303)

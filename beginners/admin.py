@@ -1,10 +1,14 @@
 import collections
+import datetime
 import functools
 
 from django import forms
 from django.contrib import admin
+from django.contrib.admin.widgets import AdminSplitDateTime
+from django.db.models import Min
 from django.http import HttpResponseRedirect
 from django.urls import path, reverse
+from django.utils import timezone
 from django.views.generic import FormView
 
 from django_object_actions import (
@@ -23,10 +27,48 @@ class BeginnersCourseSessionInline(admin.TabularInline):
     model = BeginnersCourseSession
 
 
+class BeginnersCourseAddForm(forms.ModelForm):
+    starts_at = forms.SplitDateTimeField(
+        widget=AdminSplitDateTime,
+        help_text='Defaults to four weekly 2 hour sessions. Can be changed later.',
+    )
+
+    class Meta:
+        model = BeginnersCourse
+        fields = ['venue']
+
+    def save(self, **kwargs):
+        self.instance.counter = 1
+        most_recent_course = BeginnersCourse.objects.order_by('-counter').first()
+        if most_recent_course:
+            self.instance.counter = most_recent_course.counter + 1
+        return super().save(**kwargs)
+
+    def _save_m2m(self):
+        """Override internals here to allow related objects to be created late."""
+        for i in range(4):
+            self.instance.beginnerscoursesession_set.create(
+                start_time=self.cleaned_data['starts_at'] + datetime.timedelta(days=i * 7),
+            )
+        return self.instance
+
+
 @admin.register(BeginnersCourse)
 class BeginnersCourseAdmin(admin.ModelAdmin):
     list_display = ['__str__', 'dates', 'number_on_course']
-    inlines = [BeginnersCourseSessionInline]
+    add_form = BeginnersCourseAddForm
+
+    def get_form(self, request, obj=None, **kwargs):
+        defaults = {}
+        if obj is None:
+            defaults['form'] = self.add_form
+        defaults.update(kwargs)
+        return super().get_form(request, obj, **defaults)
+
+    def get_inlines(self, request, obj=None):
+        if obj is None:
+            return []
+        return [BeginnersCourseSessionInline]
 
     def get_queryset(self, *args, **kwargs):
         qs = super().get_queryset(*args, **kwargs)
@@ -41,9 +83,18 @@ class BeginnersCourseAdmin(admin.ModelAdmin):
         return len(instance.beginner_set.all())
 
 
+class BeginnersCourseChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return '%s (starts %s)' % (obj, obj.start.strftime('%-d %B'))
+
+
 class AllocateCourseForm(forms.Form):
-    course = forms.ModelChoiceField(
-        BeginnersCourse.objects,
+    course = BeginnersCourseChoiceField(
+        BeginnersCourse.objects.annotate(
+            start=Min('beginnerscoursesession__start_time'),
+        ).filter(
+            start__gt=timezone.now() - datetime.timedelta(days=21),
+        ),
         empty_label='Fast track',
         widget=forms.RadioSelect,
         required=False,

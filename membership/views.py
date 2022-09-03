@@ -11,7 +11,7 @@ from braces.views import MessageMixin
 
 from beginners.models import STATUS_FAST_TRACK, STATUS_ON_COURSE
 from coaching.models import Trial
-from courses.models import Attendee
+from courses.models import Attendee, Course
 from membership.models import Member
 from records.models import Achievement
 from wallingford_castle.mixins import FullMemberRequired
@@ -49,10 +49,11 @@ class Overview(FullMemberRequired, TemplateView):
         context['course_fees_to_pay'] = sum(
             attendee.fee for attendee in context['course_attendees'] if not attendee.paid
         )
-        context['courses_to_pay_description'] = '; '.join(
-            '%s - %s' % (attendee.archer, attendee.course)
-            for attendee in context['course_attendees'] if not attendee.paid
-        )
+        if not context['members']:
+            context['bookable_courses'] = Course.objects.filter(
+                open_for_bookings=True,
+                open_to_non_members=True,
+            )
         context['STRIPE_KEY'] = settings.STRIPE_KEY
 
         achievements = Achievement.objects.filter(

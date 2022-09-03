@@ -12,8 +12,7 @@
     <li>{{ session.start_time }}</li>
     {% endfor %}
 </ul>
-<h4>Book</h4>
-<p>Course cost: £{{ course.members_price }}</p>
+<p><strong>Fee:</strong> £{{ course.price }}</p>
 <form class="form" method="POST" action=".">
     {% csrf_token %}
     {% form form using 'floppyforms/layouts/p.html' %}

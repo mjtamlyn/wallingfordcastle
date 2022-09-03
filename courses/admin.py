@@ -4,7 +4,7 @@ import functools
 from django import forms
 from django.contrib import admin
 from django.contrib.admin.helpers import AdminForm
-from django.contrib.admin.widgets import AdminDateWidget
+from django.contrib.admin.widgets import AdminDateWidget, AdminSplitDateTime
 from django.db import transaction
 from django.db.models import Count
 from django.http import HttpResponseRedirect
@@ -237,8 +237,40 @@ class CourseAdmin(DjangoObjectActions, admin.ModelAdmin):
     search_fields = ['name']
     autocomplete_fields = ['coaches']
     readonly_fields = ['created', 'modified']
-    inlines = [SessionInline]
     change_actions = ['view_report']
+
+    def subclass_add_fields(self, form):
+        class AddForm(form):
+            starts_at = forms.SplitDateTimeField(
+                widget=AdminSplitDateTime,
+            )
+            duration = forms.DurationField()
+            number_of_weeks = forms.IntegerField(help_text='Dates can be changed later')
+
+            def _save_m2m(self):
+                """Override internals here to allow related objects to be created late."""
+                super()._save_m2m()
+                for i in range(self.cleaned_data['number_of_weeks']):
+                    self.instance.session_set.create(
+                        start_time=self.cleaned_data['starts_at'] + datetime.timedelta(days=i * 7),
+                        duration=self.cleaned_data['duration'],
+                    )
+                return self.instance
+
+        return AddForm
+
+    def get_form(self, request, obj=None, **kwargs):
+        if kwargs.get('fields'):
+            kwargs['fields'] = [f for f in kwargs['fields'] if f not in ['starts_at', 'duration', 'number_of_weeks']]
+        form = super().get_form(request, obj, **kwargs)
+        if obj is None:
+            form = self.subclass_add_fields(form)
+        return form
+
+    def get_inlines(self, request, obj=None):
+        if obj is None:
+            return []
+        return [SessionInline]
 
     def get_urls(self):
         urls = super().get_urls()
