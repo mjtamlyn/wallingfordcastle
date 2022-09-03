@@ -46,12 +46,11 @@
     </section>
     <section>
         <h3>Upcoming course dates</h3>
-        <ul>
-            {% for course in upcoming_courses %}
-            <li>{% for session in course.beginnerscoursesession_set.all %}{{ session.time_string }}{% if not forloop.last %}<br>{% endif %}{% endfor %}</li>
-            {% endfor %}
-            <li>Courses run regularly throughout the year and will be arranged according to demand.</li>
-        </ul>
+        {% for course in upcoming_courses %}
+            <p>Course at <a href="{{ course.venue.get_absolute_url }}">{{ course.venue }}</a>.</p>
+            {% for session in course.beginnerscoursesession_set.all %}{{ session.time_string }}{% if not forloop.last %}<br>{% endif %}{% endfor %}
+        {% endfor %}
+        <p>Courses run regularly throughout the year and will be arranged according to demand.</p>
         {% if current_courses %}
         <h3>Current course dates</h3>
         <ul>

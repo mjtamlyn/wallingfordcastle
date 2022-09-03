@@ -35,7 +35,7 @@ class BeginnersCourseAddForm(forms.ModelForm):
 
     class Meta:
         model = BeginnersCourse
-        fields = []
+        fields = ['venue']
 
     def save(self, **kwargs):
         self.instance.counter = 1

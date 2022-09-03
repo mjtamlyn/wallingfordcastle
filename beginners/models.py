@@ -21,6 +21,7 @@ class BeginnersCourseManager(models.Manager):
 
 class BeginnersCourse(models.Model):
     counter = models.PositiveIntegerField(verbose_name='Beginners course #', unique=True)
+    venue = models.ForeignKey('venues.Venue', on_delete=models.SET_NULL, blank=True, null=True)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
@@ -51,7 +52,7 @@ class BeginnersCourseSession(models.Model):
 
     def time_string(self):
         return '%s, %s to %s' % (
-            self.local_start_time.strftime('%d %B %Y'),
+            self.local_start_time.strftime('%A %d %B %Y'),
             self.local_start_time.strftime('%H:%M'),
             (self.local_start_time + self.duration).strftime('%H:%M'),
         )
@@ -85,7 +86,7 @@ class Beginner(models.Model):
 
     user = models.ForeignKey(User, blank=True, null=True, on_delete=models.CASCADE)
 
-    course = models.ForeignKey(BeginnersCourse, blank=True, null=True, on_delete=models.CASCADE)
+    course = models.ForeignKey(BeginnersCourse, blank=True, null=True, on_delete=models.SET_NULL)
     paid = models.BooleanField(default=False)
     invoice_id = models.CharField(max_length=32, blank=True, default='')
     communication_notes = models.TextField(blank=True, default='')
