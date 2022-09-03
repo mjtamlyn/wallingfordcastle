@@ -8,7 +8,7 @@
   box-shadow: 0 0 2px rgba(255, 255, 255, 0.6) inset;
   color: white;
   font-weight: bold;
-  padding: 8px 5px;
+  padding: 8px 15px;
   border-radius: 4px;
   text-align: center;
   white-space: nowrap;
@@ -22,6 +22,11 @@
 .btn.btn-small {
   font-size: smaller;
   min-width: 0;
+}
+/* line 22, ../../sass/_buttons.sass */
+.btn.btn-narrow {
+  min-width: 0;
+  display: inline;
 }
 
 /* line 1, ../../sass/_footer.sass */
@@ -466,6 +471,11 @@ section.messages {
 /* line 5, ../../sass/_messages.sass */
 section.messages .success:before {
   content: "✅";
+  margin-right: 4px;
+}
+/* line 9, ../../sass/_messages.sass */
+section.messages .error:before {
+  content: "❌";
   margin-right: 4px;
 }
 
