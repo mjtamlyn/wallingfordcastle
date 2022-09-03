@@ -19,12 +19,7 @@
   background-color: #ad336b;
 }
 /* line 18, ../../sass/_buttons.sass */
-.btn.btn-small {
-  font-size: smaller;
-  min-width: 0;
-}
-/* line 22, ../../sass/_buttons.sass */
-.btn.btn-narrow {
+.btn--narrow {
   min-width: 0;
   display: inline;
 }
