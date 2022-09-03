@@ -31,6 +31,12 @@ class BeginnersCourse(models.Model):
     def __str__(self):
         return 'Beginners course #%s' % self.counter
 
+    def completed(self):
+        last_session = self.beginnerscoursesession_set.order_by('-start_time').first()
+        if not last_session:
+            return False
+        return last_session.start_time < timezone.now()
+
     class Meta:
         ordering = ('-counter',)
 

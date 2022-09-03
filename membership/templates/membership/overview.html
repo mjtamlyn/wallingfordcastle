@@ -95,56 +95,22 @@
 
 {% if beginners %}
 <h2>Beginners courses</h2>
-<div class="table-wrapper">
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Age</th>
-                <th>Dates</th>
-                <th>Fee</th>
-                <th>Paid</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for beginner in beginners %}
-            <tr>
-                <td>{{ beginner.name }}</td>
-                <td>{{ beginner.get_age_display }} {% if beginner.date_of_birth %}({{ beginner.date_of_birth }}){% endif %}</td>
-                <td>
-                    {% if beginner.course %}
-                        {% for session in beginner.course.beginnerscoursesession_set.all %}
-                        {{ session.time_string }}<br>
-                        {% endfor %}
-                    {% elif beginner.is_fast_track %}
-                        Fast track course
-                    {% else %}
-                        No course dates yet
-                    {% endif %}
-                </td>
-                <td>£{{ beginner.fee }}</td>
-                <td>{{ beginner.paid|yesno:"Yes,No" }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-</div>
+{% for beginner in beginners %}
+    <p><strong>{{ beginner }}</strong> {% if beginner.course.completed %}attended{% else %}is booked in for{% endif %} a beginners course.
+    <h4>Sessions</h4>
+    {% for session in beginner.course.beginnerscoursesession_set.all %}
+        {{ session.time_string }}<br>
+    {% endfor %}
+    {% if beginner.course.venue %}
+    <p>The sessions will take place at <a href="{{ beginner.course.venue.get_absolute_url }}">{{ beginner.course.venue }}</a>.</p>
+    {% endif %}
+    <p><strong>Fee:</strong> £{{ beginner.fee }}{% if beginner.paid %} <small>✅ PAID</small>{% endif %}</p>
+{% endfor %}
 
 {% if beginners_to_pay %}
-<h2>Pay £{{ beginners_to_pay }}</h2>
-<form action="{% url 'beginners:payment' %}" method="POST">
-    {% csrf_token %}
-    <script
-        src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-        data-key="{{ STRIPE_KEY }}"
-        data-email="{{ user.email }}"
-        data-currency="GBP"
-        data-amount="{{ beginners_to_pay }}00"
-        data-name="Wallingford Castle Archers"
-        data-description="Beginners courses"
-        data-locale="auto">
-    </script>
-</form>
+<p>
+<a class="btn btn--narrow" href="{% url 'beginners:payment' %}">Pay £{{ beginners_to_pay }}</a>
+</p>
 {% endif %}
 {% endif %}
 
@@ -162,7 +128,7 @@
 {{ trial.session_3|date:"jS F Y, g:i a" }}<br />
 {{ trial.session_4|date:"jS F Y, g:i a" }}<br />
 <p>The sessions will take place at <a href="{{ trial.group.venue.get_absolute_url }}">{{ trial.group.venue }}</a>.</p>
-{% if trial.paid %}<p><small>✅ £{{ trial.fee }} paid</small></p>{% endif %}
+<p><strong>Fee:</strong> £{{ trial.fee }}{% if trial.paid %} <small>✅ PAID</small>{% endif %}</p>
 {% endfor %}
 
 {% if trials_to_pay %}
