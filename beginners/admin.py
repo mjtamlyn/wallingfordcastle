@@ -5,8 +5,10 @@ import functools
 from django import forms
 from django.contrib import admin
 from django.contrib.admin.widgets import AdminSplitDateTime
+from django.db.models import Min
 from django.http import HttpResponseRedirect
 from django.urls import path, reverse
+from django.utils import timezone
 from django.views.generic import FormView
 
 from django_object_actions import (
@@ -81,9 +83,18 @@ class BeginnersCourseAdmin(admin.ModelAdmin):
         return len(instance.beginner_set.all())
 
 
+class BeginnersCourseChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        return '%s (starts %s)' % (obj, obj.start.strftime('%-d %B'))
+
+
 class AllocateCourseForm(forms.Form):
-    course = forms.ModelChoiceField(
-        BeginnersCourse.objects,
+    course = BeginnersCourseChoiceField(
+        BeginnersCourse.objects.annotate(
+            start=Min('beginnerscoursesession__start_time'),
+        ).filter(
+            start__gt=timezone.now() - datetime.timedelta(days=21),
+        ),
         empty_label='Fast track',
         widget=forms.RadioSelect,
         required=False,
