@@ -41,6 +41,10 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
             coaches__in=Archer.objects.managed_by(self.request.user),
         ).order_by('session_day', 'session_start_time')
         context['coached_groups'] = groups
+        if self.request.user.is_superuser:
+            context['uncoached_groups'] = TrainingGroup.objects.filter(season=season).exclude(
+                id__in=[g.id for g in groups],
+            )
         upcoming = self.get_upcoming_season()
         if upcoming:
             upcoming_groups = TrainingGroup.objects.filter(
@@ -48,6 +52,10 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
                 coaches__in=Archer.objects.managed_by(self.request.user),
             ).order_by('session_day', 'session_start_time')
             context.update(upcoming=upcoming, upcoming_groups=upcoming_groups)
+            if self.request.user.is_superuser:
+                context['upcoming_uncoached_groups'] = TrainingGroup.objects.filter(season=upcoming).exclude(
+                    id__in=[g.id for g in upcoming_groups],
+                )
         return super().get_context_data(**context, **kwargs)
 
 
@@ -85,6 +93,8 @@ class GroupReport(GroupMixin, DetailView):
 
     def get_object(self):
         group = super().get_object()
+        if self.request.user.is_superuser:
+            return group
         if not (set(group.coaches.all()) & set(Archer.objects.managed_by(self.request.user))):
             raise Http404('You don\'t have access to this group')
         return group
