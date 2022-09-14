@@ -20,7 +20,7 @@ from django_object_actions import (
 from coaching.models import TrainingGroup
 from events.models import Event
 from wallingford_castle.admin import ArcherDataMixin
-from wallingford_castle.models import User
+from wallingford_castle.models import Season, User
 
 from .models import (
     Attendee, AttendeeSession, Course, Interest, Session, Summer2018Signup,
@@ -445,6 +445,14 @@ class BookTrialForm(forms.Form):
         self.request = request
         self.interests = interests
         super().__init__(**kwargs)
+        seasons = [Season.objects.get_current()]
+        upcoming_season = Season.objects.get_upcoming()
+        if upcoming_season:
+            seasons.append(upcoming_season)
+        self.fields['group'].queryset = self.fields['group'].queryset.filter(
+            season__in=seasons,
+            level__trial_fee__isnull=False,
+        )
 
     def clean(self):
         group = self.cleaned_data['group']
