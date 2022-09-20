@@ -1,4 +1,4 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 
 from .models import Entry, Series, Tournament
 
@@ -21,6 +21,26 @@ class TournamentAdmin(admin.ModelAdmin):
 class EntryAdmin(admin.ModelAdmin):
     list_display = [
         'name', 'user', 'paid', 'club', 'gender', 'bowstyle', 'agb_number',
-        'round', 'notes', 'waiting_list',
+        'round', 'date_of_birth', 'notes', 'waiting_list',
     ]
-    list_filter = ['tournament', 'paid', 'gender', 'bowstyle', 'round']
+    list_filter = ['tournament', 'paid', 'gender', 'bowstyle', 'round', 'series_entry']
+    actions = ['add_invoice_item']
+
+    def add_invoice_item(self, request, queryset):
+        errors = []
+        for entry in queryset:
+            user = entry.user
+            if not user.customer_id or not user.subscription_id:
+                errors.append(entry.name)
+        if errors:
+            for archer in errors:
+                messages.error(request, '%s does not have an active subscription' % archer)
+            return
+
+        for entry in queryset:
+            entry.user.add_invoice_item(entry.tournament.entry_fee * 100, '%s entry to %s' % (
+                entry,
+                entry.tournament,
+            ))
+            entry.paid = True
+            entry.save()

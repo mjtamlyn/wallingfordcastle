@@ -11,7 +11,6 @@ from .models import Achievement
 class AchievementAdmin(DjangoObjectActions, admin.ModelAdmin):
     list_filter = ['badge', 'badge_group']
     list_display = ['archer', 'badge', 'badge_group', 'date_awarded', 'paid']
-    list_editable = ['paid']
     ordering = ['-date_awarded']
     autocomplete_fields = ['archer']
     actions = change_actions = ['add_invoice_item']
@@ -34,6 +33,8 @@ class AchievementAdmin(DjangoObjectActions, admin.ModelAdmin):
                 achievement.get_badge_display(),
                 achievement.date_awarded.strftime('%d/%m/%Y'),
             ))
+            achievement.paid = True
+            achievement.save()
 
     add_invoice_item.short_description = 'Add invoice item'
     add_invoice_item.label = 'Add invoice item'
