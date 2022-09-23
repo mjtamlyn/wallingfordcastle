@@ -30,9 +30,12 @@ class TrainingGroup(models.Model):
     season = models.ForeignKey('wallingford_castle.Season', on_delete=models.PROTECT)
     coaches = models.ManyToManyField('wallingford_castle.Archer', related_name='coached_groups')
     participants = models.ManyToManyField('wallingford_castle.Archer', related_name='training_groups')
+    max_participants = models.PositiveIntegerField(blank=True, null=True)
     session_day = models.SmallIntegerField(choices=DAY_CHOICES)
     session_start_time = models.TimeField()
     session_duration = models.DurationField(default=datetime.timedelta(minutes=90))
+    number_of_targets = models.PositiveIntegerField(blank=True, null=True)
+    target = models.PositiveIntegerField(default=1)
     b_range = models.BooleanField(default=False)
     venue = models.ForeignKey('venues.Venue', on_delete=models.PROTECT)
 

@@ -185,13 +185,14 @@ class BookingTemplate(models.Model):
             for trial in trials:
                 if session.start in [trial.session_1, trial.session_2, trial.session_3, trial.session_4]:
                     archers.append(trial.archer)
-            number_of_targets = len(archers) / 2 + (len(archers) % 2 > 0)
-            if self.targets < 5 or group.level.first().age_group == 'junior':
-                number_of_targets = self.targets
+            if group.number_of_targets:
+                number_of_targets = group.number_of_targets
+            else:
+                number_of_targets = len(archers) / 2 + (len(archers) % 2 > 0)
             new_slot = BookedSlot.objects.create(
                 start=session.start,
                 duration=group.session_duration,
-                target=1,
+                target=group.target,
                 venue=self.venue,
                 b_range=group.b_range,
                 face=1 if self.ab_faces else None,
