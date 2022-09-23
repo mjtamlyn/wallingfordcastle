@@ -29,13 +29,18 @@ const BaseBookedSlot = ({ slot, rowSpan, colSpan, match }) => {
         toolsClass += ' range-schedule__tools--active';
     }
 
+    let menu = null;
+    if (slot.canReportAbsence) {
+        menu = <a className={ toolsClass } onClick={ () => setMenuOpen(!menuOpen) }>Info</a>;
+    }
+
     return (
         <td
             className="range-schedule__slot range-schedule__slot--booked"
             rowSpan={ rowSpan }
             colSpan={ colSpan }
         >
-            <a className={ toolsClass } onClick={ () => setMenuOpen(!menuOpen) }>Info</a>
+            { menu }
             { menuOpen &&
                 <div className="range-schedule__menu">
                     <ul className="range-schedule__menu__list">

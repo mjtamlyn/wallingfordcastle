@@ -8,7 +8,7 @@ class BookableDate {
 }
 
 class Slot {
-    constructor({ start, end, duration, target, venue = '', bRange = false, face = '', numberOfTargets = 1, booked = false, details = '', groupName = '', editable = false }) {
+    constructor({ start, end, duration, target, venue = '', bRange = false, face = '', numberOfTargets = 1, booked = false, details = '', groupName = '', editable = false, canReportAbsence = false }) {
         this.start = start;
         this.end = end;
         this.duration = duration;  // in minutes
@@ -20,6 +20,7 @@ class Slot {
         this.details = details;
         this.groupName = groupName;
         this.editable = editable;
+        this.canReportAbsence = canReportAbsence;
         this.venue = venue;
     }
 

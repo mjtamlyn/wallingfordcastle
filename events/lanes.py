@@ -40,10 +40,15 @@ class Slot:
 
     def personalize(self, user):
         self.editable = False
-        if user is None or self.is_group:
+        self.can_report_absence = False
+        if user is None:
             return self
-        if user.manages_any(self.booked_archers):
-            self.editable = True
+        if self.is_group:
+            if user.manages_any(self.booked_archers):
+                self.can_report_absence = True
+        else:
+            if user.manages_any(self.booked_archers):
+                self.editable = True
         return self
 
     @cached_property
@@ -74,6 +79,7 @@ class Slot:
             'details': details,
             'groupName': self.group_name,
             'editable': self.editable,
+            'canReportAbsence': self.can_report_absence
         }
 
 
