@@ -93,7 +93,7 @@ class GroupSession(models.Model):
     group = models.ForeignKey(TrainingGroup, on_delete=models.CASCADE)
     start = models.DateTimeField()
     cancelled_because = models.TextField(blank=True, default='')
-    booked_slot = models.ForeignKey('events.BookedSlot', blank=True, null=True, on_delete=models.SET_NULL)
+    booked_slot = models.OneToOneField('events.BookedSlot', blank=True, null=True, on_delete=models.SET_NULL)
 
     objects = models.Manager.from_queryset(GroupSessionQuerySet)()
 
@@ -102,6 +102,18 @@ class GroupSession(models.Model):
 
     def __str__(self):
         return '%s session on %s' % (self.group, self.start)
+
+
+class Absence(models.Model):
+    session = models.ForeignKey(GroupSession, on_delete=models.CASCADE)
+    archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
+    reason = models.TextField(blank=True, default='')
+
+    class Meta:
+        unique_together = ('session', 'archer')
+
+    def __str__(self):
+        return '%s absent from %s' % (self.archer, self.session)
 
 
 class TrialQuerySet(models.QuerySet):
