@@ -92,7 +92,7 @@ class BookedSlot(models.Model):
     number_of_targets = models.PositiveIntegerField(default=1)
 
     class Meta:
-        unique_together = ('start', 'target', 'face')
+        unique_together = ('start', 'target', 'face', 'venue')
 
     def __str__(self):
         return 'Slot booked on target %s at %s' % (self.target, self.start)
@@ -174,7 +174,10 @@ class BookingTemplate(models.Model):
         self.slots.filter(is_group=True).delete()
 
         # Training groups
-        sessions = GroupSession.objects.filter_running().filter(start__date=self.date).select_related('group')
+        sessions = GroupSession.objects.filter_running().filter(
+            start__date=self.date,
+            group__venue=self.venue,
+        ).select_related('group')
         for session in sessions:
             group = session.group
             archers = list(group.participants.all())
@@ -189,6 +192,7 @@ class BookingTemplate(models.Model):
                 start=session.start,
                 duration=group.session_duration,
                 target=1,
+                venue=self.venue,
                 b_range=group.b_range,
                 face=1 if self.ab_faces else None,
                 is_group=True,
