@@ -17,6 +17,7 @@ class Slot:
     start = attr.ib()
     duration = attr.ib()
     target = attr.ib()
+    venue = attr.ib(default=None)
     b_range = attr.ib(default=False)
     face = attr.ib(default=None)
     number_of_targets = attr.ib(default=1)
@@ -65,6 +66,7 @@ class Slot:
             'end': serialize_time(self.end),
             'duration': self.duration.seconds // 60,
             'target': self.target,
+            'venue': self.venue,
             'bRange': self.b_range,
             'face': self.face,
             'numberOfTargets': self.number_of_targets,
@@ -81,6 +83,7 @@ class Template:
     targets = attr.ib()
     slot_duration = attr.ib()
     b_targets = attr.ib(default=None)
+    venue = attr.ib(default=None)
     ab_faces = attr.ib(default=False)
     booked_slots = attr.ib(default=attr.Factory(list))
 
@@ -126,6 +129,7 @@ class Template:
                         slot_a = Slot(
                             start=start_time,
                             duration=self.slot_duration,
+                            venue=self.venue,
                             target=i,
                             face='A',
                         )
@@ -141,6 +145,7 @@ class Template:
                         slot_b = Slot(
                             start=start_time,
                             duration=self.slot_duration,
+                            venue=self.venue,
                             target=i,
                             face='B',
                         )
@@ -158,6 +163,7 @@ class Template:
                         slot = Slot(
                             start=start_time,
                             duration=self.slot_duration,
+                            venue=self.venue,
                             target=i,
                         )
                         if any(slot.overlaps(booking) for booking in target_lookup[(i, None)]):

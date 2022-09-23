@@ -4,7 +4,7 @@ import { Route, Switch } from 'react-router-dom';
 import Loader from 'utils/Loader';
 import Loading from 'utils/Loading';
 
-import Schedule from 'range/Schedule';
+import DateVenue from 'range/DateVenue';
 import SlotBookView from 'range/SlotBookView';
 import SlotCancelView from 'range/SlotCancelView';
 
@@ -27,48 +27,31 @@ class DateView extends Loader {
     }
 
     renderLoaded(data) {
-        const date = this.props.match.params.date;
-
-        let title = null;
-        let notes = null;
-        let venue = null;
-        if (data.date.title) {
-            title = <h3 className="date-view__title">{ data.date.title }</h3>;
+        const venues = data.venues;
+        if (!venues.length) {
+            return <p>No bookings found</p>;
         }
-        if (data.date.notes) {
-            notes = <p className="date-view__notes">{ data.date.notes }</p>;
-        }
-        if (data.venue) {
-            venue = <p className="date-view__venue"><a href={ data.venue.link }>Directions to { data.venue.name }</a></p>;
-        }
-
-        let schedule = null;
-        if (data.options.bRange) {
-            schedule = <>
-                <h3 className="date-view__title">Left Range</h3>
-                <Schedule schedule={ data.schedule.mainRange } date={ date } abFaces={ data.options.abFaces } bRange={ false } />
-                <h3 className="date-view__title">Right Range</h3>
-                <Schedule schedule={ data.schedule.bRange } date={ date } abFaces={ data.options.abFaces } bRange={ true } />
-            </>;
-        } else {
-            schedule = <Schedule schedule={ data.schedule.mainRange } date={ date } abFaces={ data.options.abFaces } bRange={ false } />;
-        }
-
+        const venuesEls = venues.map((venue) => {
+            return (
+                <DateVenue
+                    date={ this.props.match.params.date }
+                    data={ venue }
+                    key={ venue.venue.key }
+                />
+            );
+        });
         return (
-            <div className="date-view">
-                { title }
-                { notes }
-                { venue }
-                { schedule }
+            <>
+                { venuesEls }
                 <Switch>
-                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:time(\d{2}:\d{2})/:range(B)?:target(\d+):face(A|B)?/">
-                        <SlotBookView options={ data.options } />
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book/:venue([a-z-]+)/:time(\d{2}:\d{2})/:range(B)?:target(\d+):face(A|B)?/">
+                        <SlotBookView options={ venues[0].options } />
                     </Route>
-                    <Route path="/:date(\d{4}-\d{2}-\d{2})/cancel/:time(\d{2}:\d{2})/:range(B)?:target(\d+):face(A|B)?/">
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/cancel/:venue([a-z-]+)/:time(\d{2}:\d{2})/:range(B)?:target(\d+):face(A|B)?/">
                         <SlotCancelView schedule={ data.schedule } />
                     </Route>
                 </Switch>
-            </div>
+            </>
         );
     }
 }

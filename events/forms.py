@@ -4,6 +4,7 @@ from django import forms
 from django.conf import settings
 
 from membership.models import Member
+from venues.models import Venue
 
 from .models import BookedSlot, Booking
 
@@ -44,6 +45,7 @@ class BookSlotForm(forms.Form):
     date = forms.DateField()
     time = forms.TimeField()
     target = forms.IntegerField()
+    venue = forms.CharField()
     bRange = forms.BooleanField(required=False)
     face = forms.CharField(required=False)
     distance = forms.CharField(required=False)
@@ -58,6 +60,14 @@ class BookSlotForm(forms.Form):
         members = Member.objects.managed_by(self.user)
         return members.filter(id__in=archers)
 
+    def clean_venue(self):
+        slug = self.cleaned_data.get('venue')
+        try:
+            venue = Venue.objects.get(slug=slug)
+        except Venue.DoesNotExist:
+            raise forms.ValidationError('No such venue known')
+        return venue
+
     def clean(self):
         data = self.cleaned_data
         # TODO: check distance properly, will require looking up the template
@@ -71,6 +81,7 @@ class BookSlotForm(forms.Form):
         b_range = data['bRange']
         distance = data['distance']
         archers = data['archers']
+        venue = data['venue']
 
         face = None
         if data['face']:
@@ -79,6 +90,7 @@ class BookSlotForm(forms.Form):
             start=start,
             duration=duration,
             target=target,
+            venue=venue,
             face=face,
             distance=distance,
             b_range=b_range,
@@ -91,6 +103,7 @@ class CancelSlotForm(forms.Form):
     date = forms.DateField()
     time = forms.TimeField()
     target = forms.IntegerField()
+    venue = forms.CharField()
     bRange = forms.BooleanField(required=False)
     face = forms.CharField(required=False)
 
@@ -109,6 +122,7 @@ class CancelSlotForm(forms.Form):
             target=data['target'],
             face=face,
             b_range=data['bRange'],
+            venue__slug=data['venue'],
         )
         # TODO: check I have the right to delete this
         data['slot'] = slot

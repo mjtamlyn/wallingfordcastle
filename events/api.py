@@ -20,6 +20,7 @@ def date_list(request):
     templates = BookingTemplate.objects.order_by('date').select_related('venue').filter(date__gte=today)
     if not request.user.is_superuser:
         templates = templates.filter(date__lte=prebooking_limit)
+    templates = templates.distinct('date')
     response = {
         'dates': [{
             '__type': 'BookableDate',
@@ -42,35 +43,37 @@ def date_slots(request, date):
     else:
         templates = BookingTemplate.objects.filter(date__lte=prebooking_limit)
 
-    try:
-        template = templates.get(date=datetime.datetime.strptime(date, '%Y-%m-%d').date())
-    except BookingTemplate.DoesNotExist:
+    templates = templates.filter(date=datetime.datetime.strptime(date, '%Y-%m-%d').date()).order_by('venue_id')
+    if not templates:
         raise Http404('No bookings for that date')
 
-    venue = None
-    if template.venue:
-        venue = {
-            'name': template.venue.name,
-            'link': reverse('venues:detail', kwargs={'slug': template.venue.slug}),
-        }
+    response = {'venues': []}
+    for template in templates:
+        venue = None
+        if template.venue:
+            venue = {
+                'name': template.venue.name,
+                'key': template.venue.slug,
+                'link': reverse('venues:detail', kwargs={'slug': template.venue.slug}),
+            }
 
-    response = {
-        'date': {
-            '__type': 'BookableDate',
-            'api': template.date.strftime('%Y-%m-%d'),
-            'pretty': template.date.strftime('%A %-d %B'),
-            'title': template.title or None,
-            'notes': template.notes or None,
-        },
-        'venue': venue,
-        'schedule': template.template.serialize(user=request.user),
-        'options': {
-            'distanceRequired': template.distance_required,
-            'multipleArchersPermitted': template.multiple_archers_permitted,
-            'abFaces': template.ab_faces,
-            'bRange': bool(template.b_targets),
-        },
-    }
+        response['venues'].append({
+            'date': {
+                '__type': 'BookableDate',
+                'api': template.date.strftime('%Y-%m-%d'),
+                'pretty': template.date.strftime('%A %-d %B'),
+                'title': template.title or None,
+                'notes': template.notes or None,
+            },
+            'venue': venue,
+            'schedule': template.template.serialize(user=request.user),
+            'options': {
+                'distanceRequired': template.distance_required,
+                'multipleArchersPermitted': template.multiple_archers_permitted,
+                'abFaces': template.ab_faces,
+                'bRange': bool(template.b_targets),
+            },
+        })
     return JsonResponse(response)
 
 
@@ -89,16 +92,16 @@ def bookable_archers(request):
 
 @login_required
 def book_slot(request):
-    ok = False
     data = json.loads(request.body)
     form = BookSlotForm(data=data, user=request.user)
     if form.is_valid():
         form.save()
-        ok = True
-    # TODO: some sort of helpful error cases!
-    response = {
-        'ok': ok,
-    }
+        response = {'ok': True}
+    else:
+        response = {
+            'ok': False,
+            'errors': form.errors.get_json_data(),
+        }
     return JsonResponse(response)
 
 

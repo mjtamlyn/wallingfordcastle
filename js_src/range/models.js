@@ -8,7 +8,7 @@ class BookableDate {
 }
 
 class Slot {
-    constructor({ start, end, duration, target, bRange = false, face = '', numberOfTargets = 1, booked = false, details = '', groupName = '', editable = false }) {
+    constructor({ start, end, duration, target, venue = '', bRange = false, face = '', numberOfTargets = 1, booked = false, details = '', groupName = '', editable = false }) {
         this.start = start;
         this.end = end;
         this.duration = duration;  // in minutes
@@ -20,6 +20,7 @@ class Slot {
         this.details = details;
         this.groupName = groupName;
         this.editable = editable;
+        this.venue = venue;
     }
 
     reference() {
@@ -27,7 +28,11 @@ class Slot {
         if (this.bRange) {
             range = 'B';
         }
-        return `${this.start.split('T')[1]}/${range}${this.target}${this.face}`;
+        let reference = `${this.start.split('T')[1]}/${range}${this.target}${this.face}`;
+        if (this.venue) {
+            reference = `${this.venue}/` + reference;
+        }
+        return reference;
     }
 }
 

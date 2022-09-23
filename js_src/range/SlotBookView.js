@@ -11,8 +11,8 @@ import Modal from 'utils/Modal';
 class SlotBookView extends React.Component {
     constructor(props) {
         super(props);
-        const { date, target, time, face, range } = props.match.params;
-        this.submitData = { date, target, time, face };
+        const { date, target, venue, time, face, range } = props.match.params;
+        this.submitData = { date, target, venue, time, face };
         this.submitData.bRange = (range === 'B');
         this.state = {
             archers: [],

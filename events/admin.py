@@ -98,9 +98,14 @@ class BookedSlotAdmin(admin.ModelAdmin):
 
 @admin.register(BookingTemplate)
 class BookingTemplateAdmin(DjangoObjectActions, admin.ModelAdmin):
-    list_display = ['date', 'start_times', 'targets']
+    list_display = ['date', 'venue', 'start_times', 'target_setup']
     ordering = ['-date']
     actions = change_actions = ['create_next', 'update_from_coaching']
+
+    def target_setup(self, instance):
+        if instance.b_targets:
+            return '%s + %s' % (instance.targets, instance.b_targets)
+        return instance.targets
 
     @takes_instance_or_queryset
     def create_next(self, request, queryset):

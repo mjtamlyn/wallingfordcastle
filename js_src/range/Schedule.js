@@ -47,7 +47,7 @@ class Schedule extends React.Component {
     }
 
     render() {
-        const { abFaces, schedule, bRange } = this.props;
+        const { abFaces, schedule, bRange, venue } = this.props;
         const firstTime = moment(schedule[0].startTime);
         const lastTime = moment(schedule[this.props.schedule.length - 1].endTime);
 
@@ -92,7 +92,7 @@ class Schedule extends React.Component {
                         return; // TODO: there's an issue with missing boxes with odd sessions here
                     }
                     let duration = slot.duration / 15;
-                    const linkTarget = `/${ this.props.date }/book/${ time.format('HH:mm') }/${ bRange ? "B" : "" }${ slot.target }${ slot.face }/`;
+                    const linkTarget = `/${ this.props.date }/book/${venue.key}/${ time.format('HH:mm') }/${ bRange ? "B" : "" }${ slot.target }${ slot.face }/`;
                     if (slot.booked) {
                         let nSpots = 1;
                         if (slot.numberOfTargets > 1) {

@@ -6,6 +6,8 @@ import factory
 import factory.django
 import factory.fuzzy
 
+from venues.tests.factories import VenueFactory
+
 from ..models import BookedSlot, BookingTemplate
 
 
@@ -19,6 +21,7 @@ class BookedSlotFactory(factory.django.DjangoModelFactory):
     )
     duration = datetime.timedelta(hours=1)
     target = 1
+    venue = factory.SubFactory(VenueFactory)
 
     @factory.post_generation
     def archers(obj, create, extracted, **kwargs):
@@ -31,6 +34,7 @@ class BookingTemplateFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = BookingTemplate
 
+    venue = factory.SubFactory(VenueFactory)
     date = factory.fuzzy.FuzzyDateTime(
         timezone.now() - datetime.timedelta(days=7),
         timezone.now() + datetime.timedelta(days=7),

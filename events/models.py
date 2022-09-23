@@ -81,6 +81,7 @@ class BookedSlot(models.Model):
     duration = models.DurationField()
     target = models.PositiveIntegerField()
     b_range = models.BooleanField(default=False)
+    venue = models.ForeignKey('venues.Venue', blank=True, null=True, on_delete=models.SET_NULL)
     face = models.IntegerField(choices=((1, 'A'), (2, 'B')), blank=True, null=True, default=None)
     distance = models.CharField(max_length=100, default='', blank=True)
     archers = models.ManyToManyField(Archer, blank=True)
@@ -106,6 +107,7 @@ class BookedSlot(models.Model):
             start=self.start,
             duration=self.duration,
             target=self.target,
+            venue=self.venue.slug if self.venue else None,
             b_range=self.b_range,
             face=self.get_face_display(),
             number_of_targets=self.number_of_targets,
@@ -133,6 +135,9 @@ class BookingTemplate(models.Model):
     ab_faces = models.BooleanField(default=False)
     distance_required = models.BooleanField(default=True)
 
+    class Meta:
+        unique_together = ('date', 'venue')
+
     def __str__(self):
         return 'Booking template for %s' % self.date
 
@@ -145,6 +150,7 @@ class BookingTemplate(models.Model):
         ]
         return Template(
             start_times=start_times,
+            venue=self.venue.slug if self.venue else None,
             targets=self.targets,
             b_targets=self.b_targets,
             slot_duration=self.booking_duration,
@@ -158,6 +164,7 @@ class BookingTemplate(models.Model):
         return BookedSlot.objects.filter(
             start__gte=midnight,
             start__lt=midnight + datetime.timedelta(days=1),
+            venue=self.venue,
         )
 
     def update_from_coaching(self):

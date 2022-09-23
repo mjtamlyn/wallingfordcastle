@@ -4,6 +4,7 @@ from django.conf import settings
 from django.test import TestCase
 from django.utils import timezone
 
+from venues.tests.factories import VenueFactory
 from wallingford_castle.tests.factories import ArcherFactory
 
 from ..lanes import Slot, Template
@@ -29,8 +30,14 @@ class TestBookedSlot(TestCase):
         now = timezone.now()
         hour = datetime.timedelta(hours=1)
         booked = BookedSlotFactory.build(start=now, duration=hour, target=1)
-        slot = Slot(start=now, duration=hour, target=1, booked=True, group_name='')
+        slot = Slot(start=now, duration=hour, venue=booked.venue.slug, target=1, booked=True, group_name='')
         self.assertEqual(booked.slot, slot)
+
+    def test_can_serialize_without_venue(self):
+        now = timezone.now()
+        hour = datetime.timedelta(hours=1)
+        booked = BookedSlotFactory.build(start=now, duration=hour, target=1, venue=None)
+        self.assertEqual(booked.slot.venue, None)
 
 
 class TestBookingTemplate(TestCase):
@@ -51,7 +58,8 @@ class TestBookingTemplate(TestCase):
         template = Template(
             start_times=[midday],
             targets=3,
-            slot_duration=hour
+            slot_duration=hour,
+            venue=booking_template.venue.slug,
         )
         self.assertEqual(booking_template.template, template)
 
@@ -63,9 +71,12 @@ class TestBookingTemplate(TestCase):
         midday_time = midday.time()
         hour = datetime.timedelta(hours=1)
 
-        booked_slot = BookedSlotFactory.create(start=midday, duration=hour, target=1)
+        venue = VenueFactory.create()
+
+        booked_slot = BookedSlotFactory.create(venue=venue, start=midday, duration=hour, target=1)
 
         booking_template = BookingTemplateFactory.build(
+            venue=venue,
             date=today,
             start_times=[midday_time],
             targets=3,
@@ -73,6 +84,7 @@ class TestBookingTemplate(TestCase):
         )
         template = Template(
             start_times=[midday],
+            venue=venue.slug,
             targets=3,
             slot_duration=hour,
             booked_slots=[booked_slot.slot],
@@ -96,32 +108,3 @@ class TestBookingTemplate(TestCase):
         date = datetime.date(2040, 1, 1)
         new = template.create_next(date=date)
         self.assertEqual(new.date, date)
-
-    # def test_create_next_copies_group_slots(self):
-    #     archer_1 = ArcherFactory.create()
-    #     archer_2 = ArcherFactory.create()
-
-    #     template = BookingTemplateFactory.create(targets=2)
-    #     start_time = datetime.datetime.combine(template.date, template.start_times[0])
-    #     start_time = start_time.astimezone(settings.TZ)
-    #     booked_group = BookedSlotFactory.create(
-    #         start=start_time,
-    #         target=1,
-    #         is_group=True,
-    #         archers=[archer_1],
-    #     )
-    #     BookedSlotFactory.create(
-    #         start=start_time,
-    #         target=2,
-    #         is_group=False,
-    #         archers=[archer_2],
-    #     )
-
-    #     new = template.create_next()
-    #     next_start_time = start_time + datetime.timedelta(days=7)
-    #     new_slots = new.slots.filter(start=next_start_time)
-    #     self.assertEqual(new_slots.count(), 1)
-    #     new_slot = new_slots.get()
-    #     self.assertTrue(new_slot.is_group)
-    #     self.assertEqual(new_slot.target, booked_group.target)
-    #     self.assertSequenceEqual(new_slot.archers.all(), [archer_1])
