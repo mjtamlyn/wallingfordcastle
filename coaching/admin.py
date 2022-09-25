@@ -14,7 +14,9 @@ from django_object_actions import DjangoObjectActions
 
 from wallingford_castle.admin import ArcherDataMixin
 
-from .models import GroupSession, TrainingGroup, TrainingGroupType, Trial
+from .models import (
+    Absence, GroupSession, TrainingGroup, TrainingGroupType, Trial,
+)
 
 
 class CreateSessionsForm(forms.Form):
@@ -141,8 +143,16 @@ class TrainingGroupTypeAdmin(admin.ModelAdmin):
 class GroupSessionAdmin(admin.ModelAdmin):
     list_display = ['start', 'group', 'cancelled_because']
     list_filter = ['group']
+    search_fields = ['start', 'group']
     ordering = ['start']
     autocomplete_fields = ['group', 'booked_slot']
+
+
+@admin.register(Absence)
+class AbsenceAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['archer', 'session']
+    list_display = ['session', 'archer', 'reason']
+    list_filter = ['session__start']
 
 
 class TrialStatusListFilter(admin.SimpleListFilter):

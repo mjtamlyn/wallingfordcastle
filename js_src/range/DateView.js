@@ -5,7 +5,9 @@ import Loader from 'utils/Loader';
 import Loading from 'utils/Loading';
 
 import DateVenue from 'range/DateVenue';
+import SlotAbsenceView from 'range/SlotAbsenceView';
 import SlotBookView from 'range/SlotBookView';
+import SlotBookAdditionalView from 'range/SlotBookAdditionalView';
 import SlotCancelView from 'range/SlotCancelView';
 
 class DateView extends Loader {
@@ -49,6 +51,12 @@ class DateView extends Loader {
                     </Route>
                     <Route path="/:date(\d{4}-\d{2}-\d{2})/cancel/:venue([a-z-]+)/:time(\d{2}:\d{2})/:range(B)?:target(\d+):face(A|B)?/">
                         <SlotCancelView schedule={ data.schedule } />
+                    </Route>
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/absence/:venue([a-z-]+)/:time(\d{2}:\d{2})/:range(B)?:target(\d+):face(A|B)?/">
+                        <SlotAbsenceView schedule={ data.schedule } />
+                    </Route>
+                    <Route path="/:date(\d{4}-\d{2}-\d{2})/book-additional/:venue([a-z-]+)/:time(\d{2}:\d{2})/:range(B)?:target(\d+):face(A|B)?/">
+                        <SlotBookAdditionalView schedule={ data.schedule } />
                     </Route>
                 </Switch>
             </>

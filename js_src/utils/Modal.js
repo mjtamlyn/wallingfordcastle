@@ -35,10 +35,15 @@ class Modal extends React.Component {
     }
 
     render() {
+        let contentClassName = "modal__content";
+        if (this.props.wide) {
+            contentClassName += " modal__content--wide";
+        }
+
         const modal = (
             <div className={ 'modal ' + this.props.className }>
                 <div className="modal__background" onClick={ this.props.close } />
-                <div className="modal__content">
+                <div className={ contentClassName }>
                     { this.props.children }
                 </div>
             </div>

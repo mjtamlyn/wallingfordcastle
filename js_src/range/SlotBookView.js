@@ -1,6 +1,5 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom';
-import { Link, Redirect } from 'react-router-dom';
+import { withRouter, Link, Redirect } from 'react-router-dom';
 
 import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';

@@ -25,6 +25,7 @@ class Slot:
     details = attr.ib(default=None, cmp=False)
 
     is_group = attr.ib(default=False)
+    group = attr.ib(default=None)
     group_name = attr.ib(default=None)
 
     @property
@@ -40,10 +41,18 @@ class Slot:
 
     def personalize(self, user):
         self.editable = False
-        if user is None or self.is_group:
+        self.can_report_absence = False
+        self.can_book_additional = False
+        if user is None:
             return self
-        if user.manages_any(self.booked_archers):
-            self.editable = True
+        if self.is_group:
+            if user.manages_any(self.booked_archers):
+                self.can_report_absence = True
+            if self.group.additional_bookable_archers(user, already_booked=self.details.archers.all()):
+                self.can_book_additional = True
+        else:
+            if user.manages_any(self.booked_archers):
+                self.editable = True
         return self
 
     @cached_property
@@ -74,6 +83,8 @@ class Slot:
             'details': details,
             'groupName': self.group_name,
             'editable': self.editable,
+            'canReportAbsence': self.can_report_absence,
+            'canBookAdditional': self.can_book_additional,
         }
 
 

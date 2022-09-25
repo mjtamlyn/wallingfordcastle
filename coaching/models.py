@@ -80,6 +80,23 @@ class TrainingGroup(models.Model):
             start__date__gte=today,
         ).first()
 
+    def additional_bookable_archers(self, user, already_booked=None):
+        user_archers = set(m.archer for m in user.managed_members)
+        current_archers = set(self.participants.all())
+        if already_booked is not None:
+            current_archers = current_archers & set(already_booked)
+
+        levels = self.level.all()
+        other_groups = TrainingGroup.objects.filter(level__in=levels, season_id=self.season_id)
+        candidate_archers = set()
+        for group in other_groups:
+            candidate_archers |= set(group.participants.all())
+
+        if already_booked is not None:
+            candidate_archers -= set(already_booked)
+
+        return sorted(user_archers & candidate_archers - current_archers, key=lambda a: a.name)
+
     def __str__(self):
         return '%s %s group (%s)' % (self.get_session_day_display(), self.group_name, self.season)
 
@@ -93,7 +110,7 @@ class GroupSession(models.Model):
     group = models.ForeignKey(TrainingGroup, on_delete=models.CASCADE)
     start = models.DateTimeField()
     cancelled_because = models.TextField(blank=True, default='')
-    booked_slot = models.ForeignKey('events.BookedSlot', blank=True, null=True, on_delete=models.SET_NULL)
+    booked_slot = models.OneToOneField('events.BookedSlot', blank=True, null=True, on_delete=models.SET_NULL)
 
     objects = models.Manager.from_queryset(GroupSessionQuerySet)()
 
@@ -102,6 +119,18 @@ class GroupSession(models.Model):
 
     def __str__(self):
         return '%s session on %s' % (self.group, self.start)
+
+
+class Absence(models.Model):
+    session = models.ForeignKey(GroupSession, on_delete=models.CASCADE)
+    archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
+    reason = models.TextField(blank=True, default='')
+
+    class Meta:
+        unique_together = ('session', 'archer')
+
+    def __str__(self):
+        return '%s absent from %s' % (self.archer, self.session)
 
 
 class TrialQuerySet(models.QuerySet):

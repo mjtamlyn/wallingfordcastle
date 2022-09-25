@@ -1,15 +1,19 @@
 import datetime
 import json
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 from django.urls import reverse
 from django.utils import timezone
 
+import requests
+
 from membership.models import Member
+from wallingford_castle.models import Archer
 
 from .forms import BookSlotForm, CancelSlotForm
-from .models import BookingTemplate
+from .models import BookedSlot, BookingTemplate
 
 
 @login_required
@@ -43,7 +47,7 @@ def date_slots(request, date):
     else:
         templates = BookingTemplate.objects.filter(date__lte=prebooking_limit)
 
-    templates = templates.filter(date=datetime.datetime.strptime(date, '%Y-%m-%d').date()).order_by('venue_id')
+    templates = templates.filter(date=date).order_by('venue_id')
     if not templates:
         raise Http404('No bookings for that date')
 
@@ -107,14 +111,138 @@ def book_slot(request):
 
 @login_required
 def cancel_slot(request):
-    ok = False
     data = json.loads(request.body)
     form = CancelSlotForm(data=data, user=request.user)
     if form.is_valid():
         form.save()
-        ok = True
-    # TODO: some sort of helpful error cases!
+        response = {'ok': True}
+    else:
+        response = {
+            'ok': False,
+            'errors': form.errors.get_json_data(),
+        }
+    return JsonResponse(response)
+
+
+@login_required
+def slot_absentable_archers(request, slot):
+    members = Member.objects.managed_by(request.user)
+    try:
+        slot = BookedSlot.objects.get(**slot)
+    except BookedSlot.DoesNotExist:
+        raise Http404('Could not find a booked slot at that time')
+    archers = sorted(set(member.archer for member in members) & set(slot.archers.all()), key=lambda a: a.name)
     response = {
-        'ok': ok,
+        'archers': [{
+            '__type': 'Archer',
+            'name': archer.name,
+            'id': archer.id,
+        } for archer in archers],
     }
     return JsonResponse(response)
+
+
+@login_required
+def report_absence(request, slot):
+    data = json.loads(request.body)
+    slot = BookedSlot.objects.get(**slot)
+    archers = Archer.objects.filter(id__in=data['archers'])
+    reason = data['reason']
+
+    session = slot.groupsession
+    for archer in archers:
+        session.absence_set.create(archer=archer, reason=reason)
+        slot.archers.remove(archer)
+
+    if settings.SLACK_COACHING_HREF:
+        data = json.dumps({
+            'icon_emoji': ':wave:',
+            'text': '%s will not be attending %s on %s\nThey said\n> %s' % (
+                ','.join(a.name for a in archers),
+                session.group,
+                slot.start.strftime('%d/%m/%Y'),
+                reason,
+            )
+        })
+        try:
+            requests.post(settings.SLACK_COACHING_HREF, data=data)
+        except Exception:
+            pass
+
+    return JsonResponse({'ok': True})
+
+
+@login_required
+def group_booking_info(request, slot):
+    try:
+        slot = BookedSlot.objects.get(**slot)
+    except BookedSlot.DoesNotExist:
+        raise Http404('Could not find a booked slot at that time')
+    session = slot.groupsession
+    if not session:
+        raise Http404('This is not a group session')
+
+    booked = slot.archers.count()
+    max_bookable = session.group.max_participants
+    max_shooting = slot.number_of_targets * 2
+
+    return JsonResponse({
+        'booked': booked,
+        'maxBookable': max_bookable,
+        'maxShooting': max_shooting,
+    })
+
+
+@login_required
+def slot_additional_bookable_archers(request, slot):
+    try:
+        slot = BookedSlot.objects.get(**slot)
+    except BookedSlot.DoesNotExist:
+        raise Http404('Could not find a booked slot at that time')
+    session = slot.groupsession
+    if not session:
+        raise Http404('This is not a group session')
+
+    archers = session.group.additional_bookable_archers(request.user, slot.archers.all())
+    response = {
+        'archers': [{
+            '__type': 'Archer',
+            'name': archer.name,
+            'id': archer.id,
+        } for archer in archers],
+    }
+    return JsonResponse(response)
+
+
+@login_required
+def book_in(request, slot):
+    data = json.loads(request.body)
+    try:
+        slot = BookedSlot.objects.get(**slot)
+    except BookedSlot.DoesNotExist:
+        raise Http404('Could not find a booked slot at that time')
+    session = slot.groupsession
+    if not session:
+        raise Http404('This is not a group session')
+
+    archers = Archer.objects.filter(id__in=data['archers'])
+
+    for archer in archers:
+        session.absence_set.filter(archer=archer).delete()
+        slot.archers.add(archer)
+
+    if settings.SLACK_COACHING_HREF:
+        data = json.dumps({
+            'icon_emoji': ':wave:',
+            'text': '%s has booked in for %s on %s' % (
+                ','.join(a.name for a in archers),
+                session.group,
+                slot.start.strftime('%d/%m/%Y'),
+            )
+        })
+        try:
+            requests.post(settings.SLACK_COACHING_HREF, data=data)
+        except Exception:
+            pass
+
+    return JsonResponse({'ok': True})

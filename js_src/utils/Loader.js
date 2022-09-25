@@ -14,7 +14,7 @@ class Loader extends React.Component {
     }
 
     getApiEndpoint() {
-        return this.apiEndpoint;
+        return this.props.apiEndpoint || this.apiEndpoint;
     }
 
     setData(data) {
