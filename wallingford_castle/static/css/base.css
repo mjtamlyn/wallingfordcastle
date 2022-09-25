@@ -445,6 +445,7 @@ footer {
 /* line 231, ../../sass/_layout.sass */
 .modal__content {
   width: 350px;
+  max-width: 100%;
   background-color: white;
   border-radius: 20px;
   padding: 20px;
@@ -453,11 +454,15 @@ footer {
   left: 50%;
   transform: translate(-50%, -50%);
 }
-/* line 241, ../../sass/_layout.sass */
+/* line 242, ../../sass/_layout.sass */
+.modal__content--wide {
+  width: 550px;
+}
+/* line 245, ../../sass/_layout.sass */
 .modal__content > :first-child {
   margin-top: 0;
 }
-/* line 244, ../../sass/_layout.sass */
+/* line 248, ../../sass/_layout.sass */
 .modal__content > :last-child {
   margin-bottom: 0;
 }
@@ -867,26 +872,24 @@ dd.inline {
   z-index: 2;
 }
 /* line 111, ../../sass/_range.sass */
-.range-schedule__menu__list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-/* line 116, ../../sass/_range.sass */
 .range-schedule__menu__item {
+  display: block;
   padding: 3px 7px 5px 9px;
   user-select: none;
   cursor: pointer;
+  font-weight: normal;
+  color: white;
 }
-/* line 120, ../../sass/_range.sass */
+/* line 118, ../../sass/_range.sass */
 .range-schedule__menu__item:not(:last-child) {
   border-bottom: 1px solid #CA4984;
 }
-/* line 122, ../../sass/_range.sass */
+/* line 120, ../../sass/_range.sass */
 .range-schedule__menu__item:hover {
   background-color: #CA4984;
+  text-decoration: none;
 }
-/* line 125, ../../sass/_range.sass */
+/* line 124, ../../sass/_range.sass */
 .range-schedule__book {
   position: absolute;
   top: 0;
@@ -899,16 +902,16 @@ dd.inline {
   display: flex;
   align-items: center;
 }
-/* line 137, ../../sass/_range.sass */
+/* line 136, ../../sass/_range.sass */
 .range-schedule__book:hover {
   background-color: #e0eee0;
   text-decoration: none;
 }
-/* line 141, ../../sass/_range.sass */
+/* line 140, ../../sass/_range.sass */
 .range-schedule__book__inner {
   flex-grow: 1;
 }
-/* line 144, ../../sass/_range.sass */
+/* line 143, ../../sass/_range.sass */
 .range-schedule__cancel {
   position: absolute;
   bottom: 0;
@@ -920,26 +923,32 @@ dd.inline {
   cursor: pointer;
 }
 
-/* line 155, ../../sass/_range.sass */
+/* line 154, ../../sass/_range.sass */
 .booking-modal__close {
   font-size: 12px;
   position: absolute;
   right: 10px;
   top: 10px;
 }
-/* line 161, ../../sass/_range.sass */
+/* line 160, ../../sass/_range.sass */
 .booking-modal__title {
   margin: 10px 0;
 }
-/* line 164, ../../sass/_range.sass */
+/* line 163, ../../sass/_range.sass */
 .booking-modal__row {
   margin: 10px 0;
 }
-/* line 167, ../../sass/_range.sass */
+/* line 166, ../../sass/_range.sass */
 .booking-modal__text {
   font-size: 16px;
 }
-/* line 170, ../../sass/_range.sass */
+/* line 169, ../../sass/_range.sass */
+.booking-modal__text--help {
+  font-style: italic;
+  font-weight: bold;
+  opacity: 0.7;
+}
+/* line 174, ../../sass/_range.sass */
 .booking-modal__button {
   font-size: 14px;
   padding: 4px 8px;
@@ -951,15 +960,15 @@ dd.inline {
   cursor: pointer;
   outline: none;
 }
-/* line 180, ../../sass/_range.sass */
+/* line 184, ../../sass/_range.sass */
 .booking-modal__button:hover {
   background-color: #f5f5f5;
 }
-/* line 182, ../../sass/_range.sass */
+/* line 186, ../../sass/_range.sass */
 .booking-modal__button:active {
   box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.6);
 }
-/* line 185, ../../sass/_range.sass */
+/* line 189, ../../sass/_range.sass */
 .booking-modal__button[disabled] {
   cursor: auto;
   border-color: #777;
@@ -967,18 +976,32 @@ dd.inline {
   background-color: white;
   box-shadow: none;
 }
-/* line 191, ../../sass/_range.sass */
+/* line 195, ../../sass/_range.sass */
 .booking-modal__button[disabled]:hover {
   background-color: white;
 }
-/* line 193, ../../sass/_range.sass */
+/* line 197, ../../sass/_range.sass */
 .booking-modal__button[disabled]:active {
   box-shadow: none;
 }
-/* line 196, ../../sass/_range.sass */
+/* line 200, ../../sass/_range.sass */
 .booking-modal label {
   font-size: 14px;
   font-weight: bold;
   margin: 5px 0;
   display: block;
+}
+
+/* line 207, ../../sass/_range.sass */
+.text-field__textarea {
+  font-family: "Open Sans", sans-serif;
+  display: block;
+  height: 130px;
+  width: 100%;
+  max-width: 100%;
+  font-size: 18px;
+  margin-top: 5px;
+  padding: 3px 5px;
+  border: 1px solid #aaa;
+  border-radius: 5px;
 }

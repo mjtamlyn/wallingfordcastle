@@ -1,8 +1,9 @@
 import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
 
 import useClickOff from 'utils/useClickOff';
 
-const BookedSlotMenu = ({ slot }) => {
+const BookedSlotMenu = ({ slot, date }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const ref = useRef(null);
 
@@ -18,7 +19,9 @@ const BookedSlotMenu = ({ slot }) => {
 
     if (slot.canReportAbsence) {
         tools.push(
-            <li key="absence" className="range-schedule__menu__item">Report absence</li>
+            <Link key="absence" className="range-schedule__menu__item" to={ `/${date}/absence/${slot.reference()}/` }>
+                Report absence
+            </Link>
         );
     }
     // <li className="range-schedule__menu__item">Book in</li>
@@ -38,9 +41,7 @@ const BookedSlotMenu = ({ slot }) => {
             <a className={ toolsClass } onClick={ menuToggle }>Info</a>
             { menuOpen &&
                 <div className="range-schedule__menu">
-                    <ul className="range-schedule__menu__list">
-                        { tools }
-                    </ul>
+                    { tools }
                 </div>
             }
         </div>

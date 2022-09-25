@@ -108,19 +108,18 @@
     overflow: hidden
     z-index: 2
 
-    &__list
-      margin: 0
-      padding: 0
-      list-style: none
-
     &__item
+      display: block
       padding: 3px 7px 5px 9px
       user-select: none
       cursor: pointer
+      font-weight: normal
+      color: white
       &:not(:last-child)
         border-bottom: 1px solid $pink
       &:hover
         background-color: $pink
+        text-decoration: none
 
   &__book
     position: absolute
@@ -167,6 +166,12 @@
   &__text
     font-size: 16px
 
+    &--help
+      font-size: 14px
+      font-style: italic
+      font-weight: bold
+      opacity: 0.7
+
   &__button
     font-size: 14px
     padding: 4px 8px
@@ -198,3 +203,16 @@
     font-weight: bold
     margin: 5px 0
     display: block
+
+.text-field
+  &__textarea
+    font-family: 'Open Sans', sans-serif
+    display: block
+    height: 130px
+    width: 100%
+    max-width: 100%
+    font-size: 18px
+    margin-top: 5px
+    padding: 3px 5px
+    border: 1px solid #aaa
+    border-radius: 5px

@@ -29,7 +29,7 @@ const BaseBookedSlot = ({ slot, rowSpan, colSpan, match }) => {
             rowSpan={ rowSpan }
             colSpan={ colSpan }
         >
-            <BookedSlotMenu slot={ slot } />
+            <BookedSlotMenu slot={ slot } date={ match.params.date } />
             { title }
             <p className="range-schedule__description">{ slot.details.names }</p>
             <p className="range-schedule__description">{ slot.details.distance }</p>
