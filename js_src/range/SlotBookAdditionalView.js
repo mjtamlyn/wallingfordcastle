@@ -3,6 +3,7 @@ import { withRouter, Link, Redirect } from 'react-router-dom';
 
 import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
+import SlotBookAdditionalInfo from 'range/SlotBookAdditionalInfo';
 import Modal from 'utils/Modal';
 
 const isValid = ({ archers }) => {
@@ -53,6 +54,7 @@ const SlotBookAdditionalView = ({ match }) => {
                 week, coaches’ first priority will be those who are normally on this
                 day.
             </p>
+            <SlotBookAdditionalInfo match={ match } />
             <div className="booking-modal__row">
                 <ArcherMultiSelect onChange={ setArchers } apiEndpoint={ apiArcherUrl } />
             </div>

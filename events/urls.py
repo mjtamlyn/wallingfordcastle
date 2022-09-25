@@ -17,6 +17,7 @@ range_api_urlpatterns = [
     path('', api.date_list, name='date-list'),
     path('<date:date>/', api.date_slots, name='date-slots'),
     path('archers/', api.bookable_archers, name='bookable-archers'),
+    path('group-booking-info/<slot:slot>/', api.group_booking_info, name='group-booking-info'),
     path('absentable-archers/<slot:slot>/', api.slot_absentable_archers, name='slot-absentable-archers'),
     path(
         'additional-bookable-archers/<slot:slot>/',

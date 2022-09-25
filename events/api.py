@@ -173,6 +173,27 @@ def report_absence(request, slot):
 
 
 @login_required
+def group_booking_info(request, slot):
+    try:
+        slot = BookedSlot.objects.get(**slot)
+    except BookedSlot.DoesNotExist:
+        raise Http404('Could not find a booked slot at that time')
+    session = slot.groupsession
+    if not session:
+        raise Http404('This is not a group session')
+
+    booked = slot.archers.count()
+    max_bookable = session.group.max_participants
+    max_shooting = slot.number_of_targets * 2
+
+    return JsonResponse({
+        'booked': booked,
+        'maxBookable': max_bookable,
+        'maxShooting': max_shooting,
+    })
+
+
+@login_required
 def slot_additional_bookable_archers(request, slot):
     try:
         slot = BookedSlot.objects.get(**slot)
