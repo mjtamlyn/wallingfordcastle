@@ -31,7 +31,6 @@ const BookedSlotMenu = ({ slot, date }) => {
             </Link>
         );
     }
-    // <li className="range-schedule__menu__item">View schedule</li>
 
     let toolsClass = 'range-schedule__tools';
     if (menuOpen) {

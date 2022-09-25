@@ -80,15 +80,20 @@ class TrainingGroup(models.Model):
             start__date__gte=today,
         ).first()
 
-    def additional_bookable_archers(self, user):
+    def additional_bookable_archers(self, user, already_booked=None):
         user_archers = set(m.archer for m in user.managed_members)
         current_archers = set(self.participants.all())
+        if already_booked is not None:
+            current_archers = current_archers & set(already_booked)
 
         levels = self.level.all()
-        other_groups = TrainingGroup.objects.filter(level__in=levels, season_id=self.season_id).exclude(pk=self.pk)
+        other_groups = TrainingGroup.objects.filter(level__in=levels, season_id=self.season_id)
         candidate_archers = set()
         for group in other_groups:
             candidate_archers |= set(group.participants.all())
+
+        if already_booked is not None:
+            candidate_archers -= set(already_booked)
 
         return sorted(user_archers & candidate_archers - current_archers, key=lambda a: a.name)
 

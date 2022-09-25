@@ -4,26 +4,24 @@ import { withRouter, Link, Redirect } from 'react-router-dom';
 import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
 import Modal from 'utils/Modal';
-import TextField from 'utils/TextField';
 
-const isValid = ({ archers, reason }) => {
+const isValid = ({ archers }) => {
     return !!archers.length;
 };
 
-const SlotAbsenceView = ({ match }) => {
+const SlotBookAdditionalView = ({ match }) => {
     const { date, time, venue, range, target,face } = match.params;
     const dateUrl = `/${date}/`;
-    const apiArcherUrl = `/api/range/absentable-archers/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
-    const apiReportUrl = `/api/range/report-absence/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
+    const apiArcherUrl = `/api/range/additional-bookable-archers/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
+    const apiReportUrl = `/api/range/book-in/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
 
     const [done, setDone] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [archers, setArchers] = useState([]);
-    const [reason, setReason] = useState('');
 
     useEffect(() => {
         if (submitting) {
-            store.send(apiReportUrl, { archers, reason }).then((response) => {
+            store.send(apiReportUrl, { archers }).then((response) => {
                 if (response.ok) {
                     store.invalidate(`/api/range/${date}/`);
                     store.invalidate(`/api/range/additional-bookable-archers/${date}/${venue}/${time}/${range || ''}${target}${face}/`);
@@ -43,29 +41,26 @@ const SlotAbsenceView = ({ match }) => {
 
     const submit = () => setSubmitting(true);
     const close = () => setDone(true);
-    const submitDisabled = !isValid({ archers, reason }) || submitting;
+    const submitDisabled = !isValid({ archers }) || submitting;
 
     return (
         <Modal className="booking-modal" wide close={ close }>
-            <h4 className="booking-modal__title">Report Absence</h4>
+            <h4 className="booking-modal__title">Book Additional Session</h4>
             <Link className="booking-modal__close" to={ dateUrl }>Close</Link>
             <p className="booking-modal__text booking-modal__text--help">
-                Thanks for letting us know you won’t be able to attend this session. It
-                helps make sure that sessions can be planned effectively, as well as
-                allowing as many people as possible to make use of the facilities.  You
-                can add a message for the coache(es) below if you have anything to pass on.
+                Archers may attend additional sessions which run at the same level,
+                subject to space.  If you are attending multiple sessions in the same
+                week, coaches’ first priority will be those who are normally on this
+                day.
             </p>
             <div className="booking-modal__row">
                 <ArcherMultiSelect onChange={ setArchers } apiEndpoint={ apiArcherUrl } />
             </div>
             <div className="booking-modal__row">
-                <TextField label="Message (optional):" onChange={ setReason } />
-            </div>
-            <div className="booking-modal__row">
-                <input className="booking-modal__button" type="submit" value="Report Absence" disabled={ submitDisabled } onClick={ submit } />
+                <input className="booking-modal__button" type="submit" value="Book in" disabled={ submitDisabled } onClick={ submit } />
             </div>
         </Modal>
     );
 };
 
-export default withRouter(SlotAbsenceView);
+export default withRouter(SlotBookAdditionalView);

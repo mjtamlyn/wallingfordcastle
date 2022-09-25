@@ -170,3 +170,58 @@ def report_absence(request, slot):
             pass
 
     return JsonResponse({'ok': True})
+
+
+@login_required
+def slot_additional_bookable_archers(request, slot):
+    try:
+        slot = BookedSlot.objects.get(**slot)
+    except BookedSlot.DoesNotExist:
+        raise Http404('Could not find a booked slot at that time')
+    session = slot.groupsession
+    if not session:
+        raise Http404('This is not a group session')
+
+    archers = session.group.additional_bookable_archers(request.user, slot.archers.all())
+    response = {
+        'archers': [{
+            '__type': 'Archer',
+            'name': archer.name,
+            'id': archer.id,
+        } for archer in archers],
+    }
+    return JsonResponse(response)
+
+
+@login_required
+def book_in(request, slot):
+    data = json.loads(request.body)
+    try:
+        slot = BookedSlot.objects.get(**slot)
+    except BookedSlot.DoesNotExist:
+        raise Http404('Could not find a booked slot at that time')
+    session = slot.groupsession
+    if not session:
+        raise Http404('This is not a group session')
+
+    archers = Archer.objects.filter(id__in=data['archers'])
+
+    for archer in archers:
+        session.absence_set.filter(archer=archer).delete()
+        slot.archers.add(archer)
+
+    if settings.SLACK_COACHING_HREF:
+        data = json.dumps({
+            'icon_emoji': ':wave:',
+            'text': '%s has booked in for %s on %s' % (
+                ','.join(a.name for a in archers),
+                session.group,
+                slot.start.strftime('%d/%m/%Y'),
+            )
+        })
+        try:
+            requests.post(settings.SLACK_COACHING_HREF, data=data)
+        except Exception:
+            pass
+
+    return JsonResponse({'ok': True})
