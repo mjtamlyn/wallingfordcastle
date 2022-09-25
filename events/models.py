@@ -5,6 +5,7 @@ from django.contrib.postgres.fields import ArrayField, HStoreField
 from django.db import models
 from django.utils.functional import cached_property
 
+from coaching.models import GroupSession
 from wallingford_castle.models import Archer
 
 from .lanes import Slot, Template
@@ -103,7 +104,10 @@ class BookedSlot(models.Model):
 
     @cached_property
     def slot(self):
-        session = self.groupsession
+        try:
+            session = self.groupsession
+        except GroupSession.DoesNotExist:
+            session = None
         group = session.group if session else None
         return Slot(
             start=self.start,
