@@ -10,12 +10,14 @@ const SlotAbsenceView = ({ match }) => {
     const [archers, setArchers] = useState([]);
     const [reason, setReason] = useState('');
 
-    const { date } = match.params;
+    const { date, time, venue, range, target,face } = match.params;
     const dateUrl = `/${date}/`;
 
     if (done) {
         return <Redirect to={ dateUrl } />;
     }
+
+    const apiArcherUrl = `/api/range/absentable-archers/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
 
     const submit = () => {};
     const close = () => setDone(true);
@@ -32,7 +34,7 @@ const SlotAbsenceView = ({ match }) => {
                 can add a message for the coache(es) below if you have anything to pass on.
             </p>
             <div className="booking-modal__row">
-                <ArcherMultiSelect onChange={ setArchers } />
+                <ArcherMultiSelect onChange={ setArchers } apiEndpoint={ apiArcherUrl } />
             </div>
             <div className="booking-modal__row">
                 <TextField label="Message (optional):" onChange={ setReason } />

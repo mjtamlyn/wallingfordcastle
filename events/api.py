@@ -9,7 +9,7 @@ from django.utils import timezone
 from membership.models import Member
 
 from .forms import BookSlotForm, CancelSlotForm
-from .models import BookingTemplate
+from .models import BookedSlot, BookingTemplate
 
 
 @login_required
@@ -43,7 +43,7 @@ def date_slots(request, date):
     else:
         templates = BookingTemplate.objects.filter(date__lte=prebooking_limit)
 
-    templates = templates.filter(date=datetime.datetime.strptime(date, '%Y-%m-%d').date()).order_by('venue_id')
+    templates = templates.filter(date=date).order_by('venue_id')
     if not templates:
         raise Http404('No bookings for that date')
 
@@ -107,14 +107,32 @@ def book_slot(request):
 
 @login_required
 def cancel_slot(request):
-    ok = False
     data = json.loads(request.body)
     form = CancelSlotForm(data=data, user=request.user)
     if form.is_valid():
         form.save()
-        ok = True
-    # TODO: some sort of helpful error cases!
+        response = {'ok': True}
+    else:
+        response = {
+            'ok': False,
+            'errors': form.errors.get_json_data(),
+        }
+    return JsonResponse(response)
+
+
+@login_required
+def slot_absentable_archers(request, slot):
+    members = Member.objects.managed_by(request.user)
+    try:
+        slot = BookedSlot.objects.get(**slot)
+    except BookedSlot.DoesNotExist:
+        raise Http404('Could not find a booked slot at that time')
+    archers = sorted(set(member.archer for member in members) & set(slot.archers.all()), key=lambda a: a.name)
     response = {
-        'ok': ok,
+        'archers': [{
+            '__type': 'Archer',
+            'name': archer.name,
+            'id': archer.id,
+        } for archer in archers],
     }
     return JsonResponse(response)

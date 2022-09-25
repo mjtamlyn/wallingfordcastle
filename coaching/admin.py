@@ -14,7 +14,9 @@ from django_object_actions import DjangoObjectActions
 
 from wallingford_castle.admin import ArcherDataMixin
 
-from .models import Absence, GroupSession, TrainingGroup, TrainingGroupType, Trial
+from .models import (
+    Absence, GroupSession, TrainingGroup, TrainingGroupType, Trial,
+)
 
 
 class CreateSessionsForm(forms.Form):
