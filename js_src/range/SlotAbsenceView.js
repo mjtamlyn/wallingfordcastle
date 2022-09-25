@@ -1,27 +1,47 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { withRouter, Link, Redirect } from 'react-router-dom';
 
+import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
 import Modal from 'utils/Modal';
 import TextField from 'utils/TextField';
 
+const isValid = ({ archers, reason }) => {
+    return !!archers.length;
+};
+
 const SlotAbsenceView = ({ match }) => {
+    const { date, time, venue, range, target,face } = match.params;
+    const dateUrl = `/${date}/`;
+    const apiArcherUrl = `/api/range/absentable-archers/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
+    const apiReportUrl = `/api/range/report-absence/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
+
     const [done, setDone] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const [archers, setArchers] = useState([]);
     const [reason, setReason] = useState('');
 
-    const { date, time, venue, range, target,face } = match.params;
-    const dateUrl = `/${date}/`;
+    useEffect(() => {
+        if (submitting) {
+            store.send(apiReportUrl, { archers, reason }).then((response) => {
+                if (response.ok) {
+                    store.invalidate(`/api/range/${date}/`);
+                }
+                setSubmitting(false);
+                setDone(true);
+            }).catch((error) => {
+                console.error('error', error);
+            });
+        }
+    }, [submitting]);
 
     if (done) {
         return <Redirect to={ dateUrl } />;
     }
 
-    const apiArcherUrl = `/api/range/absentable-archers/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
-
-    const submit = () => {};
+    const submit = () => setSubmitting(true);
     const close = () => setDone(true);
-    const submitDisabled = false;
+    const submitDisabled = !isValid({ archers, reason }) || submitting;
 
     return (
         <Modal className="booking-modal" wide close={ close }>

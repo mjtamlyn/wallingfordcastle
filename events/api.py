@@ -1,12 +1,16 @@
 import datetime
 import json
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import Http404, JsonResponse
 from django.urls import reverse
 from django.utils import timezone
 
+import requests
+
 from membership.models import Member
+from wallingford_castle.models import Archer
 
 from .forms import BookSlotForm, CancelSlotForm
 from .models import BookedSlot, BookingTemplate
@@ -136,3 +140,33 @@ def slot_absentable_archers(request, slot):
         } for archer in archers],
     }
     return JsonResponse(response)
+
+
+@login_required
+def report_absence(request, slot):
+    data = json.loads(request.body)
+    slot = BookedSlot.objects.get(**slot)
+    archers = Archer.objects.filter(id__in=data['archers'])
+    reason = data['reason']
+
+    session = slot.groupsession
+    for archer in archers:
+        session.absence_set.create(archer=archer, reason=reason)
+        slot.archers.remove(archer)
+
+    if settings.SLACK_COACHING_HREF:
+        data = json.dumps({
+            'icon_emoji': ':wave:',
+            'text': '%s will not be attending %s on %s\nThey said\n> %s' % (
+                ','.join(a.name for a in archers),
+                session.group,
+                slot.start.strftime('%d/%m/%Y'),
+                reason,
+            )
+        })
+        try:
+            requests.post(settings.SLACK_COACHING_HREF, data=data)
+        except Exception:
+            pass
+
+    return JsonResponse({'ok': True})

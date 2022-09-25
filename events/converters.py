@@ -16,12 +16,12 @@ class ApiDateConverter:
 
 
 class SlotReferenceConverter:
-    regex = r'(\d{4}-\d{2}-\d{2})/([a-z-]+)/(\d{2}:\d{2})/B?(\d+)(A|B)?/'
+    regex = r'(\d{4}-\d{2}-\d{2})/([a-z-]+)/(\d{2}:\d{2})/B?(\d+)(A|B)?'
     named_regex = (
         r'(?P<date>\d{4}-\d{2}-\d{2})/'
         r'(?P<venue>[a-z-]+)/'
         r'(?P<time>\d{2}:\d{2})/'
-        r'(?P<brange>B)?(?P<target>\d+)(?P<face>A|B)?/'
+        r'(?P<brange>B)?(?P<target>\d+)(?P<face>A|B)?'
     )
 
     def to_python(self, value):
