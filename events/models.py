@@ -103,6 +103,8 @@ class BookedSlot(models.Model):
 
     @cached_property
     def slot(self):
+        session = self.groupsession
+        group = session.group if session else None
         return Slot(
             start=self.start,
             duration=self.duration,
@@ -114,12 +116,13 @@ class BookedSlot(models.Model):
             booked=True,
             details=self,
             is_group=self.is_group,
+            group=group,
             group_name=self.group_name,
         )
 
     @cached_property
     def booking_template(self):
-        return BookingTemplate.objects.get(date=self.start.date())
+        return BookingTemplate.objects.get(date=self.start.date(), venue_id=self.venue_id)
 
 
 class BookingTemplate(models.Model):

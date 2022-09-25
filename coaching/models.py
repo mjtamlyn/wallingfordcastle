@@ -80,6 +80,18 @@ class TrainingGroup(models.Model):
             start__date__gte=today,
         ).first()
 
+    def additional_bookable_archers(self, user):
+        user_archers = set(m.archer for m in user.managed_members)
+        current_archers = set(self.participants.all())
+
+        levels = self.level.all()
+        other_groups = TrainingGroup.objects.filter(level__in=levels, season_id=self.season_id).exclude(pk=self.pk)
+        candidate_archers = set()
+        for group in other_groups:
+            candidate_archers |= set(group.participants.all())
+
+        return sorted(user_archers & candidate_archers - current_archers, key=lambda a: a.name)
+
     def __str__(self):
         return '%s %s group (%s)' % (self.get_session_day_display(), self.group_name, self.season)
 

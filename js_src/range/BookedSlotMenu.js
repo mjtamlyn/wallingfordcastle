@@ -24,7 +24,13 @@ const BookedSlotMenu = ({ slot, date }) => {
             </Link>
         );
     }
-    // <li className="range-schedule__menu__item">Book in</li>
+    if (slot.canBookAdditional) {
+        tools.push(
+            <Link key="book" className="range-schedule__menu__item" to={ `/${date}/book-additional/${slot.reference()}/` }>
+                Book in
+            </Link>
+        );
+    }
     // <li className="range-schedule__menu__item">View schedule</li>
 
     let toolsClass = 'range-schedule__tools';
