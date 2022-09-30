@@ -48,7 +48,7 @@ class Slot:
         if self.is_group:
             if user.manages_any(self.booked_archers):
                 self.can_report_absence = True
-            if self.group.additional_bookable_archers(user, already_booked=self.details.archers.all()):
+            if self.group and self.group.additional_bookable_archers(user, already_booked=self.details.archers.all()):
                 self.can_book_additional = True
         else:
             if user.manages_any(self.booked_archers):
