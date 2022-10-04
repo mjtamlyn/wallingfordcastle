@@ -87,7 +87,7 @@ class MemberAdmin(DjangoObjectActions, ArcherDataMixin, admin.ModelAdmin):
         ('membership_type', 'coaching_subscription', 'level'),
         ('interest', 'created', 'modified'),
     ]
-    actions = objectactions = ['update_plan', 'book_into_course']
+    actions = change_actions = ['update_plan', 'book_into_course']
     search_fields = ['archer__name']
     autocomplete_fields = ['archer']
 
