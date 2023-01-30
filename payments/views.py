@@ -7,6 +7,8 @@ from django.views.generic import View
 
 import stripe
 
+from wallingford_castle.models import User
+
 from .models import PaymentIntent
 
 
@@ -24,4 +26,14 @@ class StripeWebhook(View):
             if not intent.user.customer_id:
                 intent.user.customer_id = event.data.object.customer
                 intent.user.save()
+        if event.type == 'checkout.session.completed':
+            session = event.data.object
+            try:
+                user = User.objects.get(email=session.customer_email)
+            except User.DoesNotExist:
+                pass
+            user.customer_id = session.customer
+            if session.subscription:
+                user.subscription_id = session.subscription
+            user.save()
         return HttpResponse('ok')

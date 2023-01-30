@@ -1,7 +1,7 @@
 import json
 
 from django.conf import settings
-from django.http import HttpResponseRedirect
+from django.shortcuts import redirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import DetailView, TemplateView, UpdateView, View
 
@@ -10,6 +10,7 @@ import stripe
 from braces.views import MessageMixin
 
 from beginners.models import STATUS_FAST_TRACK, STATUS_ON_COURSE
+from coaching.forms import TrialContinueForm
 from coaching.models import Trial
 from courses.models import Attendee, Course
 from membership.models import Member
@@ -41,6 +42,11 @@ class Overview(FullMemberRequired, TemplateView):
         context['trials_to_pay'] = sum(
             trial.fee for trial in context['trials'] if not trial.paid
         )
+        context['completed_trials'] = Trial.objects.filter_completed().filter(
+            archer__user=self.request.user,
+        ).select_related('archer', 'group')
+        for trial in context['completed_trials']:
+            trial.form = TrialContinueForm(trial=trial)
         context['course_attendees'] = Attendee.objects.filter(
             archer__user=self.request.user,
             course__can_book_individual_sessions=False,
@@ -123,24 +129,23 @@ class MemberUpdate(FullMemberRequired, MessageMixin, UpdateView):
 
 
 class PaymentDetails(MessageMixin, View):
-    def post(self, request, *args, **kwargs):
-        token = request.POST['stripeToken']
-        if self.request.user.customer_id:
-            customer = stripe.Customer.retrieve(self.request.user.customer_id)
-            source = customer.sources.create(source=token)
-            customer.default_source = source.id
-            customer.save()
+    def get(self, request, *args, **kwargs):
+        membership_overview_url = reverse('membership:overview')
+        customer_id = self.request.user.customer_id or None
+        subscription_id = self.request.user.subscription_id or None
+        if not subscription_id or not customer_id:
+            # TODO
+            self.messages.error('You currently do not have a subscription set up, please contact Marc for help.')
+            return redirect(membership_overview_url)
         else:
-            customer = stripe.Customer.create(
-                source=token,
-                email=self.request.user.email,
+            session = stripe.checkout.Session.create(
+                mode='setup',
+                customer=customer_id,
+                payment_method_types=['card'],
+                success_url=self.request.build_absolute_uri(membership_overview_url),
+                cancel_url=self.request.build_absolute_uri(membership_overview_url),
             )
-            self.request.user.customer_id = customer.id
-            self.request.user.save()
-            self.request.user.send_welcome_email()
-        self.request.user.update_subscriptions()
-        self.messages.success('Thanks! You will receive a confirmation email soon.')
-        return HttpResponseRedirect(reverse('membership:overview'))
+            return redirect(session.url, status_code=303)
 
 
 class RangeBooking(FullMemberRequired, TemplateView):
