@@ -210,6 +210,20 @@ class User(AbstractEmailUser):
             self.subscription_id = subscription.id
             self.save()
 
+    def delete_subscription(self):
+        from membership.models import Member
+
+        members = Member.objects.filter(archer__user=self, active=True)  # Just ones billed by this user
+        for m in members:
+            m.active = False
+            m.coaching_subscription = False
+            m.save()
+            for group in m.archer.training_groups.all():
+                group.participants.remove(m.archer)
+        stripe.Subscription.delete(self.subscription_id)
+        self.subscription_id = ''
+        self.save()
+
     def add_invoice_item(self, amount, description):
         if not self.customer_id or not self.subscription_id:
             raise ValueError('User does not have a subscription')

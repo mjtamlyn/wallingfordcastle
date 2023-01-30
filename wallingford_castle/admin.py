@@ -163,7 +163,7 @@ class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
 
 @admin.register(User)
 class UserAdmin(DjangoObjectActions, EmailUserAdmin):
-    actions = change_actions = ['send_new_user_email', 'send_welcome_email']
+    actions = change_actions = ['send_new_user_email', 'send_welcome_email', 'leave_club']
     fieldsets = EmailUserAdmin.fieldsets + (
         ('Internal fields', {
             'fields': ('customer_id', 'subscription_id', 'tournament_only', 'generate_register_url')
@@ -173,6 +173,13 @@ class UserAdmin(DjangoObjectActions, EmailUserAdmin):
 
     def generate_register_url(self, instance):
         return instance.generate_register_url()
+
+    @takes_instance_or_queryset
+    def leave_club(self, request, queryset):
+        for user in queryset:
+            user.delete_subscription()
+    leave_club.short_description = 'Leave club'
+    leave_club.label = 'Leave club'
 
     @takes_instance_or_queryset
     def send_new_user_email(self, request, queryset):
