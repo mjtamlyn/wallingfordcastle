@@ -1,3 +1,6 @@
+import json
+
+from django.conf import settings
 from django.db import transaction
 from django.db.models.functions import Lower
 from django.http import Http404
@@ -7,6 +10,7 @@ from django.utils import timezone
 from django.views.generic import DetailView, FormView, TemplateView, View
 from django.views.generic.detail import SingleObjectMixin
 
+import requests
 import stripe
 from braces.views import MessageMixin
 
@@ -191,7 +195,23 @@ class TrialContinue(SingleObjectMixin, FormView):
     def form_valid(self, form):
         with transaction.atomic():
             member = form.save()
-            # TODO: Notify Membership channel in Slack
+            if settings.SLACK_MEMBERSHIP_HREF:
+                data = json.dumps({
+                    'icon_emoji': ':thumbsup:',
+                    'text': '%s has joined after their trial!\n%s' % (
+                        form.cleaned_data['name'],
+                        self.request.build_absolute_uri(
+                            reverse(
+                                'admin:wallingford_castle_membershipinterest_change',
+                                args=(form.instance.pk,),
+                            )
+                        ),
+                    )
+                })
+                try:
+                    requests.post(settings.SLACK_MEMBERSHIP_HREF, data=data)
+                except Exception:
+                    pass
             customer_id = self.request.user.customer_id or None
             if not self.request.user.subscription_id:
                 membership_overview_url = reverse('membership:overview')
