@@ -11,6 +11,9 @@
     "build": "npm run clean && NODE_ENV=production webpack --display-error-details --config webpack.config.js",
     "clean": "rm -rf build"
   },
+  "engines": {
+      "node": "17.x"
+  },
   "private": true,
   "repository": "git+https://github.com/mjtamlyn/wallingfordcastle.git",
   "author": "Marc Tamlyn & WCA Ltd",
