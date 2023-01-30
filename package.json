@@ -12,7 +12,7 @@
     "clean": "rm -rf build"
   },
   "engines": {
-    "node": "17.x"
+    "node": "16.x"
   },
   "private": true,
   "repository": "git+https://github.com/mjtamlyn/wallingfordcastle.git",
