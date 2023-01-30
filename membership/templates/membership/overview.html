@@ -205,25 +205,14 @@ You will now need to join the club. Club membership is £15/month for juniors, w
     </p>
 
     {% if monthly_fee %}
-    {% if user.customer_id %}
     <h2>Update your payment details</h2>
-    {% else %}
-    <h2>Add your payment details</h2>
-    {% endif %}
-    <p>Monthly charge: £{{ monthly_fee }}</p>
-    <form action="{% url 'membership:payment-details' %}" method="POST">
-        {% csrf_token %}
-        <script
-            src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-            data-key="{{ STRIPE_KEY }}"
-            data-email="{{ user.email }}"
-            data-currency="GBP"
-            data-amount="{{ monthly_fee }}00"
-            data-name="Wallingford Castle Archers"
-            data-description="Club Membership (monthly)"
-            data-locale="auto">
-        </script>
-    </form>
+    <a href="{% url 'membership:payment-details' %}" class="btn btn--narrow">Update card details</a>
+    <p><small>
+    If you recently had a payment fail, Stripe will automatically retry it
+    for a couple of weeks. Updating your details here will not initiate a
+    retry, but this card will be used next time it retries. If you have any
+    issues please contact the committee.
+    </small></p>
     <p><small>
     Payments are processed securely using Stripe. Wallingford Castle Archers does
     not store your credit card details. You will be billed monthly for all the
