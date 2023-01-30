@@ -7,6 +7,7 @@ app_name = 'coaching'
 urlpatterns = [
     path('', views.GroupsOverview.as_view(), name='overview'),
     path('pay/', views.TrialPayment.as_view(), name='trial-payment'),
+    path('trial/continue/<int:trial_pk>/', views.TrialContinue.as_view(), name='trial-continue'),
     path('<slug:group>/', views.GroupReport.as_view(), name='group-report'),
     path('upcoming/<slug:group>/', views.UpcomingGroupReport.as_view(), name='upcoming-group-report'),
     path('<slug:group>/sessions/', views.GroupSchedule.as_view(), name='group-schedule'),

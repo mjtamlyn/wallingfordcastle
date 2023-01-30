@@ -137,6 +137,12 @@ class TrialQuerySet(models.QuerySet):
     def filter_ongoing(self):
         return self.filter(session_4__gte=timezone.now().date())
 
+    def filter_completed(self):
+        return self.filter(
+            session_4__lt=timezone.now() + datetime.timedelta(days=5),
+            archer__member__isnull=True,
+        )
+
 
 class Trial(models.Model):
     archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)

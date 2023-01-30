@@ -10,6 +10,7 @@ import stripe
 from braces.views import MessageMixin
 
 from beginners.models import STATUS_FAST_TRACK, STATUS_ON_COURSE
+from coaching.forms import TrialContinueForm
 from coaching.models import Trial
 from courses.models import Attendee, Course
 from membership.models import Member
@@ -41,6 +42,11 @@ class Overview(FullMemberRequired, TemplateView):
         context['trials_to_pay'] = sum(
             trial.fee for trial in context['trials'] if not trial.paid
         )
+        context['completed_trials'] = Trial.objects.filter_completed().filter(
+            archer__user=self.request.user,
+        ).select_related('archer', 'group')
+        for trial in context['completed_trials']:
+            trial.form = TrialContinueForm(trial=trial)
         context['course_attendees'] = Attendee.objects.filter(
             archer__user=self.request.user,
             course__can_book_individual_sessions=False,

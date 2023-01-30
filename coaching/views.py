@@ -1,9 +1,11 @@
+from django.db import transaction
 from django.db.models.functions import Lower
 from django.http import Http404
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import DetailView, TemplateView, View
+from django.views.generic import DetailView, FormView, TemplateView, View
+from django.views.generic.detail import SingleObjectMixin
 
 import stripe
 from braces.views import MessageMixin
@@ -13,6 +15,7 @@ from records.models import Achievement
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
 
+from .forms import TrialContinueForm
 from .models import TrainingGroup, TrainingGroupType, Trial
 
 
@@ -173,3 +176,33 @@ class TrialPayment(MessageMixin, View):
         for trial in trials:
             intent.lineitemintent_set.create(item=trial)
         return redirect(session.url, status_code=303)
+
+
+class TrialContinue(SingleObjectMixin, FormView):
+    form_class = TrialContinueForm
+    model = Trial
+    pk_url_kwarg = 'trial_pk'
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['trial'] = self.get_object()
+        return kwargs
+
+    def form_valid(self, form):
+        with transaction.atomic():
+            member = form.save()
+            # TODO: Notify Membership channel in Slack
+            customer_id = self.request.user.customer_id or None
+            if not self.request.user.subscription_id:
+                membership_overview_url = reverse('membership:overview')
+                session = stripe.checkout.Session.create(
+                    line_items=[{'price': price['id'], 'quantity': 1} for price in member.prices],
+                    mode='subscription',
+                    customer=customer_id,
+                    customer_email=None if customer_id else self.request.user.email,
+                    success_url=self.request.build_absolute_uri(membership_overview_url),
+                    cancel_url=self.request.build_absolute_uri(membership_overview_url),
+                )
+                return redirect(session.url, status_code=303)
+            else:
+                self.request.user.update_subscriptions()
