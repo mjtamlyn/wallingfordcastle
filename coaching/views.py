@@ -202,8 +202,8 @@ class TrialContinue(SingleObjectMixin, FormView):
                         form.cleaned_data['name'],
                         self.request.build_absolute_uri(
                             reverse(
-                                'admin:wallingford_castle_membershipinterest_change',
-                                args=(form.instance.pk,),
+                                'admin:membership_member_change',
+                                args=(member.pk,),
                             )
                         ),
                     )
