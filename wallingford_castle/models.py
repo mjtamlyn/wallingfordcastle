@@ -180,7 +180,7 @@ class User(AbstractEmailUser):
             }
         )
 
-    def update_subscriptions(self):
+    def get_membership_prices(self):
         from membership.models import Member
 
         prices = collections.defaultdict(int)
@@ -188,6 +188,10 @@ class User(AbstractEmailUser):
         for member in members:
             for price in member.prices:
                 prices[price['id']] += 1
+            return prices
+
+    def update_subscriptions(self):
+        prices = self.get_membership_prices()
 
         if self.subscription_id:
             new_items = []

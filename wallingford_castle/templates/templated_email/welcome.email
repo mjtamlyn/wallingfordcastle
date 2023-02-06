@@ -18,11 +18,15 @@ Any questions about kit, how things work, or anything really, don't be afraid
 to ask someone at a session, we're all happy to help out new members or can
 pass your questions on to those who can find you an answer.
 
+If you don't already have a membership with us for another family member,
+please arrange payment on the members section of the website[2].
+
 See you on the range soon!
 Wallingford committee
 
 [0] https://www.facebook.com/wallingfordcastlearchers/
 [1] https://www.facebook.com/groups/196865697342600/
+[2] https://www.wallingfordcastle.co.uk/members/
 {% endblock %}
 
 {% block html %}
@@ -52,6 +56,12 @@ involved as we can.
 Any questions about kit, how things work, or anything really, don't be afraid
 to ask someone at a session, we're all happy to help out new members or can
 pass your questions on to those who can find you an answer.
+</p>
+
+<p>
+If you don't already have a membership with us for another family member,
+please arrange payment on the <a href="https://www.wallingfordcastle.co.uk">
+members section of the website</a>.
 </p>
 
 <p>

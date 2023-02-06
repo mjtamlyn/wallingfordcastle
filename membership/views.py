@@ -130,13 +130,20 @@ class MemberUpdate(FullMemberRequired, MessageMixin, UpdateView):
 
 class PaymentDetails(MessageMixin, View):
     def get(self, request, *args, **kwargs):
+        user = self.request.user
         membership_overview_url = reverse('membership:overview')
-        customer_id = self.request.user.customer_id or None
-        subscription_id = self.request.user.subscription_id or None
+        customer_id = user.customer_id or None
+        subscription_id = user.subscription_id or None
         if not subscription_id or not customer_id:
-            # TODO
-            self.messages.error('You currently do not have a subscription set up, please contact Marc for help.')
-            return redirect(membership_overview_url)
+            session = stripe.checkout.Session.create(
+                line_items=[{'price': price['id'], 'quantity': 1} for price in user.get_membership_prices()],
+                customer=customer_id,
+                mode='subscription',
+                payment_method_types=['card'],
+                success_url=self.request.build_absolute_uri(membership_overview_url),
+                cancel_url=self.request.build_absolute_uri(membership_overview_url),
+            )
+            return redirect(session.url, status_code=303)
         else:
             session = stripe.checkout.Session.create(
                 mode='setup',

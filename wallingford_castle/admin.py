@@ -149,9 +149,9 @@ class MembershipInterestAdmin(DjangoObjectActions, admin.ModelAdmin):
             if member:
                 users.add(member.archer.user)
         for user in users:
-            if user.customer_id:
+            user.send_welcome_email()
+            if user.subscription_id:
                 user.update_subscriptions()
-                user.send_welcome_email()
     make_member.short_description = 'Promote to pending member'
     make_member.label = 'Make pending member'
 
