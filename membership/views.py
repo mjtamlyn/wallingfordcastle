@@ -137,7 +137,7 @@ class PaymentDetails(MessageMixin, View):
         if not subscription_id or not customer_id:
             session = stripe.checkout.Session.create(
                 line_items=[
-                    {'price': price['id'], 'quantity': 1}
+                    {'price': price, 'quantity': quantity}
                     for price, quantity in user.get_membership_prices().items()
                 ],
                 customer=customer_id,
