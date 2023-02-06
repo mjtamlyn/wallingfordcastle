@@ -115,7 +115,9 @@ class ArcherDataMixin(object):
     archer_date_of_birth.short_description = 'DOB'
 
     def archer_age_group(self, obj):
-        return obj.archer.age_group
+        if obj.archer.date_of_birth is None:
+            return None
+        return '%s (%s)' % (obj.archer.age_group, obj.archer.date_of_birth.year)
     archer_age_group.short_description = 'Age group'
     archer_age_group.admin_order_field = 'archer__date_of_birth'
 

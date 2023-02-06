@@ -11,8 +11,8 @@ from django.utils.http import urlsafe_base64_encode
 
 import stripe
 from custom_user.models import AbstractEmailUser
-from dateutil.relativedelta import relativedelta
 
+from archery.age_groups import age_group
 from .mail import send_mail
 
 AGE_CHOICES = (
@@ -278,34 +278,7 @@ class Archer(models.Model):
     def age_group(self):
         if not self.date_of_birth:
             return None
-        today = datetime.date.today()
-        years = relativedelta(today, self.date_of_birth).years
-        if years >= 25:
-            return 'Senior'
-        elif years < 6:
-            group = 'U6'
-        elif years < 8:
-            group = 'U8'
-        elif years < 10:
-            group = 'U10'
-        elif years < 12:
-            group = 'U12'
-        elif years < 14:
-            group = 'U14'
-        elif years < 16:
-            group = 'U16'
-        elif years < 18:
-            group = 'U18'
-        else:
-            group = 'Senior (U25)'
-        this_years_birthday = self.date_of_birth.replace(year=today.year)
-        days_to_birthday = (this_years_birthday - today).days
-        if days_to_birthday < 0:
-            this_years_birthday += relativedelta(years=1)
-            days_to_birthday = (this_years_birthday - today).days
-        if days_to_birthday < 90 and years % 2:
-            group += ' (Moving up on %s)' % this_years_birthday.strftime('%d/%m/%Y')
-        return group
+        return age_group(self.date_of_birth)
 
 
 class SeasonManager(models.Manager):
