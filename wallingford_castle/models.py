@@ -13,6 +13,7 @@ import stripe
 from custom_user.models import AbstractEmailUser
 
 from archery.age_groups import age_group
+
 from .mail import send_mail
 
 AGE_CHOICES = (
