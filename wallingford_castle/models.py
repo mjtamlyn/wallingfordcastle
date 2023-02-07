@@ -188,7 +188,7 @@ class User(AbstractEmailUser):
         for member in members:
             for price in member.prices:
                 prices[price['id']] += 1
-            return prices
+        return prices
 
     def update_subscriptions(self):
         prices = self.get_membership_prices()
