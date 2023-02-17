@@ -15,8 +15,8 @@ from coaching.models import ArcherSeason, Trial
 from courses.models import Attendee, Course
 from membership.models import Member
 from records.models import Achievement
-from wallingford_castle.models import Season
 from wallingford_castle.mixins import FullMemberRequired
+from wallingford_castle.models import Season
 
 from .forms import MemberForm
 
