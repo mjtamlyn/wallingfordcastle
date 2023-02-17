@@ -229,6 +229,8 @@ class TrialContinue(SingleObjectMixin, FormView):
 
 
 class EventPlan(FullMemberRequired, MessageMixin, TemplateView):
+    template_name = 'coaching/event_plan.html'
+
     def dispatch(self, request, *args, **kwargs):
         archer = get_object_or_404(Archer, pk=kwargs['archer_id'])
         if archer.user_id != request.user.pk and request.user not in archer.managing_users.all():
