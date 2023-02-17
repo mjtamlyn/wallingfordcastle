@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from . import api, views
 
 app_name = 'coaching'
 
@@ -15,4 +15,8 @@ urlpatterns = [
 
     path('<int:archer_id>/event-plan/', views.EventPlan.as_view(), name='event-plan'),
     path('<int:archer_id>/upcoming/event-plan/', views.NextEventPlan.as_view(), name='next-event-plan'),
+]
+
+coaching_api_urlpatterns = [
+    path('plan/<int:plan_id>/', api.plan_info, name='plan-info'),
 ]

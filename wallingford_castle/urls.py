@@ -4,6 +4,7 @@ from django.contrib.auth.views import (
 )
 from django.urls import include, path, reverse_lazy
 
+from coaching.urls import coaching_api_urlpatterns
 from events.urls import range_api_urlpatterns
 
 from . import views
@@ -19,6 +20,7 @@ urlpatterns = [
     path('membership-interest/', views.MembershipInterestView.as_view(), name='membership-interest'),
     path('beginners/', include('beginners.urls', namespace='beginners')),
     path('coaching/', include('coaching.urls', namespace='coaching')),
+    path('api/coaching/', include(coaching_api_urlpatterns)),
     path('members/', include('membership.urls', namespace='membership')),
     path('members/events/', include('events.urls', namespace='events')),
     path('api/range/', include(range_api_urlpatterns)),

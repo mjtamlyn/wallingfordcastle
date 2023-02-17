@@ -6,6 +6,7 @@ import { BrowserRouter, Switch, Route } from 'react-router-dom';
 import NoMatch from 'utils/NoMatch';
 import DateSelectorView from 'range/DateSelectorView';
 import DateView from 'range/DateView';
+import PlanView from 'coaching/PlanView';
 import initTournamentEntry from 'tournamentEntry';
 
 const rangeApp = document.getElementById('app-range-booking');
@@ -29,19 +30,9 @@ if (rangeApp) {
 
 const eventPlanApp  = document.getElementById('app-event-plan');
 
-const EventPlanApp = ({ planId }) => {
-    return (
-        <div>
-            <h2>Event plan!</h2>
-            <p>{ planId }</p>
-        </div>
-    );
-};
-
 if (eventPlanApp) {
     const planId = eventPlanApp.dataset.plan;
-    console.log(planId);
-    ReactDOM.render(<EventPlanApp planId={ planId } />, eventPlanApp);
+    ReactDOM.render(<PlanView planId={ planId } />, eventPlanApp);
 }
 
 const tournamentEntry = document.getElementById('tournament-entry');
