@@ -197,6 +197,7 @@ class Event(models.Model):
 
 
 class ArcherSeason(models.Model):
+    # TODO Unique together conditions - missing on several models!
     archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
     season = models.ForeignKey('wallingford_castle.Season', on_delete=models.PROTECT)
     target_classification = models.CharField(max_length=3, choices=CLASSIFICATION_CHOICES)

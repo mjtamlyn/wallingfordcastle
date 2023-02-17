@@ -302,6 +302,12 @@ class SeasonManager(models.Manager):
         except self.model.DoesNotExist:
             return None
 
+    def get_next(self, current=None):
+        if not current:
+            current = self.get_current()
+        next_season = self.filter(start_date__gt=current.start_date).order_by('start_date')
+        return next_season.first()
+
 
 class Season(models.Model):
     name = models.CharField(max_length=255)

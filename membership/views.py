@@ -11,10 +11,11 @@ from braces.views import MessageMixin
 
 from beginners.models import STATUS_FAST_TRACK, STATUS_ON_COURSE
 from coaching.forms import TrialContinueForm
-from coaching.models import Trial
+from coaching.models import ArcherSeason, Trial
 from courses.models import Attendee, Course
 from membership.models import Member
 from records.models import Achievement
+from wallingford_castle.models import Season
 from wallingford_castle.mixins import FullMemberRequired
 
 from .forms import MemberForm
@@ -71,6 +72,22 @@ class Overview(FullMemberRequired, TemplateView):
                     if not hasattr(member, 'achievements'):
                         member.achievements = []
                     member.achievements.append(achievement)
+
+        current_season = Season.objects.get_current()
+        next_season = Season.objects.get_next(current_season)
+        seasons = list(filter(None, [current_season, next_season]))
+        plans = ArcherSeason.objects.filter(
+            season__in=[season.pk for season in seasons],
+            archer__in=[member.archer for member in context['members']],
+        ).order_by('season__start_date')
+        for plan in plans:
+            for member in context['members']:
+                if member.archer_id == plan.archer_id:
+                    if plan.season_id == current_season.pk:
+                        member.current_season_plan = plan
+                    if plan.season_id == next_season.pk:
+                        member.next_season_plan = plan
+
         return context
 
 
