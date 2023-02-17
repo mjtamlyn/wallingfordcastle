@@ -2,7 +2,9 @@ import datetime
 
 from django.db import models
 from django.utils import timezone
+from django.utils.text import slugify
 
+from records.classifications import CLASSIFICATION_CHOICES
 from wallingford_castle.models import AGE_CHOICES
 
 DAY_CHOICES = (
@@ -161,3 +163,78 @@ class Trial(models.Model):
     @property
     def fee(self):
         return self.group.level.order_by('-trial_fee').first().trial_fee or 0
+
+
+class CompetitiveTrack(models.Model):
+    season = models.ForeignKey('wallingford_castle.Season', on_delete=models.PROTECT)
+    number = models.IntegerField()
+    name = models.CharField(max_length=100)
+
+    @property
+    def slug(self):
+        return 'track-%s-%s' % (self.number, slugify(self.season.name))
+
+    def __str__(self):
+        return self.name
+
+
+class Event(models.Model):
+    name = models.CharField(max_length=255)
+    event_format = models.CharField(max_length=100)
+    track = models.ForeignKey(CompetitiveTrack, on_delete=models.CASCADE)
+    date = models.DateField()
+    end_date = models.DateField(blank=True, null=True)
+    venue = models.CharField(max_length=255)
+    venue_post_code = models.CharField(max_length=20)
+    age_groups = models.CharField(max_length=100)  # TODO? This could be improved to a multiple choice
+    tournament_id = models.ForeignKey('tournaments.Tournament', on_delete=models.SET_NULL, blank=True, null=True)
+    event_id = models.ForeignKey('events.Event', on_delete=models.SET_NULL, blank=True, null=True)
+    club_trip = models.BooleanField(default=False)
+    entry_link = models.URLField(blank=True, null=True)
+
+    def __str__(self):
+        return self.name
+
+
+class ArcherSeason(models.Model):
+    archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
+    season = models.ForeignKey('wallingford_castle.Season', on_delete=models.PROTECT)
+    target_classification = models.CharField(max_length=3, choices=CLASSIFICATION_CHOICES)
+    personalised_target_comments = models.TextField(blank=True, default='')
+    tracks = models.ManyToManyField(CompetitiveTrack, through='ArcherTrack')
+    events = models.ManyToManyField(Event, through='Registration')
+
+    def __str__(self):
+        return '%s in the %s season' % (self.archer, self.season)
+
+
+class ArcherTrack(models.Model):
+    track = models.ForeignKey(CompetitiveTrack, on_delete=models.CASCADE)
+    archer_season = models.ForeignKey(ArcherSeason, on_delete=models.CASCADE)
+    recommended_events_comments = models.TextField(blank=True, default='')
+
+    def __str__(self):
+        return '%s - %s track' % (self.archer_season, self.track)
+
+
+class Registration(models.Model):
+    STATUS_CHOICES = (
+        ('definite', 'Yes, I am definitely attending'),
+        ('booked', 'Yes, I am booked in'),
+        ('maybe', 'I might be attending'),
+        ('no', 'I will not be attending'),
+    )
+    TRANSPORT_CHOICES = (
+        ('required', 'I can only attend if transport is offered'),
+        ('interested', 'Transport for archer would be helpful but we could make our own way there'),
+        ('plus-parent', 'Transport for archer and a parent would be helpful but we could make our own way there'),
+        ('own-way', 'We will make our own way there'),
+    )
+
+    archer_season = models.ForeignKey(ArcherSeason, on_delete=models.CASCADE)
+    event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    wants_transport = models.CharField(max_length=20, choices=TRANSPORT_CHOICES)
+
+    def __str__(self):
+        return '%s registered for %s' % (self.archer_season.archer, self.event)
