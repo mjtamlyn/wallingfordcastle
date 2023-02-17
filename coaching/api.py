@@ -19,4 +19,16 @@ def plan_info(request, plan_id):
         },
         'personalisedTargetComments': plan.personalised_target_comments,
     }
+
+    tracks = plan.season.competitivetrack_set.order_by('number')
+    track_data = []
+    for track in tracks:
+        archer_track = plan.archertrack_set.filter(track=track).first()
+        track_data.append({
+            'tier': track.number,
+            'tierName': 'Tier %s' % track.number,
+            'name': track.name,
+            'comments': archer_track.recommended_events_comments if archer_track else None,
+        })
+    response['tracks'] = track_data
     return JsonResponse(response)

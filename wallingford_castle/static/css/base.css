@@ -24,6 +24,113 @@
   display: inline;
 }
 
+/* line 2, ../../sass/_coaching.sass */
+.event-plan__section {
+  margin: 1em -15px;
+  border: 1px solid #ddd;
+  box-shadow: 1px 3px 3px #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+/* line 9, ../../sass/_coaching.sass */
+.event-plan__heading {
+  margin: 0;
+  padding: 0.5em 15px;
+  background-color: #CA4984;
+  color: white;
+}
+/* line 15, ../../sass/_coaching.sass */
+.event-plan__content {
+  margin: 1em 15px;
+}
+
+/* line 18, ../../sass/_coaching.sass */
+.explainer {
+  margin: 1em 15px;
+  border-radius: 8px;
+  border: 1px dashed #aaa;
+  background-color: #f7f7f7;
+  position: relative;
+  overflow: hidden;
+}
+/* line 26, ../../sass/_coaching.sass */
+.explainer__question {
+  margin: 0;
+  padding: 1em 49px;
+  background-color: #eee;
+  color: #555;
+  cursor: pointer;
+}
+/* line 33, ../../sass/_coaching.sass */
+.explainer__question:before {
+  content: "?";
+  display: block;
+  position: absolute;
+  top: 18px;
+  left: 15px;
+  background-color: #ccc;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  line-height: 24px;
+}
+/* line 48, ../../sass/_coaching.sass */
+.explainer__question:after {
+  content: ">";
+  display: block;
+  position: absolute;
+  top: 18px;
+  right: 15px;
+  background-color: #ccc;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  line-height: 24px;
+  transform: rotate(90deg);
+  transition: 0.5s transform;
+}
+/* line 66, ../../sass/_coaching.sass */
+.explainer__content {
+  margin: 0.5em 15px;
+  font-size: 16px;
+  opacity: 0.8;
+}
+/* line 71, ../../sass/_coaching.sass */
+.explainer__table {
+  margin: 0.5em 15px;
+  text-align: center;
+  min-width: 0;
+  width: -webkit-fill-available;
+}
+/* line 77, ../../sass/_coaching.sass */
+.explainer__table th {
+  text-align: center;
+  padding-bottom: 0.5em;
+  border-bottom: 1px dashed #aaa;
+}
+/* line 82, ../../sass/_coaching.sass */
+.explainer__table tbody tr:first-child td {
+  padding-top: 0.5em;
+}
+/* line 85, ../../sass/_coaching.sass */
+.explainer--open {
+  padding-bottom: 0.5em;
+}
+/* line 88, ../../sass/_coaching.sass */
+.explainer--open .explainer__question {
+  margin-bottom: 1em;
+}
+/* line 90, ../../sass/_coaching.sass */
+.explainer--open .explainer__question:after {
+  transform: rotate(270deg);
+}
+
 /* line 1, ../../sass/_footer.sass */
 .footer {
   color: #303236;
