@@ -170,6 +170,9 @@ class CompetitiveTrack(models.Model):
     number = models.IntegerField()
     name = models.CharField(max_length=100)
 
+    class Meta:
+        unique_together = ['season', 'number']
+
     @property
     def slug(self):
         return 'track-%s-%s' % (self.number, slugify(self.season.name))
@@ -192,18 +195,23 @@ class Event(models.Model):
     club_trip = models.BooleanField(default=False)
     entry_link = models.URLField(blank=True, null=True)
 
+    class Meta:
+        unique_together = ['date', 'name']
+
     def __str__(self):
         return self.name
 
 
 class ArcherSeason(models.Model):
-    # TODO Unique together conditions - missing on several models!
     archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
     season = models.ForeignKey('wallingford_castle.Season', on_delete=models.PROTECT)
     target_classification = models.CharField(max_length=3, choices=CLASSIFICATION_CHOICES)
     personalised_target_comments = models.TextField(blank=True, default='')
     tracks = models.ManyToManyField(CompetitiveTrack, through='ArcherTrack')
     events = models.ManyToManyField(Event, through='Registration')
+
+    class Meta:
+        unique_together = ['archer', 'season']
 
     def __str__(self):
         return '%s in the %s season' % (self.archer, self.season)
@@ -213,6 +221,9 @@ class ArcherTrack(models.Model):
     track = models.ForeignKey(CompetitiveTrack, on_delete=models.CASCADE)
     archer_season = models.ForeignKey(ArcherSeason, on_delete=models.CASCADE)
     recommended_events_comments = models.TextField(blank=True, default='')
+
+    class Meta:
+        unique_together = ['track', 'archer_season']
 
     def __str__(self):
         return '%s - %s track' % (self.archer_season, self.track)
@@ -236,6 +247,9 @@ class Registration(models.Model):
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
     wants_transport = models.CharField(max_length=20, choices=TRANSPORT_CHOICES)
+
+    class Meta:
+        unique_together = ['event', 'archer_season']
 
     def __str__(self):
         return '%s registered for %s' % (self.archer_season.archer, self.event)
