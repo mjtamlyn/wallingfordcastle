@@ -20,7 +20,7 @@ urlpatterns = [
     path('membership-interest/', views.MembershipInterestView.as_view(), name='membership-interest'),
     path('beginners/', include('beginners.urls', namespace='beginners')),
     path('coaching/', include('coaching.urls', namespace='coaching')),
-    path('api/coaching/', include(coaching_api_urlpatterns)),
+    path('api/coaching/', include((coaching_api_urlpatterns, 'coaching-api'))),
     path('members/', include('membership.urls', namespace='membership')),
     path('members/events/', include('events.urls', namespace='events')),
     path('api/range/', include(range_api_urlpatterns)),

@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { regular } from '@fortawesome/fontawesome-svg-core/import.macro';
 
+import store from 'utils/store';
 import Loader from 'utils/Loader';
 
 
-const TierEvent = ({ ev }) => {
+const TierEvent = ({ ev, planId }) => {
     let example = {"name":"Good Friday 720","eventFormat":"Single 720","ageGroups":"U21 & U18 only","date":{"api":"2023-04-07","pretty":"Friday 7 April"},"venue":{"name":"Wallingford Sports Park","postCode":"OX10 9RB"},"tournament":null,"clubEvent":null,"clubTrip":false,"entryLink":null,"registration":null};
 
     let eventType = null;
@@ -19,6 +20,65 @@ const TierEvent = ({ ev }) => {
     } else {
         eventType = 'DIY event';
     }
+
+    let options = (
+        <>
+            <option value="">{ ev.registration && 'Delete response' || 'Respond...' }</option>
+            <option value="definite">Yes, I am definitely attending</option>
+            <option value="booked">Yes, I am booked in</option>
+            <option value="maybe">I might be attending</option>
+            <option value="no">I will not be attending</option>
+        </>
+    );
+    let defaultValue = ev.registration && ev.registration.status.id;
+    if (ev.clubTrip) {
+        options = (
+            <>
+                <option value="">{ ev.registration && 'Delete response' || 'Respond...' }</option>
+                <option value="definite">Yes, I am definitely attending</option>
+                <option value="booked|required">Booked, I need transport</option>
+                <option value="booked|interested">Booked, I would like transport for me</option>
+                <option value="booked|plus-parent">Booked, I would like transport for me and a parent</option>
+                <option value="booked|own-way">Booked, I do not need transport</option>
+                <option value="maybe">I might be attending</option>
+                <option value="no">I will not be attending</option>
+            </>
+        );
+        if (ev.registration && ev.registration.status.id === 'booked' && ev.registration.wantsTransport) {
+            defaultValue = `booked|${ev.registration.wantsTransport.id}`;
+        }
+    }
+
+    let link = null;
+    let linkText = null;
+    if (ev.tournament) {
+        link = ev.tournament.link;
+        linkText = 'Book via club website';
+    } else if (ev.clubEvent) {
+        link = ev.clubEvent.link;
+        linkText = 'Book via club website';
+    } else if (ev.entryLink) {
+        link = ev.entryLink;
+        linkText = 'External booking';
+    }
+
+    const register = (e) => {
+        const data = {
+            status: e.target.value,
+        };
+        if (data.status.includes('|')) {
+            const [stat, transport] = data.status.split('|');
+            data.status = stat;
+            data.wantsTransport = transport;
+        }
+        store.send(ev.registrationLink, data).then((response) => {
+            if (response.ok) {
+                store.invalidate(`/api/coaching/plan/${planId}/`);
+            }
+        }).catch((error) => {
+            console.error('error', error);
+        });
+    };
 
     return (
         <div className="event-plan__event">
@@ -48,13 +108,17 @@ const TierEvent = ({ ev }) => {
                 <FontAwesomeIcon icon={ regular('user') } className="event-plan__icon" fixedWidth />
                 { ev.ageGroups }
             </p>
+            <select className="event-plan__event__registration" defaultValue={ defaultValue } onChange={ register }>
+                { options }
+            </select>
+            { link && <a className="event-plan__event__booking" href={ link }>{ linkText }</a> }
         </div>
     );
 };
 
 
-const Tier = ({ tier }) => {
-    const events = tier.events.map(ev => <TierEvent ev={ ev } key={ ev.name + '-' + ev.date.api } />);
+const Tier = ({ tier, planId }) => {
+    const events = tier.events.map(ev => <TierEvent ev={ ev } key={ `${ev.date.api} / ${ev.name}` } planId={ planId } />);
     return (
         <div className="event-plan__tier">
             <h3 className="event-plan__heading">{ tier.tierName } - { tier.name }</h3>
@@ -89,13 +153,15 @@ Explainer.table = ({ children }) => {
 
 
 class PlanView extends Loader {
+    subscribe = true
+
     getApiEndpoint(props) {
         const planId = props.planId;
         return `/api/coaching/plan/${planId}/`;
     }
 
     renderLoaded(data) {
-        const tiers = data.tracks.map(tier => <Tier tier={ tier } key={ tier.tier } />);
+        const tiers = data.tracks.map(tier => <Tier tier={ tier } key={ tier.tier } planId={ this.props.planId }/>);
         return (
             <div className="event-plan">
                 <div className="event-plan__section">

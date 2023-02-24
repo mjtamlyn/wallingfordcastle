@@ -1,8 +1,10 @@
+import json
+
 from django.http import Http404, JsonResponse
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 
-from .models import ArcherSeason
+from .models import ArcherSeason, Event, Registration
 
 
 def plan_info(request, plan_id):
@@ -71,8 +73,35 @@ def plan_info(request, plan_id):
                         'display': registration.get_wants_transport_display(),
                     },
                 } if registration else None,
+                'registrationLink': reverse('coaching-api:register', kwargs={
+                    'plan_id': plan_id,
+                    'event_id': event.pk,
+                }),
             }
             event_data.append(event)
         track_data[-1]['events'] = event_data
     response['tracks'] = track_data
     return JsonResponse(response)
+
+
+def register(request, plan_id, event_id):
+    plan = get_object_or_404(ArcherSeason, pk=plan_id)
+    event = get_object_or_404(Event, pk=event_id)
+    data = json.loads(request.body)
+    status = data['status']
+    wants_transport = data.get('wantsTransport', None)
+
+    if not status:
+        plan.registration_set.filter(event=event).delete()
+        return JsonResponse({'ok': True})
+
+    try:
+        registration = plan.registration_set.get(event=event)
+    except Registration.DoesNotExist:
+        plan.registration_set.create(event=event, status=status, wants_transport=wants_transport)
+    else:
+        registration.status = status
+        registration.wants_transport = wants_transport
+        registration.save()
+
+    return JsonResponse({'ok': True})

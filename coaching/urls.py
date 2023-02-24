@@ -19,4 +19,5 @@ urlpatterns = [
 
 coaching_api_urlpatterns = [
     path('plan/<int:plan_id>/', api.plan_info, name='plan-info'),
+    path('plan/register/<int:plan_id>/<int:event_id>/', api.register, name='register'),
 ]

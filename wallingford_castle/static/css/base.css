@@ -69,12 +69,28 @@
   margin: 0.5em 0;
 }
 /* line 41, ../../sass/_coaching.sass */
+.event-plan__event__registration {
+  font-size: 16px;
+  padding: 3px;
+  margin: 0 0 0.5em;
+  border-color: #aaa;
+}
+/* line 47, ../../sass/_coaching.sass */
+.event-plan__event__booking {
+  display: block;
+  margin: 0 -10px -10px;
+  padding: 10px;
+  background-color: #CA4984;
+  color: white;
+  text-align: center;
+}
+/* line 55, ../../sass/_coaching.sass */
 .event-plan__icon {
   color: #303236;
   margin-right: 0.25em;
 }
 
-/* line 45, ../../sass/_coaching.sass */
+/* line 59, ../../sass/_coaching.sass */
 .explainer {
   margin: 1em 15px;
   border-radius: 8px;
@@ -83,7 +99,7 @@
   position: relative;
   overflow: hidden;
 }
-/* line 53, ../../sass/_coaching.sass */
+/* line 67, ../../sass/_coaching.sass */
 .explainer__question {
   margin: 0;
   padding: 1em 49px;
@@ -91,7 +107,7 @@
   color: #555;
   cursor: pointer;
 }
-/* line 60, ../../sass/_coaching.sass */
+/* line 74, ../../sass/_coaching.sass */
 .explainer__question:before {
   content: "?";
   display: block;
@@ -107,7 +123,7 @@
   color: white;
   line-height: 24px;
 }
-/* line 75, ../../sass/_coaching.sass */
+/* line 89, ../../sass/_coaching.sass */
 .explainer__question:after {
   content: ">";
   display: block;
@@ -125,38 +141,38 @@
   transform: rotate(90deg);
   transition: 0.5s transform;
 }
-/* line 93, ../../sass/_coaching.sass */
+/* line 107, ../../sass/_coaching.sass */
 .explainer__content {
   margin: 0.5em 15px;
   font-size: 16px;
   opacity: 0.8;
 }
-/* line 98, ../../sass/_coaching.sass */
+/* line 112, ../../sass/_coaching.sass */
 .explainer__table {
   margin: 0.5em 15px;
   text-align: center;
   min-width: 0;
   width: -webkit-fill-available;
 }
-/* line 104, ../../sass/_coaching.sass */
+/* line 118, ../../sass/_coaching.sass */
 .explainer__table th {
   text-align: center;
   padding-bottom: 0.5em;
   border-bottom: 1px dashed #aaa;
 }
-/* line 109, ../../sass/_coaching.sass */
+/* line 123, ../../sass/_coaching.sass */
 .explainer__table tbody tr:first-child td {
   padding-top: 0.5em;
 }
-/* line 112, ../../sass/_coaching.sass */
+/* line 126, ../../sass/_coaching.sass */
 .explainer--open {
   padding-bottom: 0.5em;
 }
-/* line 115, ../../sass/_coaching.sass */
+/* line 129, ../../sass/_coaching.sass */
 .explainer--open .explainer__question {
   margin-bottom: 1em;
 }
-/* line 117, ../../sass/_coaching.sass */
+/* line 131, ../../sass/_coaching.sass */
 .explainer--open .explainer__question:after {
   transform: rotate(270deg);
 }
