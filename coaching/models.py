@@ -189,9 +189,9 @@ class Event(models.Model):
     end_date = models.DateField(blank=True, null=True)
     venue = models.CharField(max_length=255)
     venue_post_code = models.CharField(max_length=20)
-    age_groups = models.CharField(max_length=100)  # TODO? This could be improved to a multiple choice
-    tournament_id = models.ForeignKey('tournaments.Tournament', on_delete=models.SET_NULL, blank=True, null=True)
-    event_id = models.ForeignKey('events.Event', on_delete=models.SET_NULL, blank=True, null=True)
+    age_groups = models.CharField(max_length=100)
+    tournament = models.ForeignKey('tournaments.Tournament', on_delete=models.SET_NULL, blank=True, null=True)
+    event = models.ForeignKey('events.Event', on_delete=models.SET_NULL, blank=True, null=True)
     club_trip = models.BooleanField(default=False)
     entry_link = models.URLField(blank=True, null=True)
 
@@ -246,7 +246,7 @@ class Registration(models.Model):
     archer_season = models.ForeignKey(ArcherSeason, on_delete=models.CASCADE)
     event = models.ForeignKey(Event, on_delete=models.SET_NULL, blank=True, null=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)
-    wants_transport = models.CharField(max_length=20, choices=TRANSPORT_CHOICES)
+    wants_transport = models.CharField(max_length=20, choices=TRANSPORT_CHOICES, blank=True, null=True)
 
     class Meta:
         unique_together = ['event', 'archer_season']
