@@ -1,13 +1,67 @@
 import React, { useState } from 'react';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { regular } from '@fortawesome/fontawesome-svg-core/import.macro';
+
 import Loader from 'utils/Loader';
 
 
-const Tier = ({ tier }) => {
+const TierEvent = ({ ev }) => {
+    let example = {"name":"Good Friday 720","eventFormat":"Single 720","ageGroups":"U21 & U18 only","date":{"api":"2023-04-07","pretty":"Friday 7 April"},"venue":{"name":"Wallingford Sports Park","postCode":"OX10 9RB"},"tournament":null,"clubEvent":null,"clubTrip":false,"entryLink":null,"registration":null};
+
+    let eventType = null;
+    if (ev.tournament) {
+        eventType = 'WCA hosted competition';
+    } else if (ev.clubEvent) {
+        eventType = 'WCA hosted informal';
+    } else if (ev.clubTrip) {
+        eventType = 'WCA club trip';
+    } else {
+        eventType = 'DIY event';
+    }
+
     return (
-        <div className="event_plan__tier">
+        <div className="event-plan__event">
+            <h4 className="event-plan__event__title">
+                { ev.name }
+                { ev.registration &&
+                    <span>
+                        <FontAwesomeIcon icon={ regular('circle-check') } className="event-plan__icon" />
+                        { ev.registration.status.display } 
+                    </span>
+                }
+            </h4>
+            <p className="event-plan__event__date">
+                <FontAwesomeIcon icon={ regular('calendar-days') } className="event-plan__icon" fixedWidth />
+                { ev.date.pretty }
+                { ev.endDate && <> - { ev.endDate.pretty }</>}
+            </p>
+            <p className="event-plan__event__location">
+                <FontAwesomeIcon icon={ regular('map') } className="event-plan__icon" fixedWidth />
+                { ev.venue.name }, { ev.venue.postCode }
+            </p>
+            <p className="event-plan__event__format">
+                <FontAwesomeIcon icon={ regular('rectangle-list') } className="event-plan__icon" fixedWidth />
+                { eventType } - { ev.eventFormat }
+            </p>
+            <p className="event-plan__event__format">
+                <FontAwesomeIcon icon={ regular('user') } className="event-plan__icon" fixedWidth />
+                { ev.ageGroups }
+            </p>
+        </div>
+    );
+};
+
+
+const Tier = ({ tier }) => {
+    const events = tier.events.map(ev => <TierEvent ev={ ev } key={ ev.name + '-' + ev.date.api } />);
+    return (
+        <div className="event-plan__tier">
             <h3 className="event-plan__heading">{ tier.tierName } - { tier.name }</h3>
             <p className="event-plan__content">{ tier.comments }</p>
+            <div className="event-plan__events">
+                { events }
+            </div>
         </div>
     );
 };

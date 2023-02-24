@@ -15,6 +15,33 @@
   &__content
     margin: 1em 15px
 
+  &__events
+    display: grid
+    grid-template-columns: 1fr 1fr
+    margin: 0 15px 15px
+    grid-gap: 15px
+
+  &__event
+    border: 1px dashed #aaa
+    padding: 10px
+
+    &__title
+      margin: -10px -10px 0
+      padding: 10px
+      background-color: #eee
+      display: flex
+      justify-content: space-between
+
+    &__date,
+    &__location,
+    &__format
+      font-size: 16px
+      margin: 0.5em 0
+
+  &__icon
+    color: $grey
+    margin-right: 0.25em
+
 .explainer
   margin: 1em 15px
   border-radius: 8px

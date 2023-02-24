@@ -43,8 +43,38 @@
 .event-plan__content {
   margin: 1em 15px;
 }
-
 /* line 18, ../../sass/_coaching.sass */
+.event-plan__events {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 15px 15px;
+  grid-gap: 15px;
+}
+/* line 24, ../../sass/_coaching.sass */
+.event-plan__event {
+  border: 1px dashed #aaa;
+  padding: 10px;
+}
+/* line 28, ../../sass/_coaching.sass */
+.event-plan__event__title {
+  margin: -10px -10px 0;
+  padding: 10px;
+  background-color: #eee;
+  display: flex;
+  justify-content: space-between;
+}
+/* line 35, ../../sass/_coaching.sass */
+.event-plan__event__date, .event-plan__event__location, .event-plan__event__format {
+  font-size: 16px;
+  margin: 0.5em 0;
+}
+/* line 41, ../../sass/_coaching.sass */
+.event-plan__icon {
+  color: #303236;
+  margin-right: 0.25em;
+}
+
+/* line 45, ../../sass/_coaching.sass */
 .explainer {
   margin: 1em 15px;
   border-radius: 8px;
@@ -53,7 +83,7 @@
   position: relative;
   overflow: hidden;
 }
-/* line 26, ../../sass/_coaching.sass */
+/* line 53, ../../sass/_coaching.sass */
 .explainer__question {
   margin: 0;
   padding: 1em 49px;
@@ -61,7 +91,7 @@
   color: #555;
   cursor: pointer;
 }
-/* line 33, ../../sass/_coaching.sass */
+/* line 60, ../../sass/_coaching.sass */
 .explainer__question:before {
   content: "?";
   display: block;
@@ -77,7 +107,7 @@
   color: white;
   line-height: 24px;
 }
-/* line 48, ../../sass/_coaching.sass */
+/* line 75, ../../sass/_coaching.sass */
 .explainer__question:after {
   content: ">";
   display: block;
@@ -95,38 +125,38 @@
   transform: rotate(90deg);
   transition: 0.5s transform;
 }
-/* line 66, ../../sass/_coaching.sass */
+/* line 93, ../../sass/_coaching.sass */
 .explainer__content {
   margin: 0.5em 15px;
   font-size: 16px;
   opacity: 0.8;
 }
-/* line 71, ../../sass/_coaching.sass */
+/* line 98, ../../sass/_coaching.sass */
 .explainer__table {
   margin: 0.5em 15px;
   text-align: center;
   min-width: 0;
   width: -webkit-fill-available;
 }
-/* line 77, ../../sass/_coaching.sass */
+/* line 104, ../../sass/_coaching.sass */
 .explainer__table th {
   text-align: center;
   padding-bottom: 0.5em;
   border-bottom: 1px dashed #aaa;
 }
-/* line 82, ../../sass/_coaching.sass */
+/* line 109, ../../sass/_coaching.sass */
 .explainer__table tbody tr:first-child td {
   padding-top: 0.5em;
 }
-/* line 85, ../../sass/_coaching.sass */
+/* line 112, ../../sass/_coaching.sass */
 .explainer--open {
   padding-bottom: 0.5em;
 }
-/* line 88, ../../sass/_coaching.sass */
+/* line 115, ../../sass/_coaching.sass */
 .explainer--open .explainer__question {
   margin-bottom: 1em;
 }
-/* line 90, ../../sass/_coaching.sass */
+/* line 117, ../../sass/_coaching.sass */
 .explainer--open .explainer__question:after {
   transform: rotate(270deg);
 }
