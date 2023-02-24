@@ -13,7 +13,7 @@ const src = [
 
 module.exports = {
     context: path.resolve(__dirname),
-    devtool: devMode ? 'cheap-module-eval-source-map' : undefined,
+    devtool: devMode ? 'cheap-module-source-map' : null,
     entry: {
         global: './js_src/entry',
     },
