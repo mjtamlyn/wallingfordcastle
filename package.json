@@ -8,7 +8,7 @@
   },
   "scripts": {
     "watch": "node tools/WebpackServer.js",
-    "build": "npm run clean && NODE_ENV=production webpack --display-error-details --config webpack.config.js",
+    "build": "npm run clean && NODE_ENV=production webpack --config webpack.config.js",
     "clean": "rm -rf build"
   },
   "engines": {
