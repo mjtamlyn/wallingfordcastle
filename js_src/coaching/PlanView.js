@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import Explainer from 'utils/Explainer';
 import Loader from 'utils/Loader';
 import ClassificationExplainer from './ClassificationExplainer';
+import EventCalendar from './EventCalendar';
 import Tier from './Tier';
 
 
@@ -165,6 +166,11 @@ class PlanView extends Loader {
 
                     </ul>
                     { tiers }
+                </div>
+
+                <div className="event-plan__section">
+                    <h2 className="event-plan__heading">Full calendar</h2>
+                    <EventCalendar tracks={ data.tracks } />
                 </div>
             </div>
         );

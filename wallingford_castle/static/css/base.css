@@ -103,8 +103,15 @@
   color: #303236;
   margin-right: 0.25em;
 }
-
 /* line 67, ../../sass/_coaching.sass */
+.event-plan__calendar {
+  margin: 15px;
+  display: grid;
+  grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1fr;
+  grid-gap: 0.5em;
+}
+
+/* line 73, ../../sass/_coaching.sass */
 .explainer {
   margin: 1em 15px;
   border-radius: 8px;
@@ -113,7 +120,7 @@
   position: relative;
   overflow: hidden;
 }
-/* line 75, ../../sass/_coaching.sass */
+/* line 81, ../../sass/_coaching.sass */
 .explainer__question {
   margin: 0;
   padding: 1em 49px;
@@ -121,7 +128,7 @@
   color: #555;
   cursor: pointer;
 }
-/* line 82, ../../sass/_coaching.sass */
+/* line 88, ../../sass/_coaching.sass */
 .explainer__question:before {
   content: "?";
   display: block;
@@ -137,7 +144,7 @@
   color: white;
   line-height: 24px;
 }
-/* line 97, ../../sass/_coaching.sass */
+/* line 103, ../../sass/_coaching.sass */
 .explainer__question:after {
   content: ">";
   display: block;
@@ -155,38 +162,38 @@
   transform: rotate(90deg);
   transition: 0.5s transform;
 }
-/* line 115, ../../sass/_coaching.sass */
+/* line 121, ../../sass/_coaching.sass */
 .explainer__content {
   margin: 0.5em 15px;
   font-size: 16px;
   opacity: 0.8;
 }
-/* line 120, ../../sass/_coaching.sass */
+/* line 126, ../../sass/_coaching.sass */
 .explainer__table {
   margin: 0.5em 15px;
   text-align: center;
   min-width: 0;
   width: -webkit-fill-available;
 }
-/* line 126, ../../sass/_coaching.sass */
+/* line 132, ../../sass/_coaching.sass */
 .explainer__table th {
   text-align: center;
   padding-bottom: 0.5em;
   border-bottom: 1px dashed #aaa;
 }
-/* line 131, ../../sass/_coaching.sass */
+/* line 137, ../../sass/_coaching.sass */
 .explainer__table tbody tr:first-child td {
   padding-top: 0.5em;
 }
-/* line 134, ../../sass/_coaching.sass */
+/* line 140, ../../sass/_coaching.sass */
 .explainer--open {
   padding-bottom: 0.5em;
 }
-/* line 137, ../../sass/_coaching.sass */
+/* line 143, ../../sass/_coaching.sass */
 .explainer--open .explainer__question {
   margin-bottom: 1em;
 }
-/* line 139, ../../sass/_coaching.sass */
+/* line 145, ../../sass/_coaching.sass */
 .explainer--open .explainer__question:after {
   transform: rotate(270deg);
 }
