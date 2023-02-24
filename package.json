@@ -12,7 +12,7 @@
     "clean": "rm -rf build"
   },
   "engines": {
-    "node": "16.x"
+    "node": "17.x"
   },
   "private": true,
   "repository": "git+https://github.com/mjtamlyn/wallingfordcastle.git",
@@ -26,7 +26,11 @@
     "@babel/plugin-proposal-class-properties": "^7.10.1",
     "@babel/plugin-proposal-function-bind": "^7.10.4",
     "@babel/preset-react": "^7.10.1",
+    "@fortawesome/fontawesome-svg-core": "^6.3.0",
+    "@fortawesome/free-regular-svg-icons": "^6.3.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "babel-loader": "^8.1.0",
+    "babel-plugin-macros": "^3.1.0",
     "body-scroll-lock": "^3.1.5",
     "cookies-js": "^1.2.3",
     "deep-for-each": "^3.0.0",
