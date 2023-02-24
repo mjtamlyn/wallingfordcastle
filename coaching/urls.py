@@ -1,6 +1,6 @@
 from django.urls import path
 
-from . import views
+from . import api, views
 
 app_name = 'coaching'
 
@@ -12,4 +12,12 @@ urlpatterns = [
     path('upcoming/<slug:group>/', views.UpcomingGroupReport.as_view(), name='upcoming-group-report'),
     path('<slug:group>/sessions/', views.GroupSchedule.as_view(), name='group-schedule'),
     path('upcoming/<slug:group>/sessions/', views.UpcomingGroupSchedule.as_view(), name='upcoming-group-schedule'),
+
+    path('<int:archer_id>/event-plan/', views.EventPlan.as_view(), name='event-plan'),
+    path('<int:archer_id>/upcoming/event-plan/', views.NextEventPlan.as_view(), name='next-event-plan'),
+]
+
+coaching_api_urlpatterns = [
+    path('plan/<int:plan_id>/', api.plan_info, name='plan-info'),
+    path('plan/register/<int:plan_id>/<int:event_id>/', api.register, name='register'),
 ]

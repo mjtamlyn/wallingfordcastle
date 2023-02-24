@@ -1,0 +1,146 @@
+.event-plan
+  &__section
+    margin: 1em -15px
+    border: 1px solid #ddd
+    box-shadow: 1px 3px 3px #ddd
+    border-radius: 8px
+    overflow: hidden
+
+    @media (max-width: 750px)
+      margin-left: 0
+      margin-right: 0
+    
+  &__heading
+    margin: 0
+    padding: 0.5em 15px
+    background-color: $pink
+    color: white
+
+  &__content
+    margin: 1em 15px
+
+  &__events
+    display: grid
+    grid-template-columns: 1fr 1fr
+    margin: 0 15px 15px
+    grid-gap: 15px
+
+    @media (max-width: 750px)
+      grid-template-columns: 1fr
+
+  &__event
+    border: 1px dashed #aaa
+    padding: 10px
+
+    &__title
+      margin: -10px -10px 0
+      padding: 10px
+      background-color: #eee
+      display: flex
+      justify-content: space-between
+
+    &__date,
+    &__location,
+    &__format
+      font-size: 16px
+      margin: 0.5em 0
+
+    &__registration
+      font-size: 16px
+      padding: 3px
+      margin: 0 0 0.5em
+      border-color: #aaa
+      max-width: 100%
+
+    &__booking
+      display: block
+      margin: 0 -10px -10px
+      padding: 10px
+      background-color: $pink
+      color: white
+      text-align: center
+
+  &__icon
+    color: $grey
+    margin-right: 0.25em
+
+  &__calendar
+    margin: 15px
+    display: grid
+    grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1fr
+    grid-gap: 0.5em
+
+.explainer
+  margin: 1em 15px
+  border-radius: 8px
+  border: 1px dashed #aaa
+  background-color: #f7f7f7
+  position: relative
+  overflow: hidden
+
+  &__question
+    margin: 0
+    padding: 1em 49px
+    background-color: #eee
+    color: #555
+    cursor: pointer
+
+    &:before
+      content: "?"
+      display: block
+      position: absolute
+      top: 18px
+      left: 15px
+      background-color: #ccc
+      width: 24px
+      height: 24px
+      border-radius: 12px
+      text-align: center
+      font-weight: bold
+      color: white
+      line-height: 24px
+
+    &:after
+      content: ">"
+      display: block
+      position: absolute
+      top: 18px
+      right: 15px
+      background-color: #ccc
+      width: 24px
+      height: 24px
+      border-radius: 12px
+      text-align: center
+      font-weight: bold
+      color: white
+      line-height: 24px
+
+      transform: rotate(90deg)
+      transition: 0.5s transform
+
+  &__content
+    margin: 0.5em 15px
+    font-size: 16px
+    opacity: 0.8
+
+  &__table
+    margin: 0.5em 15px
+    text-align: center
+    min-width: 0
+    width: -webkit-fill-available
+
+    th
+      text-align: center
+      padding-bottom: 0.5em
+      border-bottom: 1px dashed #aaa
+
+    tbody tr:first-child td
+      padding-top: 0.5em
+
+  &--open
+    padding-bottom: 0.5em
+
+    .explainer__question
+      margin-bottom: 1em
+      &:after
+        transform: rotate(270deg)

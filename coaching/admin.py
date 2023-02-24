@@ -15,7 +15,8 @@ from django_object_actions import DjangoObjectActions
 from wallingford_castle.admin import ArcherDataMixin
 
 from .models import (
-    Absence, GroupSession, TrainingGroup, TrainingGroupType, Trial,
+    Absence, ArcherSeason, ArcherTrack, CompetitiveTrack, Event, GroupSession,
+    Registration, TrainingGroup, TrainingGroupType, Trial,
 )
 
 
@@ -194,3 +195,45 @@ class TrialAdmin(ArcherDataMixin, admin.ModelAdmin):
         elif instance.archer.member_set.exists():
             return 'Joined'
         return 'Completed'
+
+
+@admin.register(CompetitiveTrack)
+class CompetitiveTrackAdmin(admin.ModelAdmin):
+    list_display = ['name', 'season']
+    list_fileter = ['season']
+
+
+@admin.register(Event)
+class EventAdmin(admin.ModelAdmin):
+    list_display = ['name', 'date']
+
+
+@admin.register(ArcherSeason)
+class ArcherSeasonAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['archer']
+    search_fields = ['archer__name']
+    list_display = ['archer', 'season', 'target_classification']
+    list_filter = ['season']
+
+
+@admin.register(ArcherTrack)
+class ArcherTrack(admin.ModelAdmin):
+    autocomplete_fields = ['archer_season']
+    list_display = ['track', 'archer', 'season']
+    list_filter = ['archer_season__season', 'track']
+
+    def archer(self, instance):
+        return instance.archer_season.archer
+
+    def season(self, instance):
+        return instance.archer_season.season
+
+
+@admin.register(Registration)
+class RegistrationAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['archer_season']
+    list_display = ['event', 'archer', 'get_status_display', 'get_wants_transport_display']
+    list_filter = ['archer_season__season', 'event']
+
+    def archer(self, instance):
+        return instance.archer_season.archer

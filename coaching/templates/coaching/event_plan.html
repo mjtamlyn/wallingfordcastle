@@ -1,0 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p><a href="{% url 'membership:overview' %}">< Back to membership overview</a></p>
+<h2>Event plan - {{ plan }}</h2>
+<div id="app-event-plan" data-plan="{{ plan.pk }}"></div>
+{% endblock %}

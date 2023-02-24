@@ -24,6 +24,180 @@
   display: inline;
 }
 
+/* line 2, ../../sass/_coaching.sass */
+.event-plan__section {
+  margin: 1em -15px;
+  border: 1px solid #ddd;
+  box-shadow: 1px 3px 3px #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+}
+@media (max-width: 750px) {
+  /* line 2, ../../sass/_coaching.sass */
+  .event-plan__section {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+/* line 13, ../../sass/_coaching.sass */
+.event-plan__heading {
+  margin: 0;
+  padding: 0.5em 15px;
+  background-color: #CA4984;
+  color: white;
+}
+/* line 19, ../../sass/_coaching.sass */
+.event-plan__content {
+  margin: 1em 15px;
+}
+/* line 22, ../../sass/_coaching.sass */
+.event-plan__events {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0 15px 15px;
+  grid-gap: 15px;
+}
+@media (max-width: 750px) {
+  /* line 22, ../../sass/_coaching.sass */
+  .event-plan__events {
+    grid-template-columns: 1fr;
+  }
+}
+/* line 31, ../../sass/_coaching.sass */
+.event-plan__event {
+  border: 1px dashed #aaa;
+  padding: 10px;
+}
+/* line 35, ../../sass/_coaching.sass */
+.event-plan__event__title {
+  margin: -10px -10px 0;
+  padding: 10px;
+  background-color: #eee;
+  display: flex;
+  justify-content: space-between;
+}
+/* line 42, ../../sass/_coaching.sass */
+.event-plan__event__date, .event-plan__event__location, .event-plan__event__format {
+  font-size: 16px;
+  margin: 0.5em 0;
+}
+/* line 48, ../../sass/_coaching.sass */
+.event-plan__event__registration {
+  font-size: 16px;
+  padding: 3px;
+  margin: 0 0 0.5em;
+  border-color: #aaa;
+  max-width: 100%;
+}
+/* line 55, ../../sass/_coaching.sass */
+.event-plan__event__booking {
+  display: block;
+  margin: 0 -10px -10px;
+  padding: 10px;
+  background-color: #CA4984;
+  color: white;
+  text-align: center;
+}
+/* line 63, ../../sass/_coaching.sass */
+.event-plan__icon {
+  color: #303236;
+  margin-right: 0.25em;
+}
+/* line 67, ../../sass/_coaching.sass */
+.event-plan__calendar {
+  margin: 15px;
+  display: grid;
+  grid-template-columns: 0.5fr 0.5fr 0.5fr 1fr 1fr;
+  grid-gap: 0.5em;
+}
+
+/* line 73, ../../sass/_coaching.sass */
+.explainer {
+  margin: 1em 15px;
+  border-radius: 8px;
+  border: 1px dashed #aaa;
+  background-color: #f7f7f7;
+  position: relative;
+  overflow: hidden;
+}
+/* line 81, ../../sass/_coaching.sass */
+.explainer__question {
+  margin: 0;
+  padding: 1em 49px;
+  background-color: #eee;
+  color: #555;
+  cursor: pointer;
+}
+/* line 88, ../../sass/_coaching.sass */
+.explainer__question:before {
+  content: "?";
+  display: block;
+  position: absolute;
+  top: 18px;
+  left: 15px;
+  background-color: #ccc;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  line-height: 24px;
+}
+/* line 103, ../../sass/_coaching.sass */
+.explainer__question:after {
+  content: ">";
+  display: block;
+  position: absolute;
+  top: 18px;
+  right: 15px;
+  background-color: #ccc;
+  width: 24px;
+  height: 24px;
+  border-radius: 12px;
+  text-align: center;
+  font-weight: bold;
+  color: white;
+  line-height: 24px;
+  transform: rotate(90deg);
+  transition: 0.5s transform;
+}
+/* line 121, ../../sass/_coaching.sass */
+.explainer__content {
+  margin: 0.5em 15px;
+  font-size: 16px;
+  opacity: 0.8;
+}
+/* line 126, ../../sass/_coaching.sass */
+.explainer__table {
+  margin: 0.5em 15px;
+  text-align: center;
+  min-width: 0;
+  width: -webkit-fill-available;
+}
+/* line 132, ../../sass/_coaching.sass */
+.explainer__table th {
+  text-align: center;
+  padding-bottom: 0.5em;
+  border-bottom: 1px dashed #aaa;
+}
+/* line 137, ../../sass/_coaching.sass */
+.explainer__table tbody tr:first-child td {
+  padding-top: 0.5em;
+}
+/* line 140, ../../sass/_coaching.sass */
+.explainer--open {
+  padding-bottom: 0.5em;
+}
+/* line 143, ../../sass/_coaching.sass */
+.explainer--open .explainer__question {
+  margin-bottom: 1em;
+}
+/* line 145, ../../sass/_coaching.sass */
+.explainer--open .explainer__question:after {
+  transform: rotate(270deg);
+}
+
 /* line 1, ../../sass/_footer.sass */
 .footer {
   color: #303236;

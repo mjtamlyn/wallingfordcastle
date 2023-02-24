@@ -4,7 +4,7 @@ from django.conf import settings
 from django.db import transaction
 from django.db.models.functions import Lower
 from django.http import Http404
-from django.shortcuts import redirect
+from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
 from django.views.generic import DetailView, FormView, TemplateView, View
@@ -20,7 +20,7 @@ from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
 
 from .forms import TrialContinueForm
-from .models import TrainingGroup, TrainingGroupType, Trial
+from .models import ArcherSeason, TrainingGroup, TrainingGroupType, Trial
 
 
 class CurrentSeasonMixin(FullMemberRequired):
@@ -226,3 +226,33 @@ class TrialContinue(SingleObjectMixin, FormView):
                 return redirect(session.url, status_code=303)
             else:
                 self.request.user.update_subscriptions()
+
+
+class EventPlan(FullMemberRequired, MessageMixin, TemplateView):
+    template_name = 'coaching/event_plan.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        archer = get_object_or_404(Archer, pk=kwargs['archer_id'])
+        if archer.user_id != request.user.pk and request.user not in archer.managing_users.all():
+            self.messages.error('You do not have access rights to this plan')
+            return redirect('membership:overview')
+        current_season = self.get_season()
+        try:
+            self.plan = ArcherSeason.objects.get(archer=archer, season=current_season)
+        except ArcherSeason.DoesNotExist:
+            self.messages.error('We do not have an event plan for that archer at this time.')
+            return redirect('membership:overview')
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_season(self):
+        return Season.objects.get_current()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['plan'] = self.plan
+        return context
+
+
+class NextEventPlan(EventPlan):
+    def get_season(self):
+        return Season.objects.get_next()
