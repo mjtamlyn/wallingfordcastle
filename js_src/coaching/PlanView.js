@@ -22,7 +22,7 @@ class PlanView extends Loader {
                 <div className="event-plan__section">
                     <h2 className="event-plan__heading">Goals</h2>
                     <p className="event-plan__content">
-            We believe that { data.archer } should be aiming for <strong>{ data.ageGroup } { data.targetClassification.name }</strong> classification. This is based on her indoor form and experience.
+            We believe that { data.archer } should be aiming for <strong>{ data.ageGroup } { data.targetClassification.name }</strong> classification. This is based on indoor form and experience.
                     </p>
                     <p className="event-plan__content">
                         <strong>Coach comments:</strong> { data.personalisedTargetComments }
