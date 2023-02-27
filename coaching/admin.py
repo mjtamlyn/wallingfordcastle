@@ -208,12 +208,18 @@ class EventAdmin(admin.ModelAdmin):
     list_display = ['name', 'date']
 
 
+class ArcherTrackInline(admin.TabularInline):
+    model = ArcherTrack
+    extra = 4
+
+
 @admin.register(ArcherSeason)
 class ArcherSeasonAdmin(admin.ModelAdmin):
     autocomplete_fields = ['archer']
     search_fields = ['archer__name']
     list_display = ['archer', 'season', 'target_classification']
     list_filter = ['season']
+    inlines = [ArcherTrackInline]
 
 
 @admin.register(ArcherTrack)
