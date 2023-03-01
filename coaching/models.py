@@ -1,6 +1,7 @@
 import datetime
 
 from django.db import models
+from django.urls import reverse
 from django.utils import timezone
 from django.utils.text import slugify
 
@@ -215,6 +216,11 @@ class ArcherSeason(models.Model):
 
     def __str__(self):
         return '%s in the %s season' % (self.archer, self.season)
+
+    def get_absolute_url(self):
+        if self.season.is_current:
+            return reverse('coaching:event-plan', kwargs={'archer_id': self.archer_id})
+        return reverse('coaching:next-event-plan', kwargs={'archer_id': self.archer_id})
 
 
 class ArcherTrack(models.Model):

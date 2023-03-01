@@ -318,3 +318,8 @@ class Season(models.Model):
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_current(self):
+        today = timezone.now().date()
+        return self.start_date <= today <= self.end_date

@@ -233,7 +233,10 @@ class EventPlan(FullMemberRequired, MessageMixin, TemplateView):
 
     def dispatch(self, request, *args, **kwargs):
         archer = get_object_or_404(Archer, pk=kwargs['archer_id'])
-        if archer.user_id != request.user.pk and request.user not in archer.managing_users.all():
+        if (
+                archer.user_id != request.user.pk and request.user not in archer.managing_users.all()
+                and not request.user.is_superuser
+        ):
             self.messages.error('You do not have access rights to this plan')
             return redirect('membership:overview')
         current_season = self.get_season()
