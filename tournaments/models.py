@@ -4,13 +4,14 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils import timezone
+from django.utils.html import mark_safe
 
 from archery.bows import BOWSTYLE_CHOICES
 from wallingford_castle.models import User
 
 GENDER_CHOICES = (
-    ('gent', 'Gent'),
-    ('lady', 'Lady'),
+    ('gent', 'Men'),
+    ('lady', 'Women'),
 )
 
 
@@ -67,12 +68,24 @@ class Tournament(TournamentDetailsBase):
     full_results_document = models.URLField(blank=True, default='')
     series = models.ForeignKey('tournaments.Series', blank=True, null=True, on_delete=models.SET_NULL)
 
+    class Meta:
+        ordering = ['-date']
+
     def get_absolute_url(self):
         return reverse('tournaments:tournament-detail', kwargs={'tournament_slug': self.slug})
 
     @property
     def entry_will_open(self):
         return timezone.now() < self.entries_open
+
+    def entry_summary(self):
+        if len(self.rounds.all()) == 1:
+            return None
+        by_round = []
+        for r in self.rounds.all():
+            count = self.entry_set.filter(round=r).count()
+            by_round.append((r, count))
+        return mark_safe('<br />'.join('%s: %s' % (r, c) for (r, c) in by_round))
 
 
 class Series(TournamentDetailsBase):

@@ -1,4 +1,5 @@
 from django.contrib import admin, messages
+from django.utils.html import mark_safe
 
 from .models import Entry, Series, Tournament
 
@@ -12,9 +13,16 @@ class SeriesAdmin(admin.ModelAdmin):
 
 @admin.register(Tournament)
 class TournamentAdmin(admin.ModelAdmin):
-    list_display = ['name', 'date', 'entries_open', 'entries_close']
+    list_display = ['name', 'date', 'entries', 'entries_open', 'entries_close']
     prepopulated_fields = {'slug': ('name',)}
     autocomplete_fields = ['rounds']
+
+    def entries(self, instance):
+        total = instance.entry_set.count()
+        summary = instance.entry_summary()
+        if summary:
+            return mark_safe('%s Entries<br />%s' % (total, summary))
+        return '%s Entries' % total
 
 
 @admin.register(Entry)
