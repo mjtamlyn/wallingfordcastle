@@ -11,7 +11,7 @@ const isValid = ({ archers }) => {
 };
 
 const SlotBookAdditionalView = ({ match }) => {
-    const { date, time, venue, range, target,face } = match.params;
+    const { date, time, venue, range, target, face = '' } = match.params;
     const dateUrl = `/${date}/`;
     const apiArcherUrl = `/api/range/additional-bookable-archers/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
     const apiReportUrl = `/api/range/book-in/${date}/${venue}/${time}/${range || ''}${target}${face}/`;

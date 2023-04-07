@@ -4,7 +4,7 @@ import Loader from 'utils/Loader';
 
 class SlotBookAdditionalInfo extends Loader {
     getApiEndpoint() {
-        const { date, time, venue, range, target,face } = this.props.match.params;
+        const { date, time, venue, range, target, face = '' } = this.props.match.params;
         return `/api/range/group-booking-info/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
     }
 
