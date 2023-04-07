@@ -11,7 +11,7 @@ const isValid = ({ archers, reason }) => {
 };
 
 const SlotAbsenceView = ({ match }) => {
-    const { date, time, venue, range, target,face } = match.params;
+    const { date, time, venue, range, target, face = '' } = match.params;
     const dateUrl = `/${date}/`;
     const apiArcherUrl = `/api/range/absentable-archers/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
     const apiReportUrl = `/api/range/report-absence/${date}/${venue}/${time}/${range || ''}${target}${face}/`;
