@@ -5,8 +5,9 @@ from . import views
 app_name = 'courses'
 
 urlpatterns = [
-    # path('holidays/', views.Holidays.as_view(), name='holidays'),
-    # path('holidays/book/', views.HolidaysBook.as_view(), name='holidays-book'),
+    path('holidays/', views.Holidays.as_view(), name='holidays'),
+    path('holidays/book/', views.HolidaysBook.as_view(), name='holidays-book'),
+    path('holidays/pay/', views.HolidaysPay.as_view(), name='holidays-payment'),
     path('dgs/', views.SchoolSignup.as_view(school='dgs'), name='dgs'),
     # path('sbs/', views.SchoolSignup.as_view(school='sbs'), name='sbs'),
     # path('icknield/', views.SchoolSignup.as_view(school='icknield'), name='icknield'),

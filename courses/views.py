@@ -34,9 +34,7 @@ class Holidays(TemplateView):
     template_name = 'courses/holidays.html'
 
 
-class HolidaysBook(MessageMixin, TemplateView):
-    template_name = 'courses/holidays-book.html'
-
+class HolidaysUtils:
     def dispatch(self, request, *args, **kwargs):
         try:
             self.course = Course.objects.get(can_book_individual_sessions=True, open_for_bookings=True)
@@ -44,28 +42,6 @@ class HolidaysBook(MessageMixin, TemplateView):
             self.messages.error('Bookings are not currently open, sorry. Please contact us for more information.')
             return redirect('courses:holidays')
         return super().dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        if self.request.user.is_anonymous:
-            context.setdefault('login_form', AuthenticationForm())
-            context.setdefault('register_form', DirectRegisterForm())
-        else:
-            context['members'] = self.get_members()
-            context['archers'] = self.get_archers(context['members'])
-
-            for member in context['members']:
-                member.archer = self.annotate_with_details(member.archer, context.get('errored_booking_forms'))
-            for archer in context['archers']:
-                self.annotate_with_details(archer, context.get('errored_booking_forms'))
-
-            form = CourseInterestForm(initial={'contact_email': self.request.user.email}, course_type='holidays')
-            context.setdefault('new_archer_form', form)
-
-            context['to_pay'] = self.get_to_pay(context['archers'], context['members'])
-            context['STRIPE_KEY'] = settings.STRIPE_KEY
-
-        return context
 
     def get_members(self):
         return Member.objects.managed_by(self.request.user).filter(archer__age='junior').select_related('archer')
@@ -95,17 +71,46 @@ class HolidaysBook(MessageMixin, TemplateView):
 
     def get_to_pay(self, archers, members):
         to_pay = 0
+        sessions = []
         for archer in archers:
             if archer.attendee:
                 for session in archer.sessions_booked:
                     if not session.paid:
+                        sessions.append(session)
                         to_pay += session.fee
         for member in members:
             if member.archer.attendee:
                 for session in member.archer.sessions_booked:
                     if not session.paid:
+                        sessions.append(session)
                         to_pay += session.fee
-        return to_pay
+        return sessions, to_pay
+
+
+class HolidaysBook(HolidaysUtils, MessageMixin, TemplateView):
+    template_name = 'courses/holidays-book.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        if self.request.user.is_anonymous:
+            context.setdefault('login_form', AuthenticationForm())
+            context.setdefault('register_form', DirectRegisterForm())
+        else:
+            context['members'] = self.get_members()
+            context['archers'] = self.get_archers(context['members'])
+
+            for member in context['members']:
+                member.archer = self.annotate_with_details(member.archer, context.get('errored_booking_forms'))
+            for archer in context['archers']:
+                self.annotate_with_details(archer, context.get('errored_booking_forms'))
+
+            form = CourseInterestForm(initial={'contact_email': self.request.user.email}, course_type='holidays')
+            context.setdefault('new_archer_form', form)
+
+            _, context['to_pay'] = self.get_to_pay(context['archers'], context['members'])
+            context['STRIPE_KEY'] = settings.STRIPE_KEY
+
+        return context
 
     def post(self, request, *args, **kwargs):
         context = {}
@@ -166,7 +171,7 @@ class HolidaysBook(MessageMixin, TemplateView):
                 for archer in archers:
                     self.annotate_with_details(archer)
                 description = 'Holiday archery'
-                amount = self.get_to_pay(archers, members)
+                _, amount = self.get_to_pay(archers, members)
                 self.request.user.add_invoice_item(
                     amount=amount * 100,
                     description=description,
@@ -185,48 +190,45 @@ class HolidaysBook(MessageMixin, TemplateView):
                 )
             else:
                 self.messages.error('You do not seem to have an active membership.')
-        elif form == 'payment':
-            token = request.POST['stripeToken']
-            if self.request.user.customer_id:
-                customer = stripe.Customer.retrieve(self.request.user.customer_id)
-                source = customer.sources.create(source=token)
-                customer.default_source = source.id
-                customer.save()
-            else:
-                customer = stripe.Customer.create(
-                    source=token,
-                    email=self.request.user.email,
-                )
-                self.request.user.customer_id = customer.id
-                self.request.user.save()
-            members = self.get_members()
-            archers = self.get_archers(members)
-            for member in members:
-                member.archer = self.annotate_with_details(member.archer)
-            for archer in archers:
-                self.annotate_with_details(archer)
-            amount = self.get_to_pay(archers, members)
-            description = 'Holiday archery'
-            stripe.Charge.create(
-                amount=amount * 100,
-                currency='gbp',
-                customer=customer.id,
-                description=description,
-            )
-            for member in members:
-                for session in getattr(member.archer, 'sessions_booked', []):
-                    session.paid = True
-                    session.save()
-            for archer in archers:
-                for session in getattr(archer, 'sessions_booked', []):
-                    session.paid = True
-                    session.save()
-            msg = (
-                'Thanks for booking your holiday session! We will contact you '
-                'soon with more details.'
-            )
-            self.messages.success(msg)
         return self.render_to_response(context=self.get_context_data(**context))
+
+
+class HolidaysPay(HolidaysUtils, MessageMixin, View):
+    def get(self, request, *args, **kwargs):
+        customer_id = self.request.user.customer_id or None
+        return_url = reverse('courses:holidays')
+        members = self.get_members()
+        archers = self.get_archers(members)
+        for archer in archers:
+            self.annotate_with_details(archer)
+        to_pay, _ = self.get_to_pay(archers, members)
+        if not to_pay:
+            self.messages.error('You have no sessions to pay for.')
+            return redirect(return_url)
+        stripe_session = stripe.checkout.Session.create(
+            line_items=[{
+                'price_data': {
+                    'currency': 'gbp',
+                    'product_data': {
+                        'name': 'Holiday archery session - %s on %s' % (
+                            session.attendee.archer,
+                            session.session.start_time.date().strftime('%-d %B %Y'),
+                        ),
+                    },
+                    'unit_amount': session.fee * 100,
+                },
+                'quantity': 1,
+            } for session in to_pay],
+            mode='payment',
+            customer=customer_id,
+            customer_email=None if customer_id else self.request.user.email,
+            success_url=request.build_absolute_uri(return_url),
+            cancel_url=request.build_absolute_uri(return_url),
+        )
+        intent = PaymentIntent.objects.create(stripe_id=stripe_session.payment_intent, user=self.request.user)
+        for session in to_pay:
+            intent.lineitemintent_set.create(item=session)
+        return redirect(stripe_session.url, status_code=303)
 
 
 class SchoolSignup(MessageMixin, FormView):
