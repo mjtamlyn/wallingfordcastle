@@ -9,7 +9,7 @@ urlpatterns = [
     path('holidays/book/', views.HolidaysBook.as_view(), name='holidays-book'),
     path('holidays/pay/', views.HolidaysPay.as_view(), name='holidays-payment'),
     path('dgs/', views.SchoolSignup.as_view(school='dgs'), name='dgs'),
-    # path('sbs/', views.SchoolSignup.as_view(school='sbs'), name='sbs'),
+    path('sbs/', views.SchoolSignup.as_view(school='sbs'), name='sbs'),
     # path('icknield/', views.SchoolSignup.as_view(school='icknield'), name='icknield'),
     # path('home-ed/', views.SchoolSignup.as_view(school='home-ed'), name='home-ed'),
     path('juniors/minis/', views.MinisInterestView.as_view(), name='minis-interest'),
