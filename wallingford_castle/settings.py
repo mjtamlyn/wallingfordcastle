@@ -123,6 +123,7 @@ SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
 
 AUTH_USER_MODEL = 'wallingford_castle.User'
 LOGIN_REDIRECT_URL = reverse_lazy('membership:overview')
+SESSION_COOKIE_AGE = 60 * 60 * 24 * 365  # Expire sessions only once a year
 PASSWORD_RESET_TIMEOUT_DAYS = 14  # Also used for welcome email
 
 SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')
