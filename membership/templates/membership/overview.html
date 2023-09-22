@@ -36,27 +36,42 @@
             <div class="members__section">
                 <h4 class="members__heading">Coaching group</h4>
                 <div class="members__section__content">
-                    {% if member.coaching_group %}
-                        <p>
-                        You are currently a member of
-                        <strong>{{ member.coaching_group.group_name }}</strong>,
-                        meeting on
-                        {{ member.coaching_group.get_session_day_display }}s 
-                        between {{ member.coaching_group.session_start_time }}
-                        and {{ member.coaching_group.session_end_time }} at
-                        {{ member.coaching_group.venue }}.
-                        </p>
-                        {% with member.coaching_group.coaches.all as coaches %}
-                        <p>Your coach{{ coaches|pluralize:"es" }} {{ coaches|pluralize:"is,are" }} {% for coach in coaches %}{{ coach }}{% if not forloop.last %}, {% endif%}{% endfor %}.</p>
-                        {% endwith %}
-                        <p>Your next scheduled session is on {{ member.coaching_group.next_session.start|date:"jS F" }}.</p>
+                    {% if member.coaching_groups %}
+                        {% if member.coaching_groups|length == 1 %}
+                            <p>
+                            You are currently a member of
+                            <strong>{{ member.coaching_groups.0.group_name }}</strong>,
+                            meeting on
+                            {{ member.coaching_groups.0.get_session_day_display }}s 
+                            between {{ member.coaching_groups.0.session_start_time }}
+                            and {{ member.coaching_groups.0.session_end_time }} at
+                            {{ member.coaching_groups.0.venue }}.
+                            </p>
+                            {% with member.coaching_groups.0.coaches.all as coaches %}
+                            <p>Your coach{{ coaches|pluralize:"es" }} {{ coaches|pluralize:"is,are" }} {% for coach in coaches %}{{ coach }}{% if not forloop.last %}, {% endif%}{% endfor %}.</p>
+                            {% endwith %}
+                            <p>Your next scheduled session is on {{ member.coaching_groups.0.next_session.start|date:"jS F" }}.</p>
+                        {% else %}
+                            <p>
+                            You are currently booked for the following weekly groups:</br>
+                            {% for group in member.coaching_groups %}
+                            <strong>{{ group.group_name }}</strong>,
+                            meeting on {{ group.get_session_day_display }}s
+                            between {{ group.session_start_time }} and
+                            {{ group.session_end_time }} at {{ group.venue }}.
+                            <br>
+                            {% endfor %}
+                            </p>
+                        {% endif %}
                     {% else %}
                         <p>You are not currently a member of a coaching group.</p>
                     {% endif %}
                 </div>
                 <div class="members__section__actions">
-                    {% if member.coaching_group %}
-                        <a class="members__action members__action--primary" href="{% url 'coaching:group-schedule' group=member.coaching_group.slug %}">View schedule</a>
+                    {% if member.coaching_groups|length == 1 %}
+                        <a class="members__action members__action--primary" href="{% url 'coaching:group-schedule' group=member.coaching_groups.0.slug %}">View schedule</a>
+                    {% elif member.coaching_groups %}
+                        <a class="members__action members__action--primary" href="{% url 'membership:range-booking' %}">View bookings</a>
                     {% else %}
                         <a class="members__action" href="mailto:hello@wallingfordcastle.co.uk">Enquire about joining</a>
                     {% endif %}

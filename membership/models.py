@@ -69,11 +69,11 @@ class Member(models.Model):
         return self.archer.bookedslot_set.filter(start__date__gte=today).order_by('start')
 
     @cached_property
-    def coaching_group(self):
+    def coaching_groups(self):
         from coaching.models import TrainingGroup
 
         season = Season.objects.get_current()
         try:
-            return self.archer.training_groups.get(season=season)
+            return self.archer.training_groups.filter(season=season).order_by('session_day')
         except TrainingGroup.DoesNotExist:
             return None
