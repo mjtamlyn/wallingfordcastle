@@ -51,7 +51,7 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
         if self.request.user.is_superuser:
             context['uncoached_groups'] = TrainingGroup.objects.filter(season=season).exclude(
                 id__in=[g.id for g in groups],
-            )
+            ).order_by('session_day', 'session_start_time')
         upcoming = self.get_upcoming_season()
         if upcoming:
             upcoming_groups = TrainingGroup.objects.filter(
