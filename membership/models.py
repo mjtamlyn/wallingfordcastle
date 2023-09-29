@@ -67,7 +67,7 @@ class Member(models.Model):
                 prices.append(settings.STRIPE_PRICES['coaching-junior-performance'])
             elif self.coaching_conversion:
                 prices.append(settings.STRIPE_PRICES['coaching-junior-conversion'])
-            else:
+            elif self.coaching_subscription:
                 prices.append(settings.STRIPE_PRICES['coaching-junior'])
             if self.gym_supplement:
                 prices.append(settings.STRIPE_PRICES['coaching-gym'])

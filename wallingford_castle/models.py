@@ -194,6 +194,11 @@ class User(AbstractEmailUser):
         prices = self.get_membership_prices()
 
         if self.subscription_id:
+            if not prices:
+                stripe.Subscription.delete(self.subscription_id, invoice_now=True)
+                self.subscription_id = ''
+                self.save()
+                return
             new_items = []
             subscription = stripe.Subscription.retrieve(self.subscription_id)
             for item in subscription['items']['data']:
