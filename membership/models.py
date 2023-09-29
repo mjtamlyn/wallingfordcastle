@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.forms import ValidationError
 from django.utils import timezone
 from django.utils.functional import cached_property
 
@@ -24,7 +25,6 @@ LEVEL_CHOICES = (
 class Member(models.Model):
     archer = models.ForeignKey('wallingford_castle.Archer', on_delete=models.CASCADE)
     membership_type = models.CharField(max_length=20, choices=MEMBERSHIP_CHOICES)
-    level = models.CharField(max_length=20, choices=LEVEL_CHOICES, default='', blank=True)
     interest = models.ForeignKey(
         'wallingford_castle.MembershipInterest',
         blank=True,
@@ -32,6 +32,9 @@ class Member(models.Model):
         on_delete=models.CASCADE,
     )
     coaching_subscription = models.BooleanField(default=False)
+    coaching_conversion = models.BooleanField(default=False)
+    coaching_performance = models.BooleanField(default=False)
+    gym_supplement = models.BooleanField(default=False)
 
     active = models.BooleanField(default=True)
     created = models.DateTimeField(default=timezone.now, editable=False)
@@ -41,6 +44,12 @@ class Member(models.Model):
 
     def __str__(self):
         return self.archer.name
+
+    def clean(self):
+        if (self.coaching_subscription and self.coaching_conversion or
+                self.coaching_subscription and self.coaching_performance or
+                self.coaching_conversion and self.coaching_performance):
+            raise ValidationError('Please choose only one coaching subscription level')
 
     @property
     def plan(self):
@@ -53,11 +62,17 @@ class Member(models.Model):
     @property
     def prices(self):
         prices = [settings.STRIPE_PRICES[self.plan]]
-        if self.coaching_subscription:
-            if self.archer.age == 'junior':
+        if self.archer.age == 'junior':
+            if self.coaching_performance:
+                prices.append(settings.STRIPE_PRICES['coaching-junior-performance'])
+            elif self.coaching_conversion:
+                prices.append(settings.STRIPE_PRICES['coaching-junior-conversion'])
+            elif self.coaching_subscription:
                 prices.append(settings.STRIPE_PRICES['coaching-junior'])
-            else:
-                prices.append(settings.STRIPE_PRICES['coaching-adult'])
+            if self.gym_supplement:
+                prices.append(settings.STRIPE_PRICES['coaching-gym'])
+        elif self.coaching_subscription:
+            prices.append(settings.STRIPE_PRICES['coaching-adult'])
         return prices
 
     @property
@@ -77,3 +92,17 @@ class Member(models.Model):
             return self.archer.training_groups.filter(season=season).order_by('session_day')
         except TrainingGroup.DoesNotExist:
             return None
+
+    @property
+    def coaching_level(self):
+        if self.coaching_groups and self.coaching_groups[0].level.first().name.startswith('Mini'):
+            return 'Minis'
+        if self.coaching_performance:
+            return 'Pro Squad'
+        if self.coaching_conversion:
+            return 'Semi-pro Squad'
+        if self.coaching_subscription:
+            if self.archer.age == 'junior':
+                return 'Junior group'
+            return 'Adult group'
+        return 'Uncoached'
