@@ -83,8 +83,8 @@ class MemberAdmin(DjangoObjectActions, ArcherDataMixin, admin.ModelAdmin):
         'archer',
         ('archer_agb_number', 'archer_age', 'archer_date_of_birth', 'archer_age_group'),
         ('archer_address', 'archer_contact_number', 'archer_email'),
-        'active',
-        ('membership_type', 'coaching_subscription', 'level'),
+        ('active', 'membership_type'),
+        ('coaching_subscription', 'coaching_conversion', 'coaching_performance', 'gym_supplement'),
         ('interest', 'created', 'modified'),
     ]
     actions = change_actions = ['update_plan', 'book_into_course']
