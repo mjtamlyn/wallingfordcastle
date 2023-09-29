@@ -161,10 +161,22 @@ STRIPE_PRICES = {
     },
     'coaching-adult': {
         'id': os.environ.get('STRIPE_PRICES_COACHING_ADULT', 'price_1HXOyBBZ7K43BUB4cIRekPDI'),
-        'price': 25,
+        'price': 30,
     },
     'coaching-junior': {
-        'id': os.environ.get('STRIPE_PRICES_COACHING_JUNIOR', 'price_1HXOyCBZ7K43BUB42xWBMRTw'),
-        'price': 20,
+        'id': os.environ.get('STRIPE_PRICES_COACHING_JUNIOR', 'price_1NvbycBZ7K43BUB4INdqPR01'),
+        'price': 25,
+    },
+    'coaching-junior-conversion': {
+        'id': os.environ.get('STRIPE_PRICES_COACHING_JUNIOR_CONVERSION', 'price_1NvbyqBZ7K43BUB4vlvdTRy1'),
+        'price': 50,
+    },
+    'coaching-junior-performance': {
+        'id': os.environ.get('STRIPE_PRICES_COACHING_JUNIOR_PERFORMANCE', 'price_1Nvbz1BZ7K43BUB4eFaea1MF'),
+        'price': 90,
+    },
+    'coaching-gym': {
+        'id': os.environ.get('STRIPE_PRICES_COACHING_GYM', 'price_1NvbzSBZ7K43BUB4TApNmQSz'),
+        'price': 15,
     },
 }
