@@ -92,3 +92,17 @@ class Member(models.Model):
             return self.archer.training_groups.filter(season=season).order_by('session_day')
         except TrainingGroup.DoesNotExist:
             return None
+
+    @property
+    def coaching_level(self):
+        if self.coaching_groups and self.coaching_groups[0].level.first().name.startswith('Mini'):
+            return 'Minis'
+        if self.coaching_performance:
+            return 'Pro Squad'
+        if self.coaching_conversion:
+            return 'Semi-pro Squad'
+        if self.coaching_subscription:
+            if self.archer.age == 'junior':
+                return 'Junior group'
+            return 'Adult group'
+        return 'Uncoached'
