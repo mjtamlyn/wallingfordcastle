@@ -182,7 +182,7 @@ class TrialStatusListFilter(admin.SimpleListFilter):
 
 @admin.register(Trial)
 class TrialAdmin(ArcherDataMixin, admin.ModelAdmin):
-    list_display = ['archer', 'status', 'paid', 'group', 'session_1']
+    list_display = ['archer', 'status', 'paid', 'group', 'session_1', 'session_4']
     list_filter = [TrialStatusListFilter]
     readonly_fields = ['archer_email', 'archer_age_group', 'archer_contact_number']
 
