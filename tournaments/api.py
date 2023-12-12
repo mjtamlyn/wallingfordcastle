@@ -12,7 +12,10 @@ def tournament_info(request, tournament_id):
             'id': tournament.pk,
             'name': str(tournament),
             'baseUrl': reverse('tournaments:tournament-detail', kwargs={'tournament_slug': tournament.slug}),
+            'hasWrs': tournament.has_wrs,
+            'hasUkrs': tournament.has_ukrs,
             'entryIsOpen': tournament.entry_is_open,
             'bowstyles': [b.capitalize() for b in tournament.bowstyles],
+            'rounds': [r.name for r in tournament.rounds.all()],
         },
     })

@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { useId } from 'react';
 
 
-const TextField = ({ onChange, label }) => {
+const TextField = ({ value = '', onChange, label }) => {
+    const name = useId();
     return (
         <div className="text-field">
-            <label>{ label }</label>
-            <textarea className="text-field__textarea" onChange={ (e) => onChange(e.target.value) }></textarea>
+            <label htmlFor={ name }>{ label }</label>
+            <textarea id={ name } className="text-field__textarea" onChange={ (e) => onChange(e.target.value) }>{ value }</textarea>
         </div>
     );
 };
