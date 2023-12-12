@@ -987,11 +987,11 @@ dd.inline {
   box-shadow: inset 0px 0px 2px rgba(0, 0, 0, 0.6);
 }
 /* line 35, ../../sass/_range.sass */
-.selector--distance-selector {
+.selector--wrap {
   flex-wrap: wrap;
 }
 /* line 37, ../../sass/_range.sass */
-.selector--distance-selector .selector__item {
+.selector--wrap .selector__item {
   flex-basis: 25%;
 }
 

@@ -2,9 +2,9 @@ import React from 'react';
 import { withRouter, Link, Redirect } from 'react-router-dom';
 
 import store from 'utils/store';
+import Selector from 'utils/Selector';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
 import ArcherSelect from 'range/ArcherSelect';
-import DistanceSelector from 'range/DistanceSelector';
 import Modal from 'utils/Modal';
 
 class SlotBookView extends React.Component {
@@ -74,6 +74,8 @@ class SlotBookView extends React.Component {
 
         const submitDisabled = !this.isValid(this.state) || this.state.submitting;
 
+        const distances = ['10m', '20m', '30m', '40m', '50m', '60m', '70m', '90m']
+
         return (
             <Modal className="booking-modal" close={ ::this.close }>
                 <h4 className="booking-modal__title">Booking target { target }{ face } at { time }</h4>
@@ -83,7 +85,7 @@ class SlotBookView extends React.Component {
                 </div>
                 { distanceRequired &&
                     <div className="booking-modal__row">
-                        <DistanceSelector onChange={ ::this.setDistance } />
+                        <Selector options={ distances } label="Distance" onChange={ ::this.setDistance } wrap />
                     </div>
                 }
                 <div className="booking-modal__row">
