@@ -49,7 +49,7 @@ class TestBookingTemplate(TestCase):
         midday_time = midday.time()
         hour = datetime.timedelta(hours=1)
 
-        booking_template = BookingTemplateFactory.build(
+        booking_template = BookingTemplateFactory.create(
             date=today,
             start_times=[midday_time],
             targets=3,
