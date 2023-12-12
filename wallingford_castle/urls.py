@@ -6,6 +6,7 @@ from django.urls import include, path, reverse_lazy
 
 from coaching.urls import coaching_api_urlpatterns
 from events.urls import range_api_urlpatterns
+from tournaments.urls import tournaments_api_urlpatterns
 
 from . import views
 from .forms import RegisterForm, SendgridPasswordResetForm
@@ -25,6 +26,7 @@ urlpatterns = [
     path('members/events/', include('events.urls', namespace='events')),
     path('api/range/', include(range_api_urlpatterns)),
     path('tournaments/', include('tournaments.urls', namespace='tournaments')),
+    path('api/tournaments/', include(tournaments_api_urlpatterns)),
     path('events/', include('bookings.urls', namespace='bookings')),
     path('venues/', include('venues.urls', namespace='venues')),
     # TODO: Style header links

@@ -37,7 +37,9 @@ if (eventPlanApp) {
     planRoot.render(<PlanView planId={ planId } />, eventPlanApp);
 }
 
-const tournamentEntry = document.getElementById('tournament-entry');
-if (tournamentEntry) {
-    initTournamentEntry(tournamentEntry);
+const tournamentEntryApp = document.getElementById('app-tournament-entry');
+if (tournamentEntryApp) {
+    const tournamentId = tournamentEntryApp.dataset.tournament;
+    const tournamentRoot = createRoot(tournamentEntryApp);
+    tournamentRoot.render(<TournamentEntry tournamentId={ tournamentId } />);
 }
