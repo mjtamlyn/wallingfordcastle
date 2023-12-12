@@ -18,34 +18,39 @@ const EnterModalEntryList = ({ entries }) => {
     );
 };
 
-const EnterModalArcherDetails = ({ tournament }) => {
-    const [name, setName] = useState('');
-    const [agb, setAgb] = useState('');
-    const [club, setClub] = useState('');
-    const [gender, setGender] = useState(null);
-    const [bowstyle, setBowstyle] = useState(null);
-    const [ageGroup, setAgeGroup] = useState(null);
+const EnterModalArcherDetails = ({ tournament, entry, updateEntry }) => {
+    const isValid = !!(
+        entry.name !== '' &&
+        entry.agb !== '' &&
+        entry.club !== '' &&
+        entry.gender &&
+        entry.ageGroup
+    );
 
     return (
         <>
             <h3>Step 1 - Archer details</h3>
             <form className="form">
-                <FormInput value={ name } setValue={ setName } label="Name" autoFocus={ true } />
-                <FormInput value={ agb } setValue={ setAgb } label="AGB Number" />
-                <FormInput value={ club } setValue={ setClub } label="Club" />
-                <Selector value={ gender } onChange={ setGender } label="Gender" options={ ['Men', 'Women'] } />
-                <Selector value={ bowstyle } onChange={ setBowstyle } label="Bowstyle" options={ tournament.bowstyles } />
-                <Selector value={ ageGroup } onChange={ setAgeGroup } label="Age group" options={ ['50+', 'Adult', 'U21', 'U18', 'U16', 'U15', 'U14', 'U12'] } />
+                <FormInput value={ entry.name } setValue={ updateEntry('name') } label="Full name" autoFocus={ true } />
+                <FormInput value={ entry.agb } setValue={ updateEntry('agb') } label="AGB number" />
+                <FormInput value={ entry.club } setValue={ updateEntry('club') } label="Club" />
+                <Selector value={ entry.gender } onChange={ updateEntry('gender') } label="Gender" options={ ['Men', 'Women'] } />
+                <Selector value={ entry.ageGroup } onChange={ updateEntry('ageGroup') } label="Age group" options={ ['50+', 'Adult', 'U21', 'U18', 'U16', 'U15', 'U14', 'U12'] } />
             </form>
-            <Link className="btn" to="/enter/entry-information/">Add archer details</Link>
+            { !isValid && <a className="btn btn--disabled">Add archer details</a> }
+            { isValid && <Link className="btn" to="/enter/entry-information/">Add archer details</Link> }
         </>
     );
 };
 
-const EnterModalEntryInformation = () => {
+const EnterModalEntryInformation = ({ tournament, entry, updateEntry }) => {
     return (
         <>
             <h3>Step 2 - Entry information</h3>
+            <Link to="/enter/archer-details/">&lt; Back</Link>
+            <form className="form">
+                <Selector value={ entry.bowstyle } onChange={ updateEntry('bowstyle') } label="Bowstyle" options={ tournament.bowstyles } />
+            </form>
             <div>Round, stay on line, notes, drug consent, GDPR</div>
             <Link to="/enter/payment/">Next</Link>
         </>
@@ -66,9 +71,27 @@ const EnterModalPayment = () => {
 
 const EnterModal = ({ tournament }) => {
     const [close, setClose] = useState(false);
+    const [pendingEntry, setPendingEntry] = useState({
+        name: '',
+        agb: '',
+        club: '',
+        gender: null,
+        ageGroup: null,
+        bowstyle: null,
+    });
+
+    console.log(pendingEntry);
 
     if (close) {
         return <Redirect to="/" />;
+    };
+
+    const updateEntry = (name) => {
+        return (value) => {
+            const updated = { ...pendingEntry };
+            updated[name] = value;
+            setPendingEntry(updated);
+        };
     };
 
     return (
@@ -76,9 +99,11 @@ const EnterModal = ({ tournament }) => {
             <h2>Enter</h2>
             <Switch>
                 <Route path="/enter/archer-details/" render={ () => {
-                    return <EnterModalArcherDetails tournament={ tournament } />
+                    return <EnterModalArcherDetails tournament={ tournament } entry={ pendingEntry } updateEntry={ updateEntry } />
                 } } />
-                <Route path="/enter/entry-information/" component={ EnterModalEntryInformation } />
+                <Route path="/enter/entry-information/" render={ () => {
+                    return <EnterModalEntryInformation tournament={ tournament } entry={ pendingEntry } updateEntry={ updateEntry } />
+                } } />
                 <Route path="/enter/payment/" component={ EnterModalPayment } />
                 <Route path="" exact render={ () => {
                     return <EnterModalEntryList entries={ [] } />

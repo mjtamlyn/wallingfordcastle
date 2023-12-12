@@ -23,6 +23,15 @@
   min-width: 0;
   display: inline;
 }
+/* line 22, ../../sass/_buttons.sass */
+.btn--disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
+/* line 26, ../../sass/_buttons.sass */
+.btn--disabled:hover {
+  background-color: #bbb;
+}
 
 /* line 2, ../../sass/_coaching.sass */
 .event-plan__section {
