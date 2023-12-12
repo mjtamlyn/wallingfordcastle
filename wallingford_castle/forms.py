@@ -1,8 +1,8 @@
+from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.template import loader
 
-import floppyforms.__future__ as forms
 from sendgrid.helpers.mail import From, Mail
 
 from wallingford_castle.models import User

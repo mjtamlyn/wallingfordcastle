@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block og_image %}join{% endblock %}
 
 {% block hero %}
@@ -80,7 +78,7 @@
         <h2>Register interest</h2>
         <form class="form page-form" method="POST" action="{% url 'membership-interest' %}">
             {% csrf_token %}
-            {% form membership_form using 'floppyforms/layouts/p.html' %}
+            {{ membership_form }}
             <input type="submit" class="btn">
         </form>
     </section>

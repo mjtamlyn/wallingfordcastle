@@ -38,7 +38,6 @@ INSTALLED_APPS = (
 
     'custom_user',
     'django_object_actions',
-    'floppyforms',
 
     'debug_toolbar',
     'webpack_loader',

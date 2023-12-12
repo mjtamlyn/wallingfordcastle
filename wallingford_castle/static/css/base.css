@@ -237,6 +237,10 @@
 }
 
 /* line 3, ../../sass/_forms.sass */
+.form > div {
+  margin: 1em 0;
+}
+/* line 6, ../../sass/_forms.sass */
 .form.page-form {
   background-color: #fafafa;
   margin: 0 -15px;
@@ -244,15 +248,16 @@
   border-radius: 5px;
   overflow: auto;
 }
-/* line 10, ../../sass/_forms.sass */
+/* line 13, ../../sass/_forms.sass */
 .form label {
+  font-size: 18px;
   display: block;
 }
-/* line 13, ../../sass/_forms.sass */
+/* line 17, ../../sass/_forms.sass */
 .form.page-form--checkbox label {
   display: inline;
 }
-/* line 16, ../../sass/_forms.sass */
+/* line 20, ../../sass/_forms.sass */
 .form input, .form select, .form textarea {
   display: block;
   width: 200px;
@@ -262,35 +267,35 @@
   border: 1px solid #aaa;
   border-radius: 5px;
 }
-/* line 25, ../../sass/_forms.sass */
+/* line 29, ../../sass/_forms.sass */
 .form input[type=submit] {
   padding: 8px 5px;
   border: none;
 }
-/* line 29, ../../sass/_forms.sass */
+/* line 33, ../../sass/_forms.sass */
 .form input[type=checkbox] {
   display: inline;
   width: auto;
 }
-/* line 33, ../../sass/_forms.sass */
+/* line 37, ../../sass/_forms.sass */
 .form textarea {
   height: 130px;
   max-width: 200px;
   font-family: "Open Sans", sans-serif;
 }
-/* line 38, ../../sass/_forms.sass */
+/* line 42, ../../sass/_forms.sass */
 .form .helptext {
   display: block;
   font-size: smaller;
   color: #777;
 }
-/* line 43, ../../sass/_forms.sass */
+/* line 47, ../../sass/_forms.sass */
 .form ul.errorlist {
   display: block;
   margin: 10px 0;
   padding: 0;
 }
-/* line 48, ../../sass/_forms.sass */
+/* line 52, ../../sass/_forms.sass */
 .form ul.errorlist li {
   display: block;
   margin: 0;
@@ -298,7 +303,7 @@
   font-weight: bold;
   color: #CA4984;
 }
-/* line 56, ../../sass/_forms.sass */
+/* line 60, ../../sass/_forms.sass */
 .form #id_dates {
   list-style: none;
   padding: 0;

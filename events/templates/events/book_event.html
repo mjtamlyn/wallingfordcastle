@@ -1,14 +1,12 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block content %}
 <p><a href="{% url 'events:event-list' %}">< Back to event list</a></p>
 <h2>{{ event }}<br><small>{{ event.date }}</small></h2>
 {{ event.description|linebreaks }}
 <form class="form" method="POST" action=".">
     {% csrf_token %}
-    {% form form using 'floppyforms/layouts/p.html' %}
+    {{ form }}
     <input type="submit" class="btn">
 </form>
 {% endblock %}

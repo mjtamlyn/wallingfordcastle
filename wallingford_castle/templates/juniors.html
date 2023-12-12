@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block og_image %}juniors-herts{% endblock %}
 
 {% block hero %}
@@ -112,7 +110,7 @@
             regularly should <a href="{% url 'join' %}">join as
             members</a>.
             {% csrf_token %}
-            {% form minis_form using 'floppyforms/layouts/p.html' %}
+            {{ minis_form }}
             <input type="submit" class="btn">
         </form>
     </section>

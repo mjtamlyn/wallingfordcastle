@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block content %}
 
 {% if members %}
@@ -213,7 +211,7 @@ You will now need to join the club. Club membership is £15/month for juniors, w
 <h3>Membership details</h3>
 
 <form class="form" method="POST" action="{% url 'coaching:trial-continue' trial_pk=trial.pk %}">
-{% form trial.form using 'floppyforms/layouts/p.html' %}
+{{ trial.form }}
 {% csrf_token %}
 <input type="submit" value="Add Payment Details" class="btn" />
 </form>

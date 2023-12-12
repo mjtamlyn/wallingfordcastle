@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block og_image %}coaching{% endblock %}
 
 {% block hero %}
@@ -71,7 +69,7 @@
         <h3>Sign up for a course</h3>
         <form class="form page-form" method="POST" action="{% url 'beginners:interest' %}">
             {% csrf_token %}
-            {% form beginners_form using 'floppyforms/layouts/p.html' %}
+            {{ beginners_form }}
             <input type="submit" class="btn">
         </form>
     </section>

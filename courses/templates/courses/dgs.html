@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block content %}
 <div class="flex-sections">
     <section>
@@ -14,7 +12,7 @@
         <p>We will be in touch when we have space to accommodate you.</p>
         <form class="form page-form" method="POST" action=".">
             {% csrf_token %}
-            {% form form using 'floppyforms/layouts/p.html' %}
+            {{ form }}
             <input type="submit" class="btn" value="Register">
         </form>
     </section>
