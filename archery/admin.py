@@ -11,5 +11,5 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Round)
 class RoundAdmin(admin.ModelAdmin):
     search_fields = ['name']
-    list_display = ['name', 'category']
+    list_display = ['name', 'category', 'can_be_wrs']
     list_filter = ['category']

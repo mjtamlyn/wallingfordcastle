@@ -1,48 +1,74 @@
 {% extends 'base.html' %}
 
+{% block og_image %}{% if tournament.indoors %}indoors{% else %}outdoors{% endif %}{% endblock %}
+
+{% block hero %}
+<div class="hero hero--short hero--tournaments-{% if tournament.indoors %}indoor{% else %}outdoor{% endif %}">
+    <h1>{{ tournament }}</h1>
+</div>
+{% endblock %}
+
 {% block content %}
-<div class="flex-sections">
+<div class="tournament-enter-block">
+    <h3 class="no-border">Entry is open</h3>
+    <a class="btn">Enter</a>
+</div>
+<div class="flex-sections tournament-prospectus">
     <section>
-        <h2>Tournament prospectus</h2>
+        <h2>Prospectus</h2>
+
+        {% if not tournament.is_series %}
+        <h3>Date</h3>
         <p>
-        {{ tournament }}, {% if tournament.is_future %}to be {% endif %}held {% if tournament.tournament_set.all %}from {% else %}on {% endif %}
-        {{ tournament.date|date:"jS F Y" }}.
+        {{ tournament.date|date:"jS F Y" }}
         </p>
+        {% endif %}
 
         {% if tournament.series %}
         <p>This event is a part of <strong><a href="{{ tournament.series.get_absolute_url }}">{{ tournament.series }}</a></strong>. Enter all events for a discount!</p>
+        {% elif tournament.is_series %}
+        <p>This is a series of events through the season. Enter all events here for a discount, or enter individual events with the links below.</p>
+        <h3>Events</h3>
+        {% for t in tournament.ordered_tournaments %}
+        <dt>{{ t.date|date:"jS F" }}</dt>
+        <dd><a href="{{ t.get_absolute_url }}">{{ t }}</a></dd>
+        {% endfor %}
         {% endif %}
 
-        {% for t in tournament.tournament_set.all %}
-        <dt class="inline">{{ t.date|date:"jS F" }}</dt>
-        <dd class="inline"><a href="{{ t.get_absolute_url }}">{{ t }}</a></dd><br>
-        {% endfor %}
-
-        <h3>Rounds</h3>
+        <h3>Event Format</h3>
         <p>
-        {% for round in tournament.rounds.all %}
-        {% if tournament.has_wrs %}WRS {% endif %}{{ round }}
+        {% for round in tournament.labelled_rounds %}
+        <strong>{{ round }}</strong>
         {% if not forloop.last %}<br />{% endif %}
         {% endfor %}
         </p>
-        <h3>Event Format</h3>
         {{ tournament.event_format|linebreaks }}
+
+        <h3>Timing</h3>
+        {{ tournament.timing|linebreaks }}
 
         <h3>Judges</h3>
         {{ tournament.judges|linebreaks }}
-        <h3>Awards</h3>
-        {{ tournament.awards|linebreaks }}
+
         <h3>Tournament Organiser</h3>
         <p><a href="mailto:{{ tournament.tournament_organiser_email }}">{{ tournament.tournament_organiser }}</a></p>
+    </section>
+
+    <section>
+        <h2>Rules</h2>
+
+        <h3>Awards</h3>
+        {{ tournament.awards|linebreaks }}
+
         <h3>Dress</h3>
         {{ tournament.dress|linebreaks }}
+
         <h3>Drug testing</h3>
         {{ tournament.drug_testing|linebreaks }}
     </section>
+
     <section>
-        <h2>Important information</h2>
-        <h3>Timing</h3>
-        {{ tournament.timing|linebreaks }}
+        <h2>Logistics</h2>
         <h3>Venue</h3>
         {{ tournament.venue_description|linebreaks }}
         <iframe

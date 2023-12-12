@@ -23,6 +23,8 @@ class TournamentDetailsBase(models.Model):
     # Prospectus information
     rounds = models.ManyToManyField('archery.Round')
     has_wrs = models.BooleanField(default=True)
+    has_ukrs = models.BooleanField(default=False)
+    indoors = models.BooleanField(default=False, help_text='Displays indoor image.')
     bowstyles = ArrayField(models.CharField(max_length=30, choices=BOWSTYLE_CHOICES))
     event_format = models.TextField()
     judges = models.TextField()
@@ -51,6 +53,19 @@ class TournamentDetailsBase(models.Model):
 
     def __str__(self):
         return self.name
+
+    def labelled_rounds(self):
+        labels = []
+        for shot_round in self.rounds.order_by('id'):  # TODO: Better ordering for rounds
+            if self.has_wrs and shot_round.can_be_wrs:
+                labels.append('WRS %s' % shot_round)
+            elif self.has_wrs and not shot_round.can_be_wrs:
+                labels.append('UKRS %s' % shot_round)
+            elif self.has_ukrs:
+                labels.append('UKRS %s' % shot_round)
+            else:
+                labels.append(str(shot_round))
+        return labels
 
     @property
     def is_future(self):
@@ -96,6 +111,9 @@ class Series(TournamentDetailsBase):
 
     class Meta:
         verbose_name_plural = 'series'
+
+    def ordered_tournaments(self):
+        return self.tournament_set.order_by('date')
 
 
 class Entry(models.Model):

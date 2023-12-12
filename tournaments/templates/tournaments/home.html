@@ -3,7 +3,7 @@
 {% block og_image %}scoring{% endblock %}
 
 {% block hero %}
-<div class="hero hero--scoring">
+<div class="hero hero--tournaments-list">
     <h1>Tournaments</h1>
 </div>
 {% endblock %}
@@ -20,8 +20,8 @@
         <h3>{{ tournament }}</h3>
         <p><strong>{{ tournament.date|date:"jS F Y" }}</strong></p>
         <p>
-        {% for round in tournament.rounds.all %}
-        {% if tournament.has_wrs %}WRS {% endif %}{{ round }}
+        {% for round in tournament.labelled_rounds %}
+        {{ round }}
         {% if not forloop.last %}<br />{% endif %}
         {% endfor %}
         </p>

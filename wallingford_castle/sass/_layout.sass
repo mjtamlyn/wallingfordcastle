@@ -151,9 +151,15 @@ footer
   position: relative
   z-index: 0
 
+  &--short
+    height: 250px
+
   @media (max-width: 750px)
     &
       height: 300px
+
+      &--short
+        height: 250px
 
   &:before
     content: ''
@@ -179,11 +185,14 @@ footer
   &--scas:before
     background-image: url(../img/scas.jpg)
 
-  &--wca-720:before
-    background-image: url(../img/wca-720.jpg)
-
-  &--scoring:before
+  &--tournaments-list:before
     background-image: url(../img/scoring.jpg)
+
+  &--tournaments-outdoor:before
+    background-image: url(../img/outdoors.jpg)
+
+  &--tournaments-indoor:before
+    background-image: url(../img/indoors.jpg)
 
   &--targets:before
     background-image: url(../img/targets.jpg)
