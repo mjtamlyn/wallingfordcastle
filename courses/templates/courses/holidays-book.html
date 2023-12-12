@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block hero %}
 <div class="hero hero--targets">
     <h1>Holiday archery</h1>
@@ -19,7 +17,7 @@
         <form class="form page-form" method="POST" action="{% url 'courses:holidays-book' %}">
             <input type="hidden" name="form" value="login" />
             {% csrf_token %}
-            {% form login_form using 'floppyforms/layouts/p.html' %}
+            {{ login_form }}
             <input type="submit" class="btn">
         </form>
     </section>
@@ -28,7 +26,7 @@
         <form class="form page-form" method="POST" action="{% url 'courses:holidays-book' %}">
             <input type="hidden" name="form" value="register" />
             {% csrf_token %}
-            {% form register_form using 'floppyforms/layouts/p.html' %}
+            {{ register_form }}
             <input type="submit" class="btn">
         </form>
     </section>
@@ -76,7 +74,7 @@
             <input type="hidden" name="form" value="booking" />
             <input type="hidden" name="archer" value="{{ archer.id }}" />
             {% csrf_token %}
-            {% form archer.booking_form using 'floppyforms/layouts/p.html' %}
+            {{ archer.booking_form }}
             <input type="submit" class="btn">
         </form>
         {% else %}
@@ -86,7 +84,7 @@
             <input type="hidden" name="form" value="booking" />
             <input type="hidden" name="archer" value="{{ archer.id }}" />
             {% csrf_token %}
-            {% form archer.booking_form using 'floppyforms/layouts/p.html' %}
+            {{ archer.booking_form }}
             <input type="submit" class="btn">
         </form>
         {% endif %}
@@ -112,7 +110,7 @@
             <input type="hidden" name="form" value="booking" />
             <input type="hidden" name="archer" value="{{ archer.id }}" />
             {% csrf_token %}
-            {% form archer.booking_form using 'floppyforms/layouts/p.html' %}
+            {{ archer.booking_form }}
             <input type="submit" class="btn">
         </form>
         {% else %}
@@ -122,7 +120,7 @@
             <input type="hidden" name="form" value="booking" />
             <input type="hidden" name="archer" value="{{ archer.id }}" />
             {% csrf_token %}
-            {% form archer.booking_form using 'floppyforms/layouts/p.html' %}
+            {{ archer.booking_form }}
             <input type="submit" class="btn">
         </form>
         {% endif %}
@@ -135,7 +133,7 @@
         <form class="form page-form" method="POST" action="{% url 'courses:holidays-book' %}">
             <input type="hidden" name="form" value="new-archer" />
             {% csrf_token %}
-            {% form new_archer_form using 'floppyforms/layouts/p.html' %}
+            {{ new_archer_form }}
             <input type="submit" class="btn">
         </form>
     </section>

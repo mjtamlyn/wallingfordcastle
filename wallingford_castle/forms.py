@@ -1,8 +1,8 @@
+from django import forms
 from django.conf import settings
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.template import loader
 
-import floppyforms.__future__ as forms
 from sendgrid.helpers.mail import From, Mail
 
 from wallingford_castle.models import User
@@ -27,9 +27,8 @@ class MembershipInterestForm(forms.ModelForm):
 
 class SendgridPasswordResetForm(PasswordResetForm):
     def send_mail(
-            self, subject_template_name, email_template_name,
-            context, from_email, to_email, html_email_template_name=None
-            ):
+            self, subject_template_name, email_template_name, context,
+            from_email, to_email, html_email_template_name=None):
 
         subject = loader.render_to_string(subject_template_name, context)
         subject = ''.join(subject.splitlines())

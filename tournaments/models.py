@@ -55,7 +55,7 @@ class TournamentDetailsBase(models.Model):
     @property
     def is_future(self):
         date = datetime.datetime.combine(self.date, datetime.datetime.min.time())
-        date = date.replace(tzinfo=timezone.utc)
+        date = date.replace(tzinfo=datetime.timezone.utc)
         return date > timezone.now()
 
     @property

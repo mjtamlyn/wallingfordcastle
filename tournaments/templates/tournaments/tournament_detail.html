@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block content %}
 <div class="flex-sections">
     <section>
@@ -182,7 +180,7 @@
                 {% endif %}
                 <div class="form">
                     {% csrf_token %}
-                    {% form entry_form using 'floppyforms/layouts/p.html' %}
+                    {{ entry_form }}
                     <input type="submit" value="Enter" class="btn">
                 </div>
             </form>
@@ -190,7 +188,7 @@
             <form class="form page-form" action="{{ register_url }}" method="POST">
                 <h2>Register account</h2>
                 {% csrf_token %}
-                {% form register_form using 'floppyforms/layouts/p.html' %}
+                {{ register_form }}
                 <input type="submit" value="Register" class="btn">
             </form>
             <p><a href="{% url 'login' %}">Login to existing account</a></p>

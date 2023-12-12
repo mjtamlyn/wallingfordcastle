@@ -4,15 +4,15 @@ url = "https://pypi.org/simple"
 name = "pypi"
 
 [requires]
-python_version = "3.9"
+python_version = "3.12"
 
 [dev-packages]
 
 [packages]
-"dj-database-url" = ">=0.5.0"
+"dj-database-url" = "*"
 django-braces = "*"
 django-custom-user = "*"
-django-debug-toolbar = ">=3.2.1"
+django-debug-toolbar = "*"
 django-object-actions = "*"
 django = "*"
 gunicorn = "*"
@@ -26,7 +26,6 @@ whitenoise = "*"
 attrs = "*"
 sentry-sdk = "*"
 django-webpack-loader = "*"
-django-floppyforms = "*"
 factory-boy = "*"
 isort = "*"
 flake8 = "*"

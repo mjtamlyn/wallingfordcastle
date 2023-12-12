@@ -1,7 +1,5 @@
 {% extends 'base.html' %}
 
-{% load floppyforms %}
-
 {% block content %}
 <div class="flex-sections">
     <section>
@@ -30,7 +28,7 @@
         <form class="form page-form" method="POST" action=".">
             <p>To register for the course, please complete the form below.</p>
             {% csrf_token %}
-            {% form form using 'floppyforms/layouts/p.html' %}
+            {{ form }}
             <input type="submit" class="btn" value="Register">
         </form>
     </section>

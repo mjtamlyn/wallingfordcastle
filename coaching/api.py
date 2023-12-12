@@ -11,8 +11,8 @@ def plan_info(request, plan_id):
     plan = get_object_or_404(ArcherSeason, pk=plan_id)
     archer = plan.archer
     if (
-            archer.user_id != request.user.pk and request.user not in archer.managing_users.all()
-            and not request.user.is_superuser
+            archer.user_id != request.user.pk and request.user not in archer.managing_users.all() and
+            not request.user.is_superuser
     ):
         raise Http404
     response = {

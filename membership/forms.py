@@ -1,4 +1,4 @@
-import floppyforms.__future__ as forms
+from django import forms
 
 from wallingford_castle.models import AGE_CHOICES
 
