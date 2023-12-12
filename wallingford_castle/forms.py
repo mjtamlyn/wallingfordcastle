@@ -27,9 +27,8 @@ class MembershipInterestForm(forms.ModelForm):
 
 class SendgridPasswordResetForm(PasswordResetForm):
     def send_mail(
-            self, subject_template_name, email_template_name,
-            context, from_email, to_email, html_email_template_name=None
-            ):
+            self, subject_template_name, email_template_name, context,
+            from_email, to_email, html_email_template_name=None):
 
         subject = loader.render_to_string(subject_template_name, context)
         subject = ''.join(subject.splitlines())

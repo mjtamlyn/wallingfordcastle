@@ -124,8 +124,8 @@ class Beginner(models.Model):
     @property
     def is_fast_track(self):
         return (
-            self.status == STATUS_FAST_TRACK
-            or self.status in [STATUS_JOINED, STATUS_LEFT] and self.paid
+            self.status == STATUS_FAST_TRACK or
+            self.status in [STATUS_JOINED, STATUS_LEFT] and self.paid
         )
 
     def __str__(self):

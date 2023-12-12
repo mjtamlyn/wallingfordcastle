@@ -281,8 +281,8 @@ class MembersCourseList(FullMemberRequired, ListView):
         for course in bookable_courses:
             user = self.request.user
             course.registered_members = (
-                course.attendee_set.filter(archer__user=user)
-                | course.attendee_set.filter(archer__managing_users=user)
+                course.attendee_set.filter(archer__user=user) |
+                course.attendee_set.filter(archer__managing_users=user)
             )
         return bookable_courses
 
@@ -339,8 +339,8 @@ class NonMembersCourseList(FullMemberRequired, ListView):
         for course in bookable_courses:
             user = self.request.user
             course.registered_archers = (
-                course.attendee_set.filter(archer__user=user)
-                | course.attendee_set.filter(archer__managing_users=user)
+                course.attendee_set.filter(archer__user=user) |
+                course.attendee_set.filter(archer__managing_users=user)
             )
         return bookable_courses
 
