@@ -18,7 +18,7 @@ from records.models import Achievement
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Season
 
-from .forms import MemberForm
+from .forms import SeniorMemberForm, JuniorMemberForm
 
 
 class Overview(FullMemberRequired, TemplateView):
@@ -110,9 +110,13 @@ class MemberAttendance(FullMemberRequired, DetailView):
 
 class MemberUpdate(FullMemberRequired, MessageMixin, UpdateView):
     template_name = 'membership/member-update.html'
-    form_class = MemberForm
     pk_url_kwarg = 'member_id'
     success_url = reverse_lazy('membership:overview')
+
+    def get_form_class(self):
+        if self.object.archer.age == 'junior':
+            return JuniorMemberForm
+        return SeniorMemberForm
 
     def get_queryset(self):
         return Member.objects.managed_by(self.request.user).select_related('archer')
