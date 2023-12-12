@@ -7,12 +7,11 @@
     "doc": "docs"
   },
   "scripts": {
-    "watch": "node tools/WebpackServer.js",
     "build": "npm run clean && NODE_ENV=production webpack --config webpack.config.js",
     "clean": "rm -rf build"
   },
   "engines": {
-    "node": "19.x"
+    "node": "20.x"
   },
   "private": true,
   "repository": "git+https://github.com/mjtamlyn/wallingfordcastle.git",
@@ -22,29 +21,29 @@
     "url": "https://github.com/mjtamlyn/wallingfordcastle/issues"
   },
   "dependencies": {
-    "@babel/core": "^7.10.3",
+    "@babel/core": "^7.23",
     "@babel/plugin-proposal-class-properties": "^7.10.1",
     "@babel/plugin-proposal-function-bind": "^7.10.4",
-    "@babel/preset-react": "^7.10.1",
+    "@babel/preset-react": "^7.23",
     "@fortawesome/fontawesome-svg-core": "^6.3.0",
     "@fortawesome/free-regular-svg-icons": "^6.3.0",
     "@fortawesome/free-solid-svg-icons": "^6.3.0",
     "@fortawesome/react-fontawesome": "^0.2.0",
-    "babel-loader": "^8.1.0",
+    "babel-loader": "^9",
     "babel-plugin-macros": "^3.1.0",
     "body-scroll-lock": "^3.1.5",
     "cookies-js": "^1.2.3",
     "deep-for-each": "^3.0.0",
-    "lodash": "^4.17.20",
     "moment": "^2.27.0",
     "mousetrap": "^1.6.5",
-    "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react": "^18",
+    "react-dom": "^18",
     "react-router-dom": "^5.2.0",
     "webpack": "^5.75.0",
-    "webpack-bundle-tracker": "^1.8.1",
-    "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.11.1"
+    "webpack-bundle-tracker": "^2",
+    "webpack-cli": "^5.0.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "webpack-dev-server": "^4.15.1"
+  }
 }

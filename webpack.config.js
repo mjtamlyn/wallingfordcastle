@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const BundleTracker = require('webpack-bundle-tracker');
 
 const devMode = process.env.NODE_ENV !== 'production';
-const devModeServer = 'http://localhost:3000';
+const devModeServer = 'http://localhost:8080';
 
 const src = [
     path.resolve(__dirname, 'js_src'),
@@ -40,7 +40,10 @@ module.exports = {
     },
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
-        new BundleTracker({ filename: 'build/webpack-stats.json' }),
+        new BundleTracker({
+            path: path.resolve(__dirname, 'build'),
+            filename: 'webpack-stats.json'
+        }),
     ].filter(plugin => !!plugin),
     resolve: {
         extensions: ['.js'],

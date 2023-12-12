@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import { BrowserRouter, Switch, Route } from 'react-router-dom';
 
@@ -7,7 +7,7 @@ import NoMatch from 'utils/NoMatch';
 import DateSelectorView from 'range/DateSelectorView';
 import DateView from 'range/DateView';
 import PlanView from 'coaching/PlanView';
-import initTournamentEntry from 'tournamentEntry';
+import TournamentEntry from 'tournaments/TournamentEntry';
 
 const rangeApp = document.getElementById('app-range-booking');
 
@@ -25,14 +25,16 @@ const RangeBookingApp = () => {
 }
 
 if (rangeApp) {
-    ReactDOM.render(<RangeBookingApp />, rangeApp);
+    const rangeRoot = createRoot(rangeApp);
+    rangeRoot.render(<RangeBookingApp />, rangeApp);
 }
 
 const eventPlanApp  = document.getElementById('app-event-plan');
 
 if (eventPlanApp) {
     const planId = eventPlanApp.dataset.plan;
-    ReactDOM.render(<PlanView planId={ planId } />, eventPlanApp);
+    const planRoot = createRoot(eventPlanApp);
+    planRoot.render(<PlanView planId={ planId } />, eventPlanApp);
 }
 
 const tournamentEntry = document.getElementById('tournament-entry');

@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createPortal } from 'react-dom';
 import Mousetrap from 'mousetrap';
 import { disableBodyScroll, clearAllBodyScrollLocks } from 'body-scroll-lock';
 
@@ -48,7 +48,7 @@ class Modal extends React.Component {
                 </div>
             </div>
         );
-        return ReactDOM.createPortal(modal, this.el);
+        return createPortal(modal, this.el);
     }
 }
 
