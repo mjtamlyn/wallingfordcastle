@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 import { Switch, Route, Redirect, Link } from 'react-router-dom';
 import BooleanField from 'utils/BooleanField';
+import DateInput from 'utils/DateInput';
 import FormInput from 'utils/FormInput';
 import TextField from 'utils/TextField';
 import Selector from 'utils/Selector';
@@ -29,6 +30,7 @@ const EnterModalArcherDetails = ({ tournament, entry, updateEntry }) => {
                 <FormInput value={ entry.agb } onChange={ updateEntry('agb') } label="AGB number" />
                 <FormInput value={ entry.club } onChange={ updateEntry('club') } label="Club" />
                 <Selector value={ entry.gender } onChange={ updateEntry('gender') } label="Gender" options={ ['Men', 'Women'] } />
+                <DateInput value={ entry.dob } onChange={ updateEntry('dob') } label="Date of Birth" />
                 <Selector value={ entry.ageGroup } onChange={ updateEntry('ageGroup') } label="Age group" options={ ['50+', 'Adult', 'U21', 'U18', 'U16', 'U15', 'U14', 'U12'] } />
             </form>
             { !entry.page1Valid && <a className="btn btn--disabled">Add archer details</a> }

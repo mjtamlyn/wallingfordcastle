@@ -377,6 +377,11 @@
   flex-basis: 25%;
 }
 
+/* line 108, ../../sass/_forms.sass */
+.react-datepicker select {
+  all: inherit;
+}
+
 /* line 4, ../../sass/_layout.sass */
 * {
   box-sizing: border-box;
