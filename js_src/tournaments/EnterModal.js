@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 
 import { Switch, Route, Redirect, Link } from 'react-router-dom';
-import BooleanField from 'utils/BooleanField';
-import DateInput from 'utils/DateInput';
-import FormInput from 'utils/FormInput';
-import TextField from 'utils/TextField';
-import Selector from 'utils/Selector';
+import BooleanField from 'forms/BooleanField';
+import DateInput from 'forms/DateField';
+import FormInput from 'forms/InputField';
+import TextField from 'forms/TextField';
+import Selector from 'forms/Selector';
 import Modal from 'utils/Modal';
 
 

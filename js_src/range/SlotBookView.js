@@ -2,7 +2,7 @@ import React from 'react';
 import { withRouter, Link, Redirect } from 'react-router-dom';
 
 import store from 'utils/store';
-import Selector from 'utils/Selector';
+import Selector from 'forms/Selector';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
 import ArcherSelect from 'range/ArcherSelect';
 import Modal from 'utils/Modal';

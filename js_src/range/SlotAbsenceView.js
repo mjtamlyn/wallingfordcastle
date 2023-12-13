@@ -4,7 +4,7 @@ import { withRouter, Link, Redirect } from 'react-router-dom';
 import store from 'utils/store';
 import ArcherMultiSelect from 'range/ArcherMultiSelect';
 import Modal from 'utils/Modal';
-import TextField from 'utils/TextField';
+import TextField from 'forms/TextField';
 
 const isValid = ({ archers, reason }) => {
     return !!archers.length;
