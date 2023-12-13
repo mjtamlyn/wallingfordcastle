@@ -22,11 +22,10 @@ module.exports = {
         rules: [
             {
                 test: /\.js$/,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                    },
-                ],
+                loader: 'babel-loader',
+            }, {  
+                test: /\.css$/,
+                use: ['style-loader', 'css-loader'],
             },
         ],
     },

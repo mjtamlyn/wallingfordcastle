@@ -16,6 +16,7 @@
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="msapplication-config" content="{{ STATIC_URL }}favicon/browserconfig.xml">
         <meta name="theme-color" content="#ffffff">
+        {% render_bundle 'global' 'css' %}
         {% block meta %}
         <meta property="og:image" content="https://wallingfordcastle.co.uk{{ STATIC_URL }}img/{% block og_image %}scas{% endblock %}.jpg" />
         {% endblock %}
