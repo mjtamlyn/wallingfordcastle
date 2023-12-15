@@ -9,7 +9,7 @@ import requests
 import stripe
 from braces.views import MessageMixin
 
-from payments.models import PaymentIntent
+from payments.models import Checkout
 
 from .forms import BeginnersInterestForm
 from .models import BeginnersCourse
@@ -79,7 +79,7 @@ class Payment(MessageMixin, View):
             success_url=request.build_absolute_uri(membership_overview_url),
             cancel_url=request.build_absolute_uri(membership_overview_url),
         )
-        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent, user=self.request.user)
+        intent = Checkout.objects.create(stripe_id=session.id, user=self.request.user)
         for beginner in beginners:
             intent.lineitemintent_set.create(item=beginner)
         return redirect(session.url, status_code=303)

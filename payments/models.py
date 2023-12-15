@@ -3,8 +3,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
-class PaymentIntent(models.Model):
-    stripe_id = models.CharField(max_length=64)
+class Checkout(models.Model):
+    stripe_id = models.CharField(max_length=128)
     user = models.ForeignKey('wallingford_castle.User', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -17,7 +17,7 @@ class PaymentIntent(models.Model):
 
 
 class LineItemIntent(models.Model):
-    payment_intent = models.ForeignKey(PaymentIntent, on_delete=models.CASCADE)
+    checkout = models.ForeignKey(Checkout, on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     item = GenericForeignKey('content_type', 'object_id')

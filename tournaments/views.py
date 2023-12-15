@@ -16,7 +16,7 @@ from braces.views import LoginRequiredMixin, MessageMixin
 
 from events.models import Event
 from membership.models import Member
-from payments.models import PaymentIntent
+from payments.models import Checkout
 
 from .forms import EntryForm, RegisterForm, SeriesEntryForm
 from .models import Entry, Series, Tournament
@@ -193,7 +193,7 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
         })
 
     def create_intents(self, stripe_id, entries):
-        intent = PaymentIntent.objects.create(stripe_id=stripe_id, user=self.request.user)
+        intent = Checkout.objects.create(stripe_id=stripe_id, user=self.request.user)
         for entry in entries:
             intent.lineitemintent_set.create(item=entry)
 
@@ -221,7 +221,7 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
             success_url=request.build_absolute_uri(self.get_success_url(event)),
             cancel_url=request.build_absolute_uri(event.get_absolute_url()),
         )
-        self.create_intents(stripe_id=session.payment_intent, entries=entries_to_pay_for)
+        self.create_intents(stripe_id=session.id, entries=entries_to_pay_for)
         return redirect(session.url, status_code=303)
 
 
@@ -347,7 +347,7 @@ class SeriesPay(SeriesMixin, Pay):
         })
 
     def create_intents(self, stripe_id, entries):
-        intent = PaymentIntent.objects.create(stripe_id=stripe_id, user=self.request.user)
+        intent = Checkout.objects.create(stripe_id=stripe_id, user=self.request.user)
         all_entries = self.request.user.entry_set.filter(
             paid=False,
             tournament__series=entries[0].tournament.series,

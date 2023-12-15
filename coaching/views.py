@@ -14,7 +14,7 @@ import requests
 import stripe
 from braces.views import MessageMixin
 
-from payments.models import PaymentIntent
+from payments.models import Checkout
 from records.models import Achievement
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
@@ -176,7 +176,7 @@ class TrialPayment(MessageMixin, View):
             success_url=request.build_absolute_uri(membership_overview_url),
             cancel_url=request.build_absolute_uri(membership_overview_url),
         )
-        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent, user=self.request.user)
+        intent = Checkout.objects.create(stripe_id=session.id, user=self.request.user)
         for trial in trials:
             intent.lineitemintent_set.create(item=trial)
         return redirect(session.url, status_code=303)

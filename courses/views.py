@@ -18,7 +18,7 @@ from braces.views import MessageMixin
 from dateutil.relativedelta import relativedelta
 
 from membership.models import Member
-from payments.models import PaymentIntent
+from payments.models import Checkout
 from wallingford_castle.forms import DirectRegisterForm
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer
@@ -225,7 +225,7 @@ class HolidaysPay(HolidaysUtils, MessageMixin, View):
             success_url=request.build_absolute_uri(return_url),
             cancel_url=request.build_absolute_uri(return_url),
         )
-        intent = PaymentIntent.objects.create(stripe_id=stripe_session.payment_intent, user=self.request.user)
+        intent = Checkout.objects.create(stripe_id=stripe_session.id, user=self.request.user)
         for session in to_pay:
             intent.lineitemintent_set.create(item=session)
         return redirect(stripe_session.url, status_code=303)
@@ -416,7 +416,7 @@ class NonMembersPayment(MessageMixin, View):
             success_url=request.build_absolute_uri(membership_overview_url),
             cancel_url=request.build_absolute_uri(membership_overview_url),
         )
-        intent = PaymentIntent.objects.create(stripe_id=session.payment_intent, user=self.request.user)
+        intent = Checkout.objects.create(stripe_id=session.id, user=self.request.user)
         for attendee in attendees:
             intent.lineitemintent_set.create(item=attendee)
         return redirect(session.url, status_code=303)
