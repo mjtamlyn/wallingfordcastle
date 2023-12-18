@@ -22,7 +22,7 @@ class StripeWebhook(View):
             try:
                 user = User.objects.get(email=session.customer_email)
             except User.DoesNotExist:
-                pass
+                return HttpResponse('ok - no such user')
             user.customer_id = session.customer
             if session.subscription:
                 user.subscription_id = session.subscription
