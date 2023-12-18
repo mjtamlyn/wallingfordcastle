@@ -228,6 +228,7 @@ class TrialContinue(SingleObjectMixin, FormView):
                 return redirect(session.url, status_code=303)
             else:
                 self.request.user.update_subscriptions()
+                return redirect('membership:overview')
 
 
 class EventPlan(FullMemberRequired, MessageMixin, TemplateView):
