@@ -218,6 +218,7 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
             mode='payment',
             customer=customer_id,
             customer_email=None if customer_id else self.request.user.email,
+            customer_creation='always',
             success_url=request.build_absolute_uri(self.get_success_url(event)),
             cancel_url=request.build_absolute_uri(event.get_absolute_url()),
         )

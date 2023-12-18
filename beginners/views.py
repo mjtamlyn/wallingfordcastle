@@ -76,6 +76,7 @@ class Payment(MessageMixin, View):
             mode='payment',
             customer=customer_id,
             customer_email=None if customer_id else self.request.user.email,
+            customer_creation='always',
             success_url=request.build_absolute_uri(membership_overview_url),
             cancel_url=request.build_absolute_uri(membership_overview_url),
         )

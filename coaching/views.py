@@ -173,6 +173,7 @@ class TrialPayment(MessageMixin, View):
             mode='payment',
             customer=customer_id,
             customer_email=None if customer_id else self.request.user.email,
+            customer_creation='always',
             success_url=request.build_absolute_uri(membership_overview_url),
             cancel_url=request.build_absolute_uri(membership_overview_url),
         )
@@ -220,6 +221,7 @@ class TrialContinue(SingleObjectMixin, FormView):
                     mode='subscription',
                     customer=customer_id,
                     customer_email=None if customer_id else self.request.user.email,
+                    customer_creation='always',
                     success_url=self.request.build_absolute_uri(membership_overview_url),
                     cancel_url=self.request.build_absolute_uri(membership_overview_url),
                 )
