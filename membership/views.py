@@ -158,7 +158,7 @@ class PaymentDetails(MessageMixin, View):
                     for price, quantity in user.get_membership_prices().items()
                 ],
                 customer=customer_id,
-                customer_creation='always',
+                customer_creation=None if customer_id else 'always',
                 mode='subscription',
                 payment_method_types=['card'],
                 success_url=self.request.build_absolute_uri(membership_overview_url),
