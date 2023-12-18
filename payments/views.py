@@ -22,7 +22,15 @@ class StripeWebhook(View):
             try:
                 user = User.objects.get(email=session.customer_email)
             except User.DoesNotExist:
-                return HttpResponse('ok - no such user')
+                try:
+                    user = User.objects.get(customer_id=session.customer)
+                except User.DoesNotExist:
+                    return HttpResponse('ok - no such user')
+            if session.mode == 'setup' and user.subscription_id:
+                subscription = stripe.Subscription.retrieve(user.subscription_id)
+                setup_intent = stripe.SetupIntent.retrieve(session.setup_intent)
+                subscription.default_payment_method = setup_intent.payment_method
+                subscription.save()
             user.customer_id = session.customer
             if session.subscription:
                 user.subscription_id = session.subscription
