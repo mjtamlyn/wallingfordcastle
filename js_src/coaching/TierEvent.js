@@ -21,8 +21,7 @@ const TierEvent = ({ ev, planId }) => {
     let options = (
         <>
             <option value="">{ ev.registration && 'Delete response' || 'Respond...' }</option>
-            <option value="definite">Yes, I am definitely attending</option>
-            <option value="booked">Yes, I am booked in</option>
+            <option value="booked">Yes, I am attending</option>
             <option value="maybe">I might be attending</option>
             <option value="no">I will not be attending</option>
         </>
@@ -32,11 +31,10 @@ const TierEvent = ({ ev, planId }) => {
         options = (
             <>
                 <option value="">{ ev.registration && 'Delete response' || 'Respond...' }</option>
-                <option value="definite">Yes, I am definitely attending</option>
-                <option value="booked|required">Booked, I need transport</option>
-                <option value="booked|interested">Booked, I would like transport for me</option>
-                <option value="booked|plus-parent">Booked, I would like transport for me and a parent</option>
-                <option value="booked|own-way">Booked, I do not need transport</option>
+                <option value="booked|required">Yes, but only with club transport</option>
+                <option value="booked|interested">Yes, I would prefer club transport if available</option>
+                <option value="booked|plus-parent">Yes, I would like transport for me and a parent</option>
+                <option value="booked|own-way">Yes, but I do not want club transport</option>
                 <option value="maybe">I might be attending</option>
                 <option value="no">I will not be attending</option>
             </>
@@ -99,7 +97,7 @@ const TierEvent = ({ ev, planId }) => {
             </p>
             <p className="event-plan__event__format">
                 <FontAwesomeIcon icon={ regular('rectangle-list') } className="event-plan__icon" fixedWidth />
-                { eventType } - { ev.eventFormat }
+                { eventType } - { ev.eventFormat }{ ev.scayt && " - SCAYT points available" } 
             </p>
             <p className="event-plan__event__format">
                 <FontAwesomeIcon icon={ regular('user') } className="event-plan__icon" fixedWidth />

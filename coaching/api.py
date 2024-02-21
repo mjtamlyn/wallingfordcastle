@@ -44,6 +44,7 @@ def plan_info(request, plan_id):
                 'name': event.name,
                 'eventFormat': event.event_format,
                 'ageGroups': event.age_groups,
+                'scayt': event.scayt,
                 'date': {
                     'api': event.date.isoformat(),
                     'pretty': event.date.strftime('%A %-d %B'),

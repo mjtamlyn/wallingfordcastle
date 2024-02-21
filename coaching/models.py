@@ -191,6 +191,7 @@ class Event(models.Model):
     venue = models.CharField(max_length=255)
     venue_post_code = models.CharField(max_length=20)
     age_groups = models.CharField(max_length=100)
+    scayt = models.BooleanField(default=False)
     tournament = models.ForeignKey('tournaments.Tournament', on_delete=models.SET_NULL, blank=True, null=True)
     event = models.ForeignKey('events.Event', on_delete=models.SET_NULL, blank=True, null=True)
     club_trip = models.BooleanField(default=False)

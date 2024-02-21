@@ -10,13 +10,10 @@ const EventCalendar = ({ tracks }) => {
         track.events.forEach((ev) => {
             const e = { ...ev, tier: track.tierName };
             e.date.compare = new Date(e.date.api);
-            console.log(e.date.compare);
             events.push(e);
         });
     });
-    console.log(events);
     events.sort((e1, e2) => e1.date.compare > e2.date.compare ? 1 : -1);
-    console.log(events);
 
     const formattedEvents = events.map((ev) => {
         return (

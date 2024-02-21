@@ -4,7 +4,7 @@ const webpack = require('webpack');
 const BundleTracker = require('webpack-bundle-tracker');
 
 const devMode = process.env.NODE_ENV !== 'production';
-const devModeServer = 'http://localhost:3000';
+const devModeServer = 'http://localhost:8080';
 
 const src = [
     path.resolve(__dirname, 'js_src'),
@@ -34,13 +34,13 @@ module.exports = {
         minimize: !devMode, // true, // Always enabled to allow for splitChunks
     },
     output: {
-        filename: devMode ? 'js/[name].js' : 'js/[name]-[contenthash].js',
-        path: path.resolve(__dirname, 'build/bundles'),
-        publicPath: devMode ? `${devModeServer}/bundles/` : undefined,
+        filename: devMode ? '[name].js' : '[name]-[contenthash].js',
+        path: path.resolve(__dirname, 'build/bundles/js/'),
+        publicPath: devMode ? `${devModeServer}/bundles/js/` : undefined,
     },
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
-        new BundleTracker({ filename: 'build/webpack-stats.json' }),
+        new BundleTracker({ path: 'build/', filename: 'webpack-stats.json' }),
     ].filter(plugin => !!plugin),
     resolve: {
         extensions: ['.js'],
