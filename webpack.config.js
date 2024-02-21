@@ -40,7 +40,7 @@ module.exports = {
     },
     plugins: [
         new webpack.NoEmitOnErrorsPlugin(),
-        new BundleTracker({ path: 'build/', filename: 'webpack-stats.json' }),
+        new BundleTracker({ path: path.resolve(__dirname, 'build'), filename: 'webpack-stats.json' }),
     ].filter(plugin => !!plugin),
     resolve: {
         extensions: ['.js'],
