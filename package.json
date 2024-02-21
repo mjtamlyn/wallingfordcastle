@@ -11,9 +11,6 @@
     "build": "npm run clean && NODE_ENV=production webpack --config webpack.config.js",
     "clean": "rm -rf build"
   },
-  "engines": {
-    "node": "19.x"
-  },
   "private": true,
   "repository": "git+https://github.com/mjtamlyn/wallingfordcastle.git",
   "author": "Marc Tamlyn & WCA Ltd",
@@ -42,7 +39,7 @@
     "react-dom": "^16.13.1",
     "react-router-dom": "^5.2.0",
     "webpack": "^5.75.0",
-    "webpack-bundle-tracker": "^1.8.1",
+    "webpack-bundle-tracker": "^2.0.1",
     "webpack-cli": "^5.0.1",
     "webpack-dev-server": "^4.11.1"
   },

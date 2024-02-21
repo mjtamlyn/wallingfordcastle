@@ -12,7 +12,6 @@ const src = [
 ];
 
 module.exports = {
-    context: path.resolve(__dirname),
     devtool: devMode ? 'cheap-module-source-map' : false,
     entry: {
         global: './js_src/entry',
@@ -35,13 +34,15 @@ module.exports = {
     },
     output: {
         filename: devMode ? '[name].js' : '[name]-[contenthash].js',
-        path: path.resolve(__dirname, 'build/bundles/js/'),
-        publicPath: devMode ? `${devModeServer}/bundles/js/` : undefined,
+        path: path.resolve(__dirname, 'build/bundles'),
+        publicPath: devMode ? `${devModeServer}/bundles/` : undefined,
     },
     plugins: [
-        new webpack.NoEmitOnErrorsPlugin(),
-        new BundleTracker({ path: path.resolve(__dirname, 'build'), filename: 'webpack-stats.json' }),
-    ].filter(plugin => !!plugin),
+        new BundleTracker({
+            path: path.resolve(__dirname, 'build'),
+            filename: 'webpack-stats.json'
+        }),
+    ],
     resolve: {
         extensions: ['.js'],
         modules: src,
