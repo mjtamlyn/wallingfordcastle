@@ -1,8 +1,6 @@
 #!/usr/bin/env bash
 set -eo pipefail
 
-source $BIN_DIR/utils
-
 # The post_compile hook is run by heroku-buildpack-python
 
 if [ -x bin/install_exiv2 ]; then
