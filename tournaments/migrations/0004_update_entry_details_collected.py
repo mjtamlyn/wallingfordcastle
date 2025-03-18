@@ -28,6 +28,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='entry',
             name='gdpr_consent',
-            field=models.BooleanField(default=False, verbose_name='I consent that some of the information here provided will be shared with tournament organisers, scoring systems, other competitors and ArcheryGB. I also consent that I may be contacted with further details of the event via email.'),
+            field=models.BooleanField(default=False, verbose_name='I consent that some of the information here provided will be shared with tournament organisers, scoring systems, other competitors and Archery GB. I also consent that I may be contacted with further details of the event via email.'),
         ),
     ]

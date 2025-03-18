@@ -17,8 +17,9 @@ class MembershipInterestForm(forms.ModelForm):
         super().__init__(**kwargs)
         self.fields['date_of_birth'].label = 'Date of Birth'
         self.fields['date_of_birth'].required = True
-        self.fields['agb_number'].label = 'ArcheryGB number'
-        self.fields['agb_number'].help_text = 'If you have one'
+        self.fields['agb_number'].label = 'Archery GB number'
+        self.fields['agb_number'].help_text = 'Archery GB membership is required'
+        self.fields['date_of_birth'].required = True
 
     class Meta:
         model = MembershipInterest

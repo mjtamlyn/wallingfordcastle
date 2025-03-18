@@ -103,7 +103,7 @@ class Entry(models.Model):
     tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, blank=True, null=True)
     series_entry = models.BooleanField(default=False)
     name = models.CharField(max_length=200)
-    agb_number = models.CharField('ArcheryGB number', max_length=50)
+    agb_number = models.CharField('Archery GB number', max_length=50)
     club = models.CharField(max_length=200)
     date_of_birth = models.DateField(blank=True, null=True, help_text='Required for junior archers.')
     gender = models.CharField(max_length=50, choices=GENDER_CHOICES)
@@ -119,7 +119,7 @@ class Entry(models.Model):
         verbose_name=(
             'I consent that some of the information here provided will be shared '
             'with tournament organisers, scoring systems, other competitors and '
-            'ArcheryGB. I also consent that I may be contacted with further details '
+            'Archery GB. I also consent that I may be contacted with further details '
             'of the event via email.'
         ),
         default=False,

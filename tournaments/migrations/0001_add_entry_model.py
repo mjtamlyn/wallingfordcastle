@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('name', models.CharField(max_length=200)),
-                ('agb_number', models.CharField(max_length=50, verbose_name='ArcheryGB number')),
+                ('agb_number', models.CharField(max_length=50, verbose_name='Archery GB number')),
                 ('club', models.CharField(max_length=200)),
                 ('gender', models.CharField(choices=[('gent', 'Gent'), ('lady', 'Lady')], max_length=50)),
                 ('bowstyle', models.CharField(choices=[('recurve', 'Recurve'), ('compound', 'Compound')], max_length=50)),
