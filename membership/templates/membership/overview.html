@@ -48,7 +48,11 @@
                             {% with member.coaching_groups.0.coaches.all as coaches %}
                             <p>Your coach{{ coaches|pluralize:"es" }} {{ coaches|pluralize:"is,are" }} {% for coach in coaches %}{{ coach }}{% if not forloop.last %}, {% endif%}{% endfor %}.</p>
                             {% endwith %}
-                            <p>Your next scheduled session is on {{ member.coaching_groups.0.next_session.start|date:"jS F" }}.</p>
+                            {% if member.coaching_groups.0.next_session %}
+                                <p>Your next scheduled session is on {{ member.coaching_groups.0.next_session.start|date:"jS F" }}.</p>
+                            {% else %}
+                                <p>There are no upcoming sessions currently scheduled for your group.</p>
+                            {% endif %}
                         {% else %}
                             <p>
                             You are currently booked for the following weekly groups:</br>
@@ -63,6 +67,23 @@
                         {% endif %}
                     {% else %}
                         <p>You are not currently a member of a coaching group.</p>
+                    {% endif %}
+
+                    {% if member.upcoming_coaching_groups %}
+                        <p>
+                            <strong>{{ member.upcoming_coaching_groups.0.season }}</strong>
+                            <small> starts {{ member.upcoming_coaching_groups.0.season.start_date }}</small>
+                        </p>
+                        <p>
+                        You are currently booked for the following weekly groups:</br>
+                        {% for group in member.upcoming_coaching_groups %}
+                        <strong>{{ group.group_name }}</strong>,
+                        meeting on {{ group.get_session_day_display }}s
+                        between {{ group.session_start_time }} and
+                        {{ group.session_end_time }} at {{ group.venue }}.
+                        <br>
+                        {% endfor %}
+                        </p>
                     {% endif %}
                 </div>
                 <div class="members__section__actions">

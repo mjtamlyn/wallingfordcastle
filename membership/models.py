@@ -93,6 +93,16 @@ class Member(models.Model):
         except TrainingGroup.DoesNotExist:
             return None
 
+    @cached_property
+    def upcoming_coaching_groups(self):
+        from coaching.models import TrainingGroup
+
+        season = Season.objects.get_upcoming()
+        try:
+            return self.archer.training_groups.filter(season=season).order_by('session_day')
+        except TrainingGroup.DoesNotExist:
+            return None
+
     @property
     def coaching_level(self):
         if self.coaching_groups and self.coaching_groups[0].level.first().name.startswith('Mini'):
