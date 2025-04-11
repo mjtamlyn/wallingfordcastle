@@ -6,7 +6,7 @@
 
 <p>
     {% if is_coach %}
-    <a href="{% url 'coaching:group-report' group=group.slug %}">< Back to group</a>
+    <a href="{% url 'coaching:group-report' pk=group.pk group=group.slug %}">< Back to group</a>
     {% else %}
     <a href="{% url 'membership:overview' %}">< Back to membership overview</a>
     {% endif %}

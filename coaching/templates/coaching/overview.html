@@ -23,7 +23,7 @@
         Current trials: {{ group.trial_set.filter_ongoing.count }}
         </p>
         {% endif %}
-        <p><a href="{% url 'coaching:group-report' group=group.slug %}">View report ></a></p>
+        <p><a href="{% url 'coaching:group-report' pk=group.pk group=group.slug %}">View report ></a></p>
     </section>
 {% endfor %}
 </div>
@@ -46,7 +46,7 @@
         Current trials: {{ group.trial_set.filter_ongoing.count }}
         </p>
         {% endif %}
-        <p><a href="{% url 'coaching:group-report' group=group.slug %}">View report ></a></p>
+        <p><a href="{% url 'coaching:group-report' pk=group.pk group=group.slug %}">View report ></a></p>
     </section>
 {% endfor %}
 </div>
@@ -75,7 +75,7 @@
         Current trials: {{ group.trial_set.filter_ongoing.count }}
         </p>
         {% endif %}
-        <p><a href="{% url 'coaching:upcoming-group-report' group=group.slug %}">View report ></a></p>
+        <p><a href="{% url 'coaching:upcoming-group-report' pk=group.pk group=group.slug %}">View report ></a></p>
     </section>
 {% endfor %}
 </div>
@@ -98,7 +98,7 @@
         Current trials: {{ group.trial_set.filter_ongoing.count }}
         </p>
         {% endif %}
-        <p><a href="{% url 'coaching:upcoming-group-report' group=group.slug %}">View report ></a></p>
+        <p><a href="{% url 'coaching:upcoming-group-report' pk=group.pk group=group.slug %}">View report ></a></p>
     </section>
 {% endfor %}
 </div>

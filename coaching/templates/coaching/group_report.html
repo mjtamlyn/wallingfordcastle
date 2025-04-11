@@ -5,7 +5,7 @@
 {% block content %}
 <a href="{% url 'coaching:overview' %}">< Back to list of groups</a>
 <h2>{{ group }}</h2>
-<p><a href="{% url schedule_url_name group=group.slug %}">View upcoming session times ></a></p>
+<p><a href="{% url schedule_url_name pk=group.pk group=group.slug %}">View upcoming session times ></a></p>
 <h3>Archers</h3>
 <table class="table">
     <thead>

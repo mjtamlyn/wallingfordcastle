@@ -70,28 +70,9 @@ class GroupMixin(CurrentSeasonMixin):
     context_object_name = 'group'
     model = TrainingGroup
 
-    def get_object(self):
+    def get_queryset(self):
         season = self.get_season()
-        days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
-        day, level = self.kwargs['group'].split('-', 1)
-        names = map(lambda s: s.replace('_', ' '), level.split('-'))
-        levels = TrainingGroupType.objects.annotate(name_lower=Lower('name')).filter(name_lower__in=names)
-        possible_groups = TrainingGroup.objects.filter(season=season).filter(
-            session_day=days.index(day),
-        )
-        if len(possible_groups) > 1:
-            group = None
-            for candidate in possible_groups:
-                if set(candidate.level.all()) == set(levels):
-                    group = candidate
-                    break
-            if not group:
-                raise Http404('No group found')
-        elif len(possible_groups) == 1:
-            group = possible_groups[0]
-        else:
-            raise Http404('No group found')
-        return group
+        return super().get_queryset().filter(season=season)
 
 
 class GroupReport(GroupMixin, DetailView):
@@ -131,6 +112,7 @@ class UpcomingGroupReport(GroupReport):
 
 class GroupSchedule(GroupMixin, DetailView):
     template_name = 'coaching/group_schedule.html'
+    slug_url_kwarg = None
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
