@@ -180,6 +180,7 @@ class Pay(LoginRequiredMixin, TournamentMixin, MessageMixin, View):
     def get_entries(self, event):
         return self.request.user.entry_set.filter(
             paid=False,
+            waiting_list=False,
             tournament=event,
             series_entry=False,
         )
