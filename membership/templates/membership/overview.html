@@ -88,7 +88,7 @@
                 </div>
                 <div class="members__section__actions">
                     {% if member.coaching_groups|length == 1 %}
-                        <a class="members__action members__action--primary" href="{% url 'coaching:group-schedule' group=member.coaching_groups.0.slug %}">View schedule</a>
+                        <a class="members__action members__action--primary" href="{% url 'coaching:group-schedule' pk=member.coaching_groups.0.pk group=member.coaching_groups.0.slug %}">View schedule</a>
                     {% elif member.coaching_groups %}
                         <a class="members__action members__action--primary" href="{% url 'membership:range-booking' %}">View bookings</a>
                     {% else %}
