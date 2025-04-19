@@ -275,6 +275,16 @@ class Archer(models.Model):
     agb_number = models.CharField(max_length=10, default='', blank=True)
     address = models.TextField(blank=True, default='')
     contact_number = models.CharField(max_length=20, blank=True, default='')
+    medical_information = models.TextField(blank=True, default='')
+
+    # Junior specific safeguarding info
+    primary_contact_name = models.CharField(max_length=200, blank=True, default='')
+    secondary_contact_name = models.CharField(max_length=200, blank=True, default='')
+    secondary_contact_number = models.CharField(max_length=20, blank=True, default='')
+    collection_consent = models.BooleanField(default=False)
+    collection_alternatives = models.TextField(blank=True, default='')
+    photography_coaching = models.BooleanField(default=False)
+    photography_marketing = models.BooleanField(default=False)
 
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
