@@ -2,7 +2,6 @@ import json
 
 from django.conf import settings
 from django.db import transaction
-from django.db.models.functions import Lower
 from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
@@ -20,7 +19,7 @@ from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
 
 from .forms import TrialContinueForm
-from .models import ArcherSeason, TrainingGroup, TrainingGroupType, Trial
+from .models import ArcherSeason, TrainingGroup, Trial
 
 
 class CurrentSeasonMixin(FullMemberRequired):
