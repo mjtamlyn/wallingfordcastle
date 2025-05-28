@@ -47,7 +47,7 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
             coaches__in=Archer.objects.managed_by(self.request.user),
         ).order_by('session_day', 'session_start_time')
         context['coached_groups'] = groups
-        if self.request.user.is_superuser:
+        if groups:
             context['uncoached_groups'] = TrainingGroup.objects.filter(season=season).exclude(
                 id__in=[g.id for g in groups],
             ).order_by('session_day', 'session_start_time')
@@ -58,7 +58,7 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
                 coaches__in=Archer.objects.managed_by(self.request.user),
             ).order_by('session_day', 'session_start_time')
             context.update(upcoming=upcoming, upcoming_groups=upcoming_groups)
-            if self.request.user.is_superuser:
+            if upcoming_groups:
                 context['upcoming_uncoached_groups'] = TrainingGroup.objects.filter(season=upcoming).exclude(
                     id__in=[g.id for g in upcoming_groups],
                 ).order_by('session_day', 'session_start_time')
