@@ -35,7 +35,7 @@ class TrialContinueForm(forms.Form):
 
         member = archer.member_set.create(
             membership_type='full',
-            coaching_subscription=self.trial.group.level.first().name.startswith('Junior'),
+            coaching_subscription=self.trial.group.level.first().name in ['Junior Arrows', 'Novice'],
         )
         self.trial.group.participants.add(archer)
         return member
