@@ -3,7 +3,6 @@ from django.conf import settings
 from mailgun.client import Client
 from render_block import render_block_to_string
 
-
 domain = settings.MAILGUN_APIKEY
 if settings.MAILGUN_APIKEY:
     api_client = Client(auth=('api', settings.MAILGUN_APIKEY))

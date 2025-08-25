@@ -8,7 +8,7 @@ from coaching.urls import coaching_api_urlpatterns
 from events.urls import range_api_urlpatterns
 
 from . import views
-from .forms import RegisterForm, ClientPasswordResetForm
+from .forms import ClientPasswordResetForm, RegisterForm
 
 admin.autodiscover()
 
