@@ -118,7 +118,8 @@ TEMPLATES = [{
     }
 }]
 
-SENDGRID_API_KEY = os.environ.get('SENDGRID_API_KEY')
+MAILGUN_APIKEY = os.environ.get('MAILGUN_APIKEY')
+MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN')
 
 AUTH_USER_MODEL = 'wallingford_castle.User'
 LOGIN_REDIRECT_URL = reverse_lazy('membership:overview')

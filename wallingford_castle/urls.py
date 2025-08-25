@@ -8,7 +8,7 @@ from coaching.urls import coaching_api_urlpatterns
 from events.urls import range_api_urlpatterns
 
 from . import views
-from .forms import RegisterForm, SendgridPasswordResetForm
+from .forms import RegisterForm, ClientPasswordResetForm
 
 admin.autodiscover()
 
@@ -30,7 +30,7 @@ urlpatterns = [
     # TODO: Style header links
     path('accounts/login/', views.Login.as_view(), name='login'),
     path('accounts/password_reset/', PasswordResetView.as_view(
-        form_class=SendgridPasswordResetForm,
+        form_class=ClientPasswordResetForm,
     ), name='password_reset'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/register/<uidb64>/<token>/', PasswordResetConfirmView.as_view(

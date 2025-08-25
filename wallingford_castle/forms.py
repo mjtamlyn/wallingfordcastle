@@ -3,11 +3,9 @@ from django.conf import settings
 from django.contrib.auth.forms import PasswordResetForm, SetPasswordForm
 from django.template import loader
 
-from sendgrid.helpers.mail import From, Mail
-
 from wallingford_castle.models import User
 
-from .mail import api_client
+from .mail import api_client, domain
 from .models import MembershipInterest
 
 
@@ -26,7 +24,7 @@ class MembershipInterestForm(forms.ModelForm):
         exclude = ['status', 'coaching_subscription']
 
 
-class SendgridPasswordResetForm(PasswordResetForm):
+class ClientPasswordResetForm(PasswordResetForm):
     def send_mail(
             self, subject_template_name, email_template_name, context,
             from_email, to_email, html_email_template_name=None):
@@ -35,16 +33,16 @@ class SendgridPasswordResetForm(PasswordResetForm):
         subject = ''.join(subject.splitlines())
         body = loader.render_to_string(email_template_name, context)
 
-        message = Mail(
-            from_email=From(from_email or 'hello@wallingfordcastle.co.uk', 'Wallingford Castle Archers'),
-            to_emails=[to_email],
-            subject=subject,
-            plain_text_content=body,
-        )
-        if settings.SENDGRID_API_KEY:
-            api_client.send(message)
+        message_data = {
+            'from': from_email or 'Wallingford Castle Archers <hello@wallingfordcastle.co.uk>',
+            'to': to_email,
+            'subject': subject,
+            'text': body,
+        }
+        if api_client:
+            api_client.messages.create(data=message_data, domain=domain)
         else:
-            print(message)
+            print(message_data)
 
 
 class RegisterForm(SetPasswordForm):
