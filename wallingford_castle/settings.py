@@ -118,7 +118,7 @@ TEMPLATES = [{
     }
 }]
 
-MAILGUN_APIKEY = os.environ.get('MAILGUN_APIKEY')
+MAILGUN_API_KEY = os.environ.get('MAILGUN_API_KEY')
 MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN')
 
 AUTH_USER_MODEL = 'wallingford_castle.User'
