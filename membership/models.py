@@ -37,6 +37,7 @@ class Member(models.Model):
     gym_supplement = models.BooleanField(default=False)
 
     active = models.BooleanField(default=True)
+    agb_valid_until = models.DateTimeField(blank=True, null=True)
     created = models.DateTimeField(default=timezone.now, editable=False)
     modified = models.DateTimeField(auto_now=True)
 

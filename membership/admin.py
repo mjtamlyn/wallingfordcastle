@@ -132,7 +132,7 @@ class MemberAdmin(DjangoObjectActions, ArcherDataMixin, admin.ModelAdmin):
     list_display = [
         'archer_name', 'archer_age', 'membership_type',
         'active', 'coaching_level', 'archer_agb_number',
-        'archer_age_group',
+        'archer_age_group', 'agb_valid_until',
     ]
     list_filter = ['active', 'membership_type', 'archer__age', CoachingListFilter]
     readonly_fields = [
@@ -144,7 +144,7 @@ class MemberAdmin(DjangoObjectActions, ArcherDataMixin, admin.ModelAdmin):
         'archer',
         ('archer_agb_number', 'archer_age', 'archer_date_of_birth', 'archer_age_group'),
         ('archer_address', 'archer_contact_number', 'archer_email'),
-        ('active', 'membership_type'),
+        ('active', 'membership_type', 'agb_valid_until'),
         ('coaching_subscription', 'coaching_conversion', 'coaching_performance', 'gym_supplement'),
         ('interest', 'created', 'modified'),
     ]
