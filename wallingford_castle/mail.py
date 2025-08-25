@@ -10,7 +10,7 @@ else:
     api_client = None
 
 
-def send_mail(to_emails, template_name, context={}, from_email='hello@wallingfordcastle.co.uk'):
+def send_mail(to_emails, template_name, context={}, from_email=None):
     template_name = 'templated_email/%s.email' % template_name
     subject = render_block_to_string(template_name, 'subject', context)
     plain_content = render_block_to_string(template_name, 'plain', context)
