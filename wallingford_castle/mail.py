@@ -24,6 +24,6 @@ def send_mail(to_emails, template_name, context={}, from_email='hello@wallingfor
         'html': html_content,
     }
     if api_client:
-        api_client.messages.create(data=message, domain=domain) 
+        api_client.messages.create(data=message, domain=domain)
     else:
         print(message)
