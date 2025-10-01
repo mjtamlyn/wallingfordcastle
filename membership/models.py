@@ -113,7 +113,7 @@ class Member(models.Model):
         if self.coaching_groups and self.coaching_groups[0].level.first().name.startswith('Mini'):
             return 'Minis'
         if self.coaching_individual:
-            return 'Private lessions'
+            return 'Private lessons'
         elif self.junior_performance:
             return 'Junior Pro External'
         if self.coaching_subscription:
