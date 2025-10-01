@@ -110,6 +110,8 @@ class CoachingListFilter(admin.SimpleListFilter):
             season = Season.objects.get_current()
             queryset = queryset.filter(
                 coaching_subscription=False,
+                coaching_individual=0,
+                junior_training=0,
             )
             return queryset.exclude(
                 archer__training_groups__season=season,

@@ -114,7 +114,7 @@ class Member(models.Model):
             return 'Minis'
         if self.coaching_individual:
             return 'Private lessons'
-        elif self.junior_performance:
+        elif self.junior_training:
             return 'Junior Pro External'
         if self.coaching_subscription:
             if self.archer.age == 'junior':
