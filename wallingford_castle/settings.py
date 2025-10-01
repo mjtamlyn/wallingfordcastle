@@ -175,8 +175,4 @@ STRIPE_PRICES = {
         'id': os.environ.get('STRIPE_PRICES_COACHING_JUNIOR_PERFORMANCE', 'price_1Nvbz1BZ7K43BUB4eFaea1MF'),
         'price': 90,
     },
-    'coaching-gym': {
-        'id': os.environ.get('STRIPE_PRICES_COACHING_GYM', 'price_1NvbzSBZ7K43BUB4TApNmQSz'),
-        'price': 15,
-    },
 }

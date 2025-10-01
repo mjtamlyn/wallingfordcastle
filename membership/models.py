@@ -34,7 +34,6 @@ class Member(models.Model):
     coaching_subscription = models.BooleanField(default=False)
     coaching_conversion = models.BooleanField(default=False)
     coaching_performance = models.BooleanField(default=False)
-    gym_supplement = models.BooleanField(default=False)
 
     active = models.BooleanField(default=True)
     agb_valid_until = models.DateTimeField(blank=True, null=True)
@@ -70,8 +69,6 @@ class Member(models.Model):
                 prices.append(settings.STRIPE_PRICES['coaching-junior-conversion'])
             elif self.coaching_subscription:
                 prices.append(settings.STRIPE_PRICES['coaching-junior'])
-            if self.gym_supplement:
-                prices.append(settings.STRIPE_PRICES['coaching-gym'])
         elif self.coaching_subscription:
             prices.append(settings.STRIPE_PRICES['coaching-adult'])
         return prices

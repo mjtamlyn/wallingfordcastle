@@ -77,7 +77,6 @@ class CoachingListFilter(admin.SimpleListFilter):
             ('junior', 'Junior Group'),
             ('conversion', 'Semi-pro Squad'),
             ('performance', 'Pro Squad'),
-            ('gym', 'S&C supplement'),
             ('senior', 'Adult Group'),
             ('uncoached', 'Uncoached'),
         )
@@ -103,11 +102,6 @@ class CoachingListFilter(admin.SimpleListFilter):
             return queryset.filter(
                 archer__age='junior',
                 coaching_performance=True,
-            )
-        if self.value() == 'gym':
-            return queryset.filter(
-                archer__age='junior',
-                gym_supplement=True,
             )
         if self.value() == 'senior':
             return queryset.filter(
@@ -145,7 +139,7 @@ class MemberAdmin(DjangoObjectActions, ArcherDataMixin, admin.ModelAdmin):
         ('archer_agb_number', 'archer_age', 'archer_date_of_birth', 'archer_age_group'),
         ('archer_address', 'archer_contact_number', 'archer_email'),
         ('active', 'membership_type', 'agb_valid_until'),
-        ('coaching_subscription', 'coaching_conversion', 'coaching_performance', 'gym_supplement'),
+        ('coaching_subscription', 'coaching_conversion', 'coaching_performance'),
         ('interest', 'created', 'modified'),
     ]
     actions = change_actions = ['update_plan', 'book_into_course']
