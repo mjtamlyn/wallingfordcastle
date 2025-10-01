@@ -76,6 +76,8 @@ class CoachingListFilter(admin.SimpleListFilter):
             ('minis', 'Minis'),
             ('junior', 'Junior Group'),
             ('senior', 'Adult Group'),
+            ('individual', 'Individual'),
+            ('junior-training', 'Junior Training'),
             ('uncoached', 'Uncoached'),
         )
 
@@ -95,6 +97,14 @@ class CoachingListFilter(admin.SimpleListFilter):
             return queryset.filter(
                 archer__age='senior',
                 coaching_subscription=True,
+            )
+        if self.value() == 'individual':
+            return queryset.filter(
+                coaching_individual__gt=0,
+            )
+        if self.value() == 'junior-training':
+            return queryset.filter(
+                junior_training__gt=0,
             )
         if self.value() == 'uncoached':
             season = Season.objects.get_current()
