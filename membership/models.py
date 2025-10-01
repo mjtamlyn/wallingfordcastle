@@ -112,10 +112,10 @@ class Member(models.Model):
     def coaching_level(self):
         if self.coaching_groups and self.coaching_groups[0].level.first().name.startswith('Mini'):
             return 'Minis'
-        if self.coaching_performance:
-            return 'Pro Squad'
-        if self.coaching_conversion:
-            return 'Semi-pro Squad'
+        if self.coaching_individual:
+            return 'Private lessions'
+        elif self.junior_performance:
+            return 'Junior Pro External'
         if self.coaching_subscription:
             if self.archer.age == 'junior':
                 return 'Junior group'
