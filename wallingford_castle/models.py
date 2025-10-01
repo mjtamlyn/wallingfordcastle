@@ -186,7 +186,7 @@ class User(AbstractEmailUser):
         members = Member.objects.filter(archer__user=self, active=True)  # Just ones billed by this user
         for member in members:
             for price in member.prices:
-                prices[price['id']] += 1
+                prices[price['id']] += price.get('quantity', 1)
         return prices
 
     def update_subscriptions(self):

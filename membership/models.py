@@ -32,8 +32,8 @@ class Member(models.Model):
         on_delete=models.CASCADE,
     )
     coaching_subscription = models.BooleanField(default=False)
-    coaching_conversion = models.BooleanField(default=False)
-    coaching_performance = models.BooleanField(default=False)
+    coaching_individual = models.IntegerField(default=0)
+    junior_training = models.IntegerField(default=0)
 
     active = models.BooleanField(default=True)
     agb_valid_until = models.DateTimeField(blank=True, null=True)
@@ -62,15 +62,24 @@ class Member(models.Model):
     @property
     def prices(self):
         prices = [settings.STRIPE_PRICES[self.plan]]
-        if self.archer.age == 'junior':
-            if self.coaching_performance:
-                prices.append(settings.STRIPE_PRICES['coaching-junior-performance'])
-            elif self.coaching_conversion:
-                prices.append(settings.STRIPE_PRICES['coaching-junior-conversion'])
-            elif self.coaching_subscription:
-                prices.append(settings.STRIPE_PRICES['coaching-junior'])
-        elif self.coaching_subscription:
+        if self.archer.age == 'junior' and self.coaching_subscription:
+            prices.append(settings.STRIPE_PRICES['coaching-junior'])
+        if self.archer.age == 'senior' and self.coaching_subscription:
             prices.append(settings.STRIPE_PRICES['coaching-adult'])
+        if self.junior_training:
+            plan = settings.STRIPE_PRICES['coaching-junior-training']
+            prices.append({
+                'id': plan['id'],
+                'quantity': self.junior_training,
+                'price': plan['price'] * self.junior_training,
+            })
+        if self.coaching_individual:
+            plan = settings.STRIPE_PRICES['coaching-individual']
+            prices.append({
+                'id': plan['id'],
+                'quantity': self.coaching_individual,
+                'price': plan['price'] * self.coaching_individual,
+            })
         return prices
 
     @property
