@@ -46,9 +46,7 @@ class Member(models.Model):
         return self.archer.name
 
     def clean(self):
-        if (self.coaching_subscription and self.coaching_conversion or
-                self.coaching_subscription and self.coaching_performance or
-                self.coaching_conversion and self.coaching_performance):
+        if (self.coaching_subscription and self.coaching_individual):
             raise ValidationError('Please choose only one coaching subscription level')
 
     @property
