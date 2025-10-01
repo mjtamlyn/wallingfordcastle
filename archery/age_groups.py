@@ -26,8 +26,6 @@ def age_group(dob, now=None):
         return 'U18'
     elif birthday_this_year < 21:
         return 'U21'
-    elif birthday_this_year < 25:
-        return 'Adult (U25)'
     elif birthday_this_year >= 50:
         return '50+'
     return 'Adult'
