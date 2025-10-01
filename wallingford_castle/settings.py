@@ -155,7 +155,7 @@ STRIPE_PRICES = {
         'id': os.environ.get('STRIPE_PRICES_CONCESSION', 'price_1HXOxRBZ7K43BUB43bdWQErn'),
         'price': 17,
     },
-    'concession': {
+    'minis': {
         'id': os.environ.get('STRIPE_PRICES_MINIS', 'price_1HXOxRBZ7K43BUB43bdWQErn'),
         'price': 0,
     },
