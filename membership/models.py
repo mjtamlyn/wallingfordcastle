@@ -56,6 +56,8 @@ class Member(models.Model):
     def plan(self):
         if self.archer.age == 'senior' and self.membership_type == 'full':
             return 'adult'
+        elif self.membership_type == 'minis':
+            return 'minis'
         return 'concession'
 
     @property

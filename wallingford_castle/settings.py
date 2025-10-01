@@ -155,6 +155,10 @@ STRIPE_PRICES = {
         'id': os.environ.get('STRIPE_PRICES_CONCESSION', 'price_1HXOxRBZ7K43BUB43bdWQErn'),
         'price': 17,
     },
+    'concession': {
+        'id': os.environ.get('STRIPE_PRICES_MINIS', 'price_1HXOxRBZ7K43BUB43bdWQErn'),
+        'price': 0,
+    },
     'coaching-adult': {
         'id': os.environ.get('STRIPE_PRICES_COACHING_ADULT', 'price_1HXOyBBZ7K43BUB4cIRekPDI'),
         'price': 30,
