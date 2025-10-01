@@ -54,8 +54,6 @@ class Member(models.Model):
 
     @property
     def plan(self):
-        if self.membership_type == 'non-shooting':
-            return 'non-shooting'
         if self.archer.age == 'senior' and self.membership_type == 'full':
             return 'adult'
         return 'concession'
