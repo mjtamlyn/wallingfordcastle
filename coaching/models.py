@@ -163,7 +163,7 @@ class Trial(models.Model):
 
     @property
     def fee(self):
-        return self.group.level.order_by('-trial_fee').first().trial_fee or 0
+        return self.group.level.filter(trial_fee__gt=0).order_by('-trial_fee').first().trial_fee or 0
 
 
 class CompetitiveTrack(models.Model):
