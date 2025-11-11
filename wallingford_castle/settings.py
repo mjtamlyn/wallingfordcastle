@@ -156,7 +156,7 @@ STRIPE_PRICES = {
         'price': 17,
     },
     'minis': {
-        'id': os.environ.get('STRIPE_PRICES_MINIS', 'price_1HXOxRBZ7K43BUB43bdWQErn'),
+        'id': os.environ.get('STRIPE_PRICES_MINIS', 'price_1SSIoxBZ7K43BUB4jrKKalMK'),
         'price': 0,
     },
     'coaching-adult': {

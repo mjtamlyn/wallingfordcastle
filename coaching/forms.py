@@ -33,9 +33,10 @@ class TrialContinueForm(forms.Form):
         archer.address = self.cleaned_data['address']
         archer.save()
 
+        group_level = self.trial.group.level.first().name
         member = archer.member_set.create(
-            membership_type='full',
-            coaching_subscription=self.trial.group.level.first().name in ['Junior Arrows', 'Novice'],
+            membership_type='minis' if group_level.startswith('Mini') else 'full',
+            coaching_subscription=group_level in ['Junior Arrows', 'Novice'],
         )
         self.trial.group.participants.add(archer)
         return member
