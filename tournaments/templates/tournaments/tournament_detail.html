@@ -20,8 +20,8 @@
 
         <h3>Rounds</h3>
         <p>
-        {% for round in tournament.rounds.all %}
-        {% if tournament.has_wrs %}WRS {% endif %}{{ round }}
+        {% for round in tournament.rounds_with_rs %}
+        {{ round }}
         {% if not forloop.last %}<br />{% endif %}
         {% endfor %}
         </p>

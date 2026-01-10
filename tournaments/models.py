@@ -22,7 +22,7 @@ class TournamentDetailsBase(models.Model):
 
     # Prospectus information
     rounds = models.ManyToManyField('archery.Round')
-    has_wrs = models.BooleanField(default=True)
+    has_rs = models.BooleanField(default=True)
     bowstyles = ArrayField(models.CharField(max_length=30, choices=BOWSTYLE_CHOICES))
     event_format = models.TextField()
     judges = models.TextField()
@@ -61,6 +61,18 @@ class TournamentDetailsBase(models.Model):
     @property
     def entry_is_open(self):
         return self.entries_open < timezone.now() < self.entries_close
+
+    def rounds_with_rs(self):
+        rounds = self.rounds.order_by('id')
+        display = []
+        for r in rounds:
+            if self.has_rs and r.can_be_wrs:
+                display.append('WRS %s' % r)
+            elif self.has_rs and r.can_be_ukrs:
+                display.append('UKRS %s' % r)
+            else:
+                display.append('%s' % r)
+        return display
 
 
 class Tournament(TournamentDetailsBase):
