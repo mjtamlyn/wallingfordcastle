@@ -26,5 +26,5 @@ class TestAgeGroup(TestCase):
 
     def test_junior_just_in_group(self):
         today = datetime.date.today()
-        archer = ArcherFactory.build(date_of_birth=today - relativedelta(years=13, months=1))
+        archer = ArcherFactory.build(date_of_birth=today - relativedelta(years=13, days=1))
         self.assertEqual(archer.age_group, 'U14')
