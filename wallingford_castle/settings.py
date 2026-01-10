@@ -130,7 +130,7 @@ SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')
 
 if os.environ.get('SENTRY_DSN'):
     sentry_sdk.init(
-        dsn="https://2e73dabd986c446fb77471128a59d91c@sentry.io/1285738",
+        dsn=os.environ.get('SENTRY_DSN'),
         release=SOURCE_VERSION,
         integrations=[DjangoIntegration()]
     )
