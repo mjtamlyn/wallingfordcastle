@@ -161,11 +161,11 @@ STRIPE_PRICES = {
     },
     'coaching-adult': {
         'id': os.environ.get('STRIPE_PRICES_COACHING_ADULT', 'price_1HXOyBBZ7K43BUB4cIRekPDI'),
-        'price': 30,
+        'price': 35,
     },
     'coaching-junior': {
         'id': os.environ.get('STRIPE_PRICES_COACHING_JUNIOR', 'price_1NvbycBZ7K43BUB4INdqPR01'),
-        'price': 25,
+        'price': 30,
     },
     'coaching-junior-training': {
         'id': os.environ.get('STRIPE_PRICES_COACHING_JUNIOR_TRAINING', ''),
@@ -173,6 +173,6 @@ STRIPE_PRICES = {
     },
     'coaching-individual': {
         'id': os.environ.get('STRIPE_PRICES_COACHING_INDIVIDUAL', ''),
-        'price': 35,
+        'price': 40,
     },
 }
