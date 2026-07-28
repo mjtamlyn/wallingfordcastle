@@ -160,7 +160,7 @@
             </strong></p>
         {% endif %}
 
-        {% if tournament.entry_is_open %}
+        {% if tournament.entry_is_open or tournament.waiting_list_enabled %}
             {% if user.is_authenticated %}
             <form id="tournament-entry" class="form page-form" action="{{ enter_url }}" method="POST">
                 <h2>Add entry</h2>
