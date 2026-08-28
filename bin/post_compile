@@ -3,8 +3,4 @@ set -eo pipefail
 
 # The post_compile hook is run by heroku-buildpack-python
 
-if [ -x bin/install_exiv2 ]; then
-    bin/install_exiv2
-fi
-
 echo "export SOURCE_VERSION=$SOURCE_VERSION" > $BUILD_DIR/.profile.d/source_version.sh
