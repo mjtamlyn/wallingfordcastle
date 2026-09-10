@@ -25,6 +25,7 @@ MEMBERSHIP_CHOICES = (
     ('full', 'Full member'),
     ('concession', 'Concession member'),
     ('minis', 'Minis member'),
+    ('student', 'Student member'),
 )
 
 STATUS_PENDING = 'pending'
