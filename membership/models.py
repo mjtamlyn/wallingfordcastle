@@ -55,6 +55,8 @@ class Member(models.Model):
             return 'adult'
         elif self.membership_type == 'minis':
             return 'minis'
+        elif self.membership_type == 'student':
+            return 'student'
         return 'concession'
 
     @property
