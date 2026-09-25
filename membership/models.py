@@ -110,6 +110,17 @@ class Member(models.Model):
         except TrainingGroup.DoesNotExist:
             return None
 
+    def upcoming_one_to_ones(self):
+        return self.archer.one_to_ones_shooting.filter(start__gte=timezone.now()).order_by('start')
+
+    def one_to_one_frequency(self):
+        return {
+            1: 'monthly',
+            2: 'fortnightly',
+            4: 'monthly',
+            8: 'monthly 2 hours'
+        }.get(self.coaching_individual) or 'Never'
+
     @property
     def coaching_level(self):
         if self.coaching_groups and self.coaching_groups[0].level.first().name.startswith('Mini'):

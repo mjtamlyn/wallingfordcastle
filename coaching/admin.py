@@ -16,7 +16,7 @@ from wallingford_castle.admin import ArcherDataMixin
 
 from .models import (
     Absence, ArcherSeason, ArcherTrack, CompetitiveTrack, Event, GroupSession,
-    Registration, TrainingGroup, TrainingGroupType, Trial,
+    OneToOne, Registration, TrainingGroup, TrainingGroupType, Trial,
 )
 
 
@@ -147,6 +147,52 @@ class GroupSessionAdmin(admin.ModelAdmin):
     search_fields = ['start', 'group']
     ordering = ['start']
     autocomplete_fields = ['group', 'booked_slot']
+
+
+@admin.register(OneToOne)
+class OneToOneAdmin(admin.ModelAdmin):
+    autocomplete_fields = ['archer', 'coach']
+    list_filter = ['start']
+    ordering = ['start']
+
+    def subclass_add_fields(self, form):
+        class AddForm(form):
+            number_of_sessions = forms.IntegerField(initial=6, help_text='Dates can be changed later')
+            frequency = forms.ChoiceField(initial='fortnightly', choices=(
+                ('monthly', 'Monthly'),
+                ('fortnightly', 'Fortnightly'),
+                ('weekly', 'Weekly'),
+            ))
+
+            def save(self, *args, **kwargs):
+                obj = super().save(*args, **kwargs)
+                days = {
+                    'monthly': 28,
+                    'fortnightly': 14,
+                    'weekly': 7,
+                }[self.cleaned_data['frequency']]
+                delta = datetime.timedelta(days=days)
+                for i in range(1, self.cleaned_data['number_of_sessions']):
+                    OneToOne.objects.create(
+                        start=obj.start + delta * i,
+                        duration=obj.duration,
+                        archer=obj.archer,
+                        coach=obj.coach,
+                        venue=obj.venue,
+                    )
+                return obj
+
+        return AddForm
+
+    def get_form(self, request, obj=None, **kwargs):
+        if kwargs.get('fields'):
+            kwargs['fields'] = [f for f in kwargs['fields'] if f not in [
+                'number_of_sessions', 'frequency'
+            ]]
+        form = super().get_form(request, obj, **kwargs)
+        if obj is None:
+            form = self.subclass_add_fields(form)
+        return form
 
 
 @admin.register(Absence)

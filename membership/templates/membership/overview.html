@@ -97,6 +97,26 @@
                 </div>
             </div>
 
+            {% if member.upcoming_one_to_ones %}
+            <div class="members__section">
+                <h4 class="members__heading">Individual coaching</h4>
+                <div class="members__section__content">
+                    <p>You are booked for {{ member.one_to_one_frequency }} individual coaching sessions. To cancel or rearrange a session please email your coach.</p>
+                    {% for session in member.upcoming_one_to_ones %}
+                        <div class="members__booking">
+                            <div class="members__booking__title">
+                                {{ session.start|date:"D jS M" }}
+                            </div>
+                            <div>{{ session.start|date:"g:ia" }} to {{ session.end|date:"g:ia" }} with {{ session.coach }}</div>
+                            <div><a href="{{ session.venue.get_absolute_url }}">{{ session.venue }}</a></div>
+                        </div>
+                    {% empty %}
+                    <p>Your coach will be in touch soon to confirm session times</p>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
             <div class="members__section">
                 <h4 class="members__heading">Membership information</h4>
                 <div class="members__section__content">

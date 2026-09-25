@@ -136,6 +136,35 @@ class Absence(models.Model):
         return '%s absent from %s' % (self.archer, self.session)
 
 
+class OneToOne(models.Model):
+    start = models.DateTimeField()
+    duration = models.DurationField()
+    archer = models.ForeignKey(
+        'wallingford_castle.Archer',
+        on_delete=models.CASCADE, related_name='one_to_ones_shooting',
+    )
+    coach = models.ForeignKey(
+        'wallingford_castle.Archer',
+        on_delete=models.CASCADE, related_name='one_to_ones_coaching',
+    )
+    venue = models.ForeignKey('venues.Venue', on_delete=models.CASCADE)
+
+    @property
+    def end(self):
+        return self.start + self.duration
+
+    def __str__(self):
+        return '1:1 session for %s on %s at %s (UTC)' % (
+            self.archer,
+            self.start.strftime('%a %-d %b %Y'),
+            self.start.strftime('%H:%M'),
+        )
+
+    class Meta:
+        verbose_name = '1:1 session'
+        verbose_name_plural = '1:1 sessions'
+
+
 class TrialQuerySet(models.QuerySet):
     def filter_ongoing(self):
         return self.filter(session_4__gte=timezone.now().date())
