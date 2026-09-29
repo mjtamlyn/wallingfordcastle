@@ -30,7 +30,10 @@
                 {% if user.is_authenticated and not user.tournament_only %}
                     <a class="nav__link" href="{% url 'membership:overview' %}">Members</a>
                 {% endif %}
-                <a class="nav__link" href="{% url 'courses:holidays' %}">Holiday Archery</a>
+                {% if user.is_authenticated and user.is_active_coach %}
+                    <a class="nav__link" href="{% url 'coaching:overview' %}">Coaching</a>
+                {% endif %}
+                <!-- a class="nav__link" href="{% url 'courses:holidays' %}">Holiday Archery</a-->
                 <a class="nav__link" href="{% url 'beginners:index' %}">Learn archery</a>
                 <a class="nav__link" href="{% url 'juniors' %}">Juniors & minis</a>
                 <a class="nav__link" href="{% url 'join' %}">Join the club</a>

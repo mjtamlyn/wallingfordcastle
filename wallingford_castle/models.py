@@ -253,6 +253,16 @@ class User(AbstractEmailUser):
     def manages_any(self, archers):
         return any(map(lambda m: m.archer in archers, self.managed_members))
 
+    @cached_property
+    def is_active_coach(self):
+        from coaching.models import TrainingGroup
+
+        season = Season.objects.get_current()
+        return TrainingGroup.objects.filter(
+            season=season,
+            coaches__in=Archer.objects.managed_by(self),
+        ).exists()
+
 
 class ArcherManager(models.Manager):
     def managed_by(self, user):
