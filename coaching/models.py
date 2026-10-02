@@ -160,6 +160,7 @@ class OneToOne(models.Model):
         on_delete=models.CASCADE, related_name='one_to_ones_coaching',
     )
     venue = models.ForeignKey('venues.Venue', on_delete=models.CASCADE)
+    session_notes = models.TextField(blank=True, default='')
 
     objects = models.Manager.from_queryset(OneToOneQuerySet)()
 
