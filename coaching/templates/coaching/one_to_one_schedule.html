@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Coaching - 1:1 schedule{% endblock %}
+
+{% block content %}
+<a href="{% url 'coaching:overview' %}">< Back to list of groups</a>
+<h2>Coaching - 1:1 schedule for {{ season }}</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>Monday</th>
+            <th>Tuesday</th>
+            <th>Wednesday</th>
+            <th>Thursday</th>
+            <th>Friday</th>
+            <th>Saturday</th>
+            <th>Sunday</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for week in weeks %}
+        <tr>
+            {% for day in week.days %}
+            <td>
+                <h4>{{ day.date }}</h4>
+                {% for session in day.sessions %}
+                <a href="{% url 'admin:coaching_onetoone_change' session.pk %}">{{ session.local_start_time }} - {{ session.archer }}</a>
+                {% if not forloop.last %}<br />{% endif %}
+                {% empty %}
+                No sessions
+                {% endfor %}
+            </td>
+            {% endfor %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

@@ -16,6 +16,7 @@ urlpatterns = [
         views.UpcomingGroupSchedule.as_view(),
         name='upcoming-group-schedule',
     ),
+    path('1:1s/', views.OneToOneCalendar.as_view(), name='one-to-one-calendar'),
 
     path('<int:archer_id>/event-plan/', views.EventPlan.as_view(), name='event-plan'),
     path('<int:archer_id>/upcoming/event-plan/', views.NextEventPlan.as_view(), name='next-event-plan'),

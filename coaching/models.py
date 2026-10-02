@@ -136,6 +136,18 @@ class Absence(models.Model):
         return '%s absent from %s' % (self.archer, self.session)
 
 
+class OneToOneQuerySet(models.QuerySet):
+    def by_season(self, season):
+        return self.filter(
+            start__gte=season.start_date,
+            start__lte=season.end_date + datetime.timedelta(days=1),
+        )
+
+    def coached_by(self, user):
+        from wallingford_castle.models import Archer
+        return self.filter(coach__in=Archer.objects.managed_by(user))
+
+
 class OneToOne(models.Model):
     start = models.DateTimeField()
     duration = models.DurationField()
@@ -149,9 +161,14 @@ class OneToOne(models.Model):
     )
     venue = models.ForeignKey('venues.Venue', on_delete=models.CASCADE)
 
+    objects = models.Manager.from_queryset(OneToOneQuerySet)()
+
     @property
     def end(self):
         return self.start + self.duration
+
+    def local_start_time(self):
+        return timezone.localtime(self.start).time()
 
     def __str__(self):
         return '1:1 session for %s on %s at %s (UTC)' % (

@@ -1,3 +1,4 @@
+import datetime
 import json
 
 from django.conf import settings
@@ -6,7 +7,7 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import DetailView, FormView, TemplateView, View
+from django.views.generic import DetailView, FormView, ListView, TemplateView, View
 from django.views.generic.detail import SingleObjectMixin
 
 import requests
@@ -19,7 +20,7 @@ from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
 
 from .forms import TrialContinueForm
-from .models import ArcherSeason, TrainingGroup, Trial
+from .models import ArcherSeason, OneToOne, TrainingGroup, Trial
 
 
 class CurrentSeasonMixin(FullMemberRequired):
@@ -62,6 +63,7 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
                 context['upcoming_uncoached_groups'] = TrainingGroup.objects.filter(season=upcoming).exclude(
                     id__in=[g.id for g in upcoming_groups],
                 ).order_by('session_day', 'session_start_time')
+        context['has_one_to_ones'] = OneToOne.objects.by_season(season).coached_by(self.request.user).exists()
         return super().get_context_data(**context, **kwargs)
 
 
@@ -127,6 +129,37 @@ class GroupSchedule(GroupMixin, DetailView):
 class UpcomingGroupSchedule(GroupSchedule):
     def get_season(self):
         return self.get_upcoming_season()
+
+
+class OneToOneCalendar(CurrentSeasonMixin, ListView):
+    model = OneToOne
+    template_name = 'coaching/one_to_one_schedule.html'
+
+    def get_queryset(self):
+        season = self.get_season()
+        return super().get_queryset().by_season(season).coached_by(self.request.user).order_by('start')
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        first_date = self.object_list[0].start.date()
+        last_date = list(self.object_list)[-1].start.date()
+        print(first_date.weekday(), last_date)
+
+        weeks = []
+        current = first_date - datetime.timedelta(days=first_date.weekday())
+        while current + datetime.timedelta(days=6) <= last_date:
+            weeks.append({
+                'days': [{
+                    'date': current + datetime.timedelta(days=i),
+                    'sessions': list(filter(
+                        lambda s: s.start.date() == current + datetime.timedelta(days=i),
+                        self.object_list,
+                    )),
+                } for i in range(7)],
+            })
+            current += datetime.timedelta(days=7)
+        context['weeks'] = weeks
+        return super().get_context_data(**context, **kwargs)
 
 
 class TrialPayment(MessageMixin, View):
