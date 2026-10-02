@@ -7,7 +7,9 @@ from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
-from django.views.generic import DetailView, FormView, ListView, TemplateView, View
+from django.views.generic import (
+    DetailView, FormView, ListView, TemplateView, View,
+)
 from django.views.generic.detail import SingleObjectMixin
 
 import requests
