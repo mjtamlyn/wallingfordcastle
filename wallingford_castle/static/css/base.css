@@ -685,10 +685,14 @@ table {
 /* line 15, ../../sass/_tables.sass */
 table th {
   text-align: left;
+}
+
+/* line 19, ../../sass/_tables.sass */
+table.vertical-align-top th {
   vertical-align: top;
 }
-/* line 19, ../../sass/_tables.sass */
-table td {
+/* line 22, ../../sass/_tables.sass */
+table.vertical-align-top td {
   vertical-align: top;
 }
 

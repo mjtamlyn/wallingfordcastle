@@ -145,7 +145,6 @@ class OneToOneCalendar(CurrentSeasonMixin, ListView):
         context = {}
         first_date = self.object_list[0].start.date()
         last_date = list(self.object_list)[-1].start.date()
-        print(first_date.weekday(), last_date)
 
         weeks = []
         current = first_date - datetime.timedelta(days=first_date.weekday())
