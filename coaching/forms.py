@@ -47,15 +47,19 @@ class AttendanceForm(forms.Form):
     def __init__(self, register, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.register = register
-        for (archer, present) in register:
+        for (archer, present, absence) in register:
+            help_text = None
+            if absence is not None:
+                help_text = 'Absence reported: %s' % absence.reason
             self.fields['archer_%s' % archer.pk] = forms.BooleanField(
                 label=archer.name,
                 required=False,
                 initial=present,
+                help_text=help_text,
             )
 
     def get_register(self):
         new_register = []
-        for archer, _ in self.register:
-            new_register.append((archer, self.cleaned_data['archer_%s' % archer.pk]))
+        for archer, _, _ in self.register:
+            new_register.append((archer, self.cleaned_data['archer_%s' % archer.pk], None))
         return new_register

@@ -153,20 +153,21 @@ class GroupSession(models.Model):
         event = self._get_or_create_event()
         participants = self.group.participants.all()
         recorded_attendees = [a.archer for a in event.attendee_set.select_related('archer')]
+        absences = {absence.archer: absence for absence in self.absence_set.select_related('archer')}
         register = []
         for participant in participants:
             if participant in recorded_attendees:
-                register.append((participant, True))
+                register.append((participant, True, None))
             else:
-                register.append((participant, False))
+                register.append((participant, False, absences.get(participant)))
         for attendee in set(recorded_attendees) - set(participants):
-            register.append((attendee, True))
+            register.append((attendee, True, None))
         return sorted(register, key=lambda r: r[0].name)
 
     def set_register(self, register):
         event = self._get_or_create_event()
         recorded_attendees = [a.archer for a in event.attendee_set.select_related('archer')]
-        for archer, present in register:
+        for archer, present, _ in register:
             if present and archer not in recorded_attendees:
                 event.attendee_set.create(archer=archer)
             if not present and archer in recorded_attendees:
