@@ -7,9 +7,14 @@ app_name = 'coaching'
 urlpatterns = [
     path('', views.GroupsOverview.as_view(), name='overview'),
     path('<int:year>-<int:month>-<int:day>/', views.CoachingDay.as_view(), name='day'),
-    re_path(r'^(?P<date>[-\d]+)/$', views.CoachingDay.as_view(), name='day'),  # matches the above but better for reversing
+    re_path(
+        r'^(?P<date>[-\d]+)/$',
+        views.CoachingDay.as_view(),
+        name='day',  # matches the above but better for reversing
+    ),
     path('today/', views.CoachingToday.as_view(), name='today'),
-    path('pay/', views.TrialPayment.as_view(), name='trial-payment'),
+    path('attendance/<int:pk>/', views.Attendance.as_view(), name='attendance'),
+
     path('trial/continue/<int:trial_pk>/', views.TrialContinue.as_view(), name='trial-continue'),
     path('<int:pk>-<slug:group>/', views.GroupReport.as_view(), name='group-report'),
     path('upcoming/<int:pk>-<slug:group>/', views.UpcomingGroupReport.as_view(), name='upcoming-group-report'),
@@ -20,6 +25,8 @@ urlpatterns = [
         name='upcoming-group-schedule',
     ),
     path('1:1s/', views.OneToOneCalendar.as_view(), name='one-to-one-calendar'),
+
+    path('pay/', views.TrialPayment.as_view(), name='trial-payment'),
 
     path('<int:archer_id>/event-plan/', views.EventPlan.as_view(), name='event-plan'),
     path('<int:archer_id>/upcoming/event-plan/', views.NextEventPlan.as_view(), name='next-event-plan'),

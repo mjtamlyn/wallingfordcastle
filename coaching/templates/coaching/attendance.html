@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Attendance for {{ session.group.group_name }} on {{ session.start.date }} | {% endblock %}
+
+{% block content %}
+<a href="{% url 'coaching:day' date=session.start.date.isoformat %}">< Back to overview for {{ session.start.date }}</a>
+<h2>Attendance for {{ session.group.group_name }} - {{ session.start|date:"d M Y H:i" }}</h2>
+
+<form method="POST" action="" class="form">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" class="btn"></input>
+</form>
+
+<p>
+Need to add anyone else?
+<a href="{% url 'admin:events_event_change' session.event_id %}">Edit in admin ></a>
+</p>
+{% endblock %}

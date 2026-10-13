@@ -21,7 +21,7 @@ from records.models import Achievement
 from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
 
-from .forms import TrialContinueForm
+from .forms import AttendanceForm, TrialContinueForm
 from .models import ArcherSeason, GroupSession, OneToOne, TrainingGroup, Trial
 
 
@@ -89,21 +89,52 @@ class CoachingDay(CurrentSeasonMixin, TemplateView):
             season=season,
             coaches__in=Archer.objects.managed_by(self.request.user),
         )
-        context['your_sessions'] = GroupSession.objects.filter(group__in=your_groups, start__date=date).order_by('start')
-        context['other_sessions'] = GroupSession.objects.exclude(group__in=your_groups).filter(start__date=date).order_by('start')
+        context['your_sessions'] = GroupSession.objects.filter(
+            group__in=your_groups,
+            start__date=date,
+        ).order_by('start')
+        context['other_sessions'] = GroupSession.objects.exclude(group__in=your_groups).filter(
+            start__date=date,
+        ).order_by('start')
         context['date'] = date
         context['previous'] = date - datetime.timedelta(days=1)
         context['next'] = date + datetime.timedelta(days=1)
         context['is_today'] = self.is_today or date == timezone.now().date()
 
-        context['one_to_ones'] = OneToOne.objects.coached_by(self.request.user).filter(start__date=date).order_by('start')
+        context['one_to_ones'] = OneToOne.objects.coached_by(self.request.user).filter(
+            start__date=date,
+        ).order_by('start')
         return super().get_context_data(**context, **kwargs)
+
 
 class CoachingToday(CoachingDay):
     is_today = True
 
     def get_date(self):
         return timezone.now().date()
+
+
+class Attendance(SingleObjectMixin, FormView):
+    template_name = 'coaching/attendance.html'
+    model = GroupSession
+    context_object_name = 'session'
+    form_class = AttendanceForm
+
+    def dispatch(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super().get_form_kwargs()
+        kwargs['register'] = self.object.get_register()
+        return kwargs
+
+    def form_valid(self, form):
+        self.object.set_register(form.get_register())
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('coaching:day', kwargs={'date': self.object.start.date().isoformat()})
 
 
 class GroupMixin(CurrentSeasonMixin):

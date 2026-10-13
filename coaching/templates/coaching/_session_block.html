@@ -25,7 +25,7 @@
         <a class="members__action members__action--primary" href="{% url 'admin:coaching_groupsession_change' session.pk %}">Edit in admin</a>
         <a class="members__action" href="{% url 'coaching:group-report' pk=session.group_id group=session.group.slug %}">View report</a>
         {% if not session.cancelled_because %}
-            <a class="members__action members__action--primary">Set attendance</a>
+            <a class="members__action members__action--primary" href="{% url 'coaching:attendance' pk=session.pk %}">Set attendance ({{ session.attendee_count }})</a>
         {% endif %}
     </div>
 </div>

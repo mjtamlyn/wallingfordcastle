@@ -118,6 +118,7 @@ class GroupSession(models.Model):
     start = models.DateTimeField()
     cancelled_because = models.TextField(blank=True, default='')
     booked_slot = models.OneToOneField('events.BookedSlot', blank=True, null=True, on_delete=models.SET_NULL)
+    event = models.ForeignKey('events.Event', on_delete=models.SET_NULL, blank=True, null=True)
     session_plan = models.TextField(blank=True, default='')
     session_notes = models.TextField(blank=True, default='')
 
@@ -128,6 +129,49 @@ class GroupSession(models.Model):
 
     def __str__(self):
         return '%s session on %s' % (self.group, self.start)
+
+    def _get_or_create_event(self):
+        from events.models import Event
+        if self.event:
+            return self.event
+        else:
+            event = Event.objects.create(
+                name=self.group.group_name,
+                date=self.start,
+                duration=self.group.session_duration,
+            )
+            self.event = event
+            self.save(update_fields=['event_id'])
+            return event
+
+    def get_register(self):
+        event = self._get_or_create_event()
+        participants = self.group.participants.all()
+        recorded_attendees = [a.archer for a in event.attendee_set.select_related('archer')]
+        register = []
+        for participant in participants:
+            if participant in recorded_attendees:
+                register.append((participant, True))
+            else:
+                register.append((participant, False))
+        for attendee in set(recorded_attendees) - set(participants):
+            register.append((participant, True))
+        return sorted(register, key=lambda r: r[0].name)
+
+    def set_register(self, register):
+        event = self._get_or_create_event()
+        recorded_attendees = [a.archer for a in event.attendee_set.select_related('archer')]
+        for archer, present in register:
+            if present and archer not in recorded_attendees:
+                event.attendee_set.create(archer=archer)
+            if not present and archer in recorded_attendees:
+                event.attendee_set.get(archer=archer).delete()
+
+    @property
+    def attendee_count(self):
+        if not self.event:
+            return 0
+        return self.event.attendee_count
 
 
 class Absence(models.Model):
