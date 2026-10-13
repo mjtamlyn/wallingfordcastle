@@ -47,6 +47,10 @@ class TrainingGroup(models.Model):
         return '/'.join(map(str, self.level.all()))
 
     @property
+    def coach_list(self):
+        return ', '.join(map(str, self.coaches.order_by('name')))
+
+    @property
     def slug(self):
         return '%s-%s' % (
             self.get_session_day_display().lower(),
@@ -114,6 +118,8 @@ class GroupSession(models.Model):
     start = models.DateTimeField()
     cancelled_because = models.TextField(blank=True, default='')
     booked_slot = models.OneToOneField('events.BookedSlot', blank=True, null=True, on_delete=models.SET_NULL)
+    session_plan = models.TextField(blank=True, default='')
+    session_notes = models.TextField(blank=True, default='')
 
     objects = models.Manager.from_queryset(GroupSessionQuerySet)()
 

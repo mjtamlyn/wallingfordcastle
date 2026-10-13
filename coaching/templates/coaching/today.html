@@ -15,35 +15,51 @@
     <a href="{% url 'coaching:day' date=next.isoformat %}">{{ next }} ></a>
 </p>
 
-{% if one_to_ones %}
-<h3>Your 1:1 sessions</h3>
-{% for session in one_to_ones %}
-    <h4>{{ session.start|date:"H:i" }} {{ session.archer }}</h4>
-    {{ session.session_notes|linebreaksbr }}<br />
-    <a href="{% url 'admin:coaching_onetoone_change' session.pk %}">Edit in admin ></a>
-{% endfor %}
-<hr>
-{% endif %}
+<div class="members">
 
-<h3>Your group sessions</h3>
-{% for session in your_sessions %}
-    <h4>{{ session.start|date:"H:i" }} {{ session.group.group_name }}</h4>
-    <p><a href="{% url 'coaching:group-report' pk=session.group_id group=session.group.slug %}">Group report ></a></p>
-    {% empty %}
-    <p>You have no sessions today.</p>
-{% endfor %}
-<hr>
+    {% if one_to_ones %}
+    <div class="members__member">
+        <h3 class="members__heading members__heading--main">Your 1:1 sessions</h3>
+        <div class="members__sections">
+            {% for session in one_to_ones %}
+            <div class="members__section">
+                <h4 class="members__heading">{{ session.start|date:"H:i" }} {{ session.archer }}</h4>
+                <div class="members__section__content">
+                    <h4>Session notes</h4>
+                    {{ session.session_notes|linebreaksbr }}
+                </div>
+                <div class="members__section__actions">
+                    <a class="members__action members__action--primary" href="{% url 'admin:coaching_onetoone_change' session.pk %}">Edit in admin</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 
-{% if other_sessions %}
-<h3>Other group sessions</h3>
-{% for session in other_sessions %}
-    <h4>{{ session.start|date:"H:i" }} {{ session.group.group_name }}</h4>
-{% endfor %}
-{% endif %}
+    <div class="members__member">
+        <h3 class="members__heading members__heading--main">Your group sessions</h3>
+        <div class="members__sections">
+            {% for session in your_sessions %}
+            {% include 'coaching/_session_block.html' with session=session only %}
+            {% empty %}
+            <p>You have no sessions today.</p>
+            {% endfor %}
+        </div>
+    </div>
 
-<hr>
-- Groups that are running today, with links to see/write session notes, and record attendance<br>
-- Who the coaches are<br>
-- One to ones happening today<br>
-- Absence reports<br>
+    {% if other_sessions %}
+    <div class="members__member">
+        <h3 class="members__heading members__heading--main">Other group sessions</h3>
+        <div class="members__sections">
+            {% for session in other_sessions %}
+            {% include 'coaching/_session_block.html' with session=session only %}
+            {% empty %}
+            <p>You have no sessions today.</p>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+</div>
 {% endblock %}
