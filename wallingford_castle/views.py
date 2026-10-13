@@ -1,7 +1,7 @@
 import json
 
 from django.conf import settings
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, TemplateView
 
@@ -65,7 +65,16 @@ class MembershipInterestView(MessageMixin, CreateView):
 
 class Login(LoginView):
     def get_redirect_url(self):
+        if self.request.GET.get('next'):
+            return self.request.GET['next']
         user = self.request.user
         if user.is_authenticated and user.tournament_only:
             return reverse('tournaments:home')
         return reverse('membership:overview')
+
+
+class Logout(LogoutView):
+    http_method_names = ["get", "post", "options"]
+
+    def get(self, request, *args, **kwargs):
+        return self.post(request, *args, **kwargs)

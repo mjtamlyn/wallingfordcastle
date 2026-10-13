@@ -29,6 +29,7 @@ urlpatterns = [
     path('venues/', include('venues.urls', namespace='venues')),
     # TODO: Style header links
     path('accounts/login/', views.Login.as_view(), name='login'),
+    path('accounts/logout/', views.Logout.as_view(), name='logout'),
     path('accounts/password_reset/', PasswordResetView.as_view(
         form_class=ClientPasswordResetForm,
     ), name='password_reset'),
