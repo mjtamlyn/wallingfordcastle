@@ -42,6 +42,11 @@ class TrainingGroup(models.Model):
     b_range = models.BooleanField(default=False)
     venue = models.ForeignKey('venues.Venue', on_delete=models.PROTECT)
 
+    class Meta:
+        permissions = [
+            ('can_view_coaching', 'Can View Coach Notes'),
+        ]
+
     @property
     def group_name(self):
         return '/'.join(map(str, self.level.all()))

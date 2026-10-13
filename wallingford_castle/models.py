@@ -255,13 +255,7 @@ class User(AbstractEmailUser):
 
     @cached_property
     def is_active_coach(self):
-        from coaching.models import TrainingGroup
-
-        season = Season.objects.get_current()
-        return TrainingGroup.objects.filter(
-            season=season,
-            coaches__in=Archer.objects.managed_by(self),
-        ).exists()
+        return self.has_perm('coaching.can_view_coaching')
 
 
 class ArcherManager(models.Manager):

@@ -2,8 +2,8 @@ import datetime
 import json
 
 from django.conf import settings
+from django.contrib.auth.mixins import UserPassesTestMixin
 from django.db import transaction
-from django.http import Http404
 from django.shortcuts import get_object_or_404, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -25,7 +25,7 @@ from .forms import AttendanceForm, TrialContinueForm
 from .models import ArcherSeason, GroupSession, OneToOne, TrainingGroup, Trial
 
 
-class CurrentSeasonMixin(FullMemberRequired):
+class CurrentSeasonMixin(object):
     def get_season(self):
         return self.get_current_season()
 
@@ -39,7 +39,12 @@ class CurrentSeasonMixin(FullMemberRequired):
         return super().get_context_data(season=self.get_season(), **kwargs)
 
 
-class GroupsOverview(CurrentSeasonMixin, TemplateView):
+class CoachRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_authenticated and self.request.user.is_active_coach
+
+
+class GroupsOverview(CoachRequiredMixin, CurrentSeasonMixin, TemplateView):
     template_name = 'coaching/overview.html'
 
     def get_context_data(self, **kwargs):
@@ -50,10 +55,9 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
             coaches__in=Archer.objects.managed_by(self.request.user),
         ).order_by('session_day', 'session_start_time')
         context['coached_groups'] = groups
-        if groups:
-            context['uncoached_groups'] = TrainingGroup.objects.filter(season=season).exclude(
-                id__in=[g.id for g in groups],
-            ).order_by('session_day', 'session_start_time')
+        context['uncoached_groups'] = TrainingGroup.objects.filter(season=season).exclude(
+            id__in=[g.id for g in groups],
+        ).order_by('session_day', 'session_start_time')
         upcoming = self.get_upcoming_season()
         if upcoming:
             upcoming_groups = TrainingGroup.objects.filter(
@@ -61,15 +65,14 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
                 coaches__in=Archer.objects.managed_by(self.request.user),
             ).order_by('session_day', 'session_start_time')
             context.update(upcoming=upcoming, upcoming_groups=upcoming_groups)
-            if upcoming_groups:
-                context['upcoming_uncoached_groups'] = TrainingGroup.objects.filter(season=upcoming).exclude(
-                    id__in=[g.id for g in upcoming_groups],
-                ).order_by('session_day', 'session_start_time')
+            context['upcoming_uncoached_groups'] = TrainingGroup.objects.filter(season=upcoming).exclude(
+                id__in=[g.id for g in upcoming_groups],
+            ).order_by('session_day', 'session_start_time')
         context['has_one_to_ones'] = OneToOne.objects.by_season(season).coached_by(self.request.user).exists()
         return super().get_context_data(**context, **kwargs)
 
 
-class CoachingDay(CurrentSeasonMixin, TemplateView):
+class CoachingDay(CoachRequiredMixin, CurrentSeasonMixin, TemplateView):
     template_name = 'coaching/today.html'
     is_today = False
 
@@ -114,7 +117,7 @@ class CoachingToday(CoachingDay):
         return timezone.now().date()
 
 
-class Attendance(SingleObjectMixin, FormView):
+class Attendance(CoachRequiredMixin, SingleObjectMixin, FormView):
     template_name = 'coaching/attendance.html'
     model = GroupSession
     context_object_name = 'session'
@@ -146,17 +149,9 @@ class GroupMixin(CurrentSeasonMixin):
         return super().get_queryset().filter(season=season)
 
 
-class GroupReport(GroupMixin, DetailView):
+class GroupReport(CoachRequiredMixin, GroupMixin, DetailView):
     template_name = 'coaching/group_report.html'
     schedule_url_name = 'group-schedule'
-
-    def get_object(self):
-        group = super().get_object()
-        if self.request.user.is_superuser:
-            return group
-        if not (set(group.coaches.all()) & set(Archer.objects.managed_by(self.request.user))):
-            raise Http404('You don\'t have access to this group')
-        return group
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -201,7 +196,7 @@ class UpcomingGroupSchedule(GroupSchedule):
         return self.get_upcoming_season()
 
 
-class OneToOneCalendar(CurrentSeasonMixin, ListView):
+class OneToOneCalendar(CoachRequiredMixin, CurrentSeasonMixin, ListView):
     model = OneToOne
     template_name = 'coaching/one_to_one_schedule.html'
 
