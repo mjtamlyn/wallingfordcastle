@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}Coaching - {{ season }}{% endblock %}
+
+{% block content %}
+<a href="{% url 'coaching:overview' %}">< Back to list of groups</a>
+<h2>Coaching for {% if is_today %}Today!{% else %}{{ date }}{% endif %}</h2>
+
+<p>
+    <a href="{% url 'membership:range-booking' date=date.isoformat %}">Range bookings ></a>
+</p>
+<p>
+    <a href="{% url 'coaching:day' date=previous.isoformat %}">< {{ previous }}</a>
+    <strong>{{ date }}</strong>
+    <a href="{% url 'coaching:day' date=next.isoformat %}">{{ next }} ></a>
+</p>
+
+{% if one_to_ones %}
+<h3>Your 1:1 sessions</h3>
+{% for session in one_to_ones %}
+    <h4>{{ session.start|date:"H:i" }} {{ session.archer }}</h4>
+    {{ session.session_notes|linebreaksbr }}<br />
+    <a href="{% url 'admin:coaching_onetoone_change' session.pk %}">Edit in admin ></a>
+{% endfor %}
+<hr>
+{% endif %}
+
+<h3>Your group sessions</h3>
+{% for session in your_sessions %}
+    <h4>{{ session.start|date:"H:i" }} {{ session.group.group_name }}</h4>
+    <p><a href="{% url 'coaching:group-report' pk=session.group_id group=session.group.slug %}">Group report ></a></p>
+    {% empty %}
+    <p>You have no sessions today.</p>
+{% endfor %}
+<hr>
+
+{% if other_sessions %}
+<h3>Other group sessions</h3>
+{% for session in other_sessions %}
+    <h4>{{ session.start|date:"H:i" }} {{ session.group.group_name }}</h4>
+{% endfor %}
+{% endif %}
+
+<hr>
+- Groups that are running today, with links to see/write session notes, and record attendance<br>
+- Who the coaches are<br>
+- One to ones happening today<br>
+- Absence reports<br>
+{% endblock %}

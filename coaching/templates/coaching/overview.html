@@ -3,13 +3,17 @@
 {% block title %}Coaching - {{ season }}{% endblock %}
 
 {% block content %}
-<h2>Coaching - {{ season }}</h2>
+<h2>Coaching - {{ season }} groups summary</h2>
 
 {% if has_one_to_ones %}
 <p>
     <a href="{% url 'coaching:one-to-one-calendar' %}">View 1:1 sessions ></a>
 </p>
 {% endif %}
+
+<p>
+    <a href="{% url 'coaching:today' %}">Today's coaching ></a>
+</p>
 
 {% if coached_groups %}
 <h3>Groups you are coaching</h3>

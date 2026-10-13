@@ -22,7 +22,7 @@ from wallingford_castle.mixins import FullMemberRequired
 from wallingford_castle.models import Archer, Season
 
 from .forms import TrialContinueForm
-from .models import ArcherSeason, OneToOne, TrainingGroup, Trial
+from .models import ArcherSeason, GroupSession, OneToOne, TrainingGroup, Trial
 
 
 class CurrentSeasonMixin(FullMemberRequired):
@@ -67,6 +67,43 @@ class GroupsOverview(CurrentSeasonMixin, TemplateView):
                 ).order_by('session_day', 'session_start_time')
         context['has_one_to_ones'] = OneToOne.objects.by_season(season).coached_by(self.request.user).exists()
         return super().get_context_data(**context, **kwargs)
+
+
+class CoachingDay(CurrentSeasonMixin, TemplateView):
+    template_name = 'coaching/today.html'
+    is_today = False
+
+    def get_date(self):
+        date = datetime.date(
+            year=int(self.kwargs['year']),
+            month=int(self.kwargs['month']),
+            day=int(self.kwargs['day']),
+        )
+        return date
+
+    def get_context_data(self, **kwargs):
+        context = {}
+        date = self.get_date()
+        season = self.get_season()
+        your_groups = TrainingGroup.objects.filter(
+            season=season,
+            coaches__in=Archer.objects.managed_by(self.request.user),
+        )
+        context['your_sessions'] = GroupSession.objects.filter(group__in=your_groups, start__date=date).order_by('start')
+        context['other_sessions'] = GroupSession.objects.exclude(group__in=your_groups).filter(start__date=date).order_by('start')
+        context['date'] = date
+        context['previous'] = date - datetime.timedelta(days=1)
+        context['next'] = date + datetime.timedelta(days=1)
+        context['is_today'] = self.is_today or date == timezone.now().date()
+
+        context['one_to_ones'] = OneToOne.objects.coached_by(self.request.user).filter(start__date=date).order_by('start')
+        return super().get_context_data(**context, **kwargs)
+
+class CoachingToday(CoachingDay):
+    is_today = True
+
+    def get_date(self):
+        return timezone.now().date()
 
 
 class GroupMixin(CurrentSeasonMixin):

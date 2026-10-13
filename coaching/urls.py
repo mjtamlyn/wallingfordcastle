@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, re_path
 
 from . import api, views
 
@@ -6,6 +6,9 @@ app_name = 'coaching'
 
 urlpatterns = [
     path('', views.GroupsOverview.as_view(), name='overview'),
+    path('<int:year>-<int:month>-<int:day>/', views.CoachingDay.as_view(), name='day'),
+    re_path('^(?P<date>[-\d]+)/$', views.CoachingDay.as_view(), name='day'),  # matches the above but better for reversing
+    path('today/', views.CoachingToday.as_view(), name='today'),
     path('pay/', views.TrialPayment.as_view(), name='trial-payment'),
     path('trial/continue/<int:trial_pk>/', views.TrialContinue.as_view(), name='trial-continue'),
     path('<int:pk>-<slug:group>/', views.GroupReport.as_view(), name='group-report'),
