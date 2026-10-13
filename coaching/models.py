@@ -155,7 +155,7 @@ class GroupSession(models.Model):
             else:
                 register.append((participant, False))
         for attendee in set(recorded_attendees) - set(participants):
-            register.append((participant, True))
+            register.append((attendee, True))
         return sorted(register, key=lambda r: r[0].name)
 
     def set_register(self, register):
