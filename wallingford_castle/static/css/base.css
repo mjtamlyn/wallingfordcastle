@@ -829,94 +829,95 @@ table.vertical-align-top td {
 body {
   font-family: "Open Sans", sans-serif;
   color: #303236;
+  -webkit-text-size-adjust: 100%;
 }
 
-/* line 5, ../../sass/_typography.sass */
+/* line 6, ../../sass/_typography.sass */
 a {
   text-decoration: none;
   color: #CA4984;
   font-weight: bold;
 }
-/* line 9, ../../sass/_typography.sass */
+/* line 10, ../../sass/_typography.sass */
 a:hover {
   text-decoration: underline;
 }
 
-/* line 12, ../../sass/_typography.sass */
+/* line 13, ../../sass/_typography.sass */
 h1 {
   font-size: 30px;
   font-weight: normal;
   margin: 1em 0 0.5em;
 }
 @media (max-width: 750px) {
-  /* line 12, ../../sass/_typography.sass */
+  /* line 13, ../../sass/_typography.sass */
   h1 {
     font-size: 22px;
   }
 }
 
-/* line 20, ../../sass/_typography.sass */
+/* line 21, ../../sass/_typography.sass */
 h2 {
   font-size: 22px;
   font-weight: bold;
   margin: 1em 0 0.5em;
 }
 @media (max-width: 750px) {
-  /* line 20, ../../sass/_typography.sass */
+  /* line 21, ../../sass/_typography.sass */
   h2 {
     font-size: 20px;
   }
 }
 
-/* line 28, ../../sass/_typography.sass */
+/* line 29, ../../sass/_typography.sass */
 h3 {
   font-size: 18px;
   margin: 1em 0 0.5em;
 }
 
-/* line 32, ../../sass/_typography.sass */
+/* line 33, ../../sass/_typography.sass */
 h4 {
   font-size: 16px;
   margin: 1em 0 0.5em;
 }
 
-/* line 36, ../../sass/_typography.sass */
+/* line 37, ../../sass/_typography.sass */
 p {
   font-size: 18px;
   margin: 1em 0;
 }
 @media (max-width: 750px) {
-  /* line 36, ../../sass/_typography.sass */
+  /* line 37, ../../sass/_typography.sass */
   p {
     font-size: 16px;
     margin: 0.5em 0;
   }
 }
 
-/* line 44, ../../sass/_typography.sass */
+/* line 45, ../../sass/_typography.sass */
 sup {
   vertical-align: top;
   font-size: small;
 }
 
-/* line 48, ../../sass/_typography.sass */
+/* line 49, ../../sass/_typography.sass */
 dt {
   font-weight: bold;
 }
-/* line 51, ../../sass/_typography.sass */
+/* line 52, ../../sass/_typography.sass */
 dt.inline {
   display: inline;
 }
-/* line 54, ../../sass/_typography.sass */
+/* line 55, ../../sass/_typography.sass */
 dt:not(:first-child) {
   margin-top: 0.5em;
 }
 
-/* line 57, ../../sass/_typography.sass */
+/* line 58, ../../sass/_typography.sass */
 dd {
   margin: 0;
 }
-/* line 60, ../../sass/_typography.sass */
+/* line 61, ../../sass/_typography.sass */
 dd.inline {
   display: inline;
 }
