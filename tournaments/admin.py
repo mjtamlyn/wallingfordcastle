@@ -32,6 +32,7 @@ class EntryAdmin(admin.ModelAdmin):
         'round', 'date_of_birth', 'notes', 'waiting_list',
     ]
     list_filter = ['tournament', 'paid', 'gender', 'bowstyle', 'round', 'series_entry']
+    search_fields = ['name']
     actions = ['add_invoice_item']
 
     def add_invoice_item(self, request, queryset):
@@ -46,9 +47,19 @@ class EntryAdmin(admin.ModelAdmin):
             return
 
         for entry in queryset:
-            entry.user.add_invoice_item(entry.tournament.entry_fee * 100, '%s entry to %s' % (
-                entry,
-                entry.tournament,
-            ))
-            entry.paid = True
-            entry.save()
+            if entry.series_entry:
+                entry.user.add_invoice_item(entry.tournament.series.entry_fee * 100, '%s entry to %s' % (
+                    entry,
+                    entry.tournament.series
+                ))
+                Entry.objects.filter(
+                    agb_number=entry.agb_number,
+                    tournament__series=entry.tournament.series,
+                ).update(paid=True)
+            else:
+                entry.user.add_invoice_item(entry.tournament.entry_fee * 100, '%s entry to %s' % (
+                    entry,
+                    entry.tournament,
+                ))
+                entry.paid = True
+                entry.save()

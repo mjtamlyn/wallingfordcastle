@@ -1,6 +1,7 @@
 import collections
 import datetime
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.tokens import default_token_generator
 from django.db import models, transaction
@@ -237,6 +238,12 @@ class User(AbstractEmailUser):
     def add_invoice_item(self, amount, description):
         if not self.customer_id or not self.subscription_id:
             raise ValueError('User does not have a subscription')
+        if settings.DEBUG and not stripe.api_key:
+            print('ADDING INVOICE ITEM')
+            print(' - customer_id:', self.customer_id)
+            print(' - description:', description)
+            print(' - amount:', amount)
+            return
         stripe.InvoiceItem.create(
             customer=self.customer_id,
             subscription=self.subscription_id,
