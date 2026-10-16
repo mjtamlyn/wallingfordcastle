@@ -211,7 +211,7 @@ class OneToOneCalendar(CoachRequiredMixin, CurrentSeasonMixin, ListView):
 
         weeks = []
         current = first_date - datetime.timedelta(days=first_date.weekday())
-        while current + datetime.timedelta(days=6) <= last_date:
+        while current <= last_date:
             weeks.append({
                 'days': [{
                     'date': current + datetime.timedelta(days=i),
