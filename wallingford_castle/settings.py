@@ -124,7 +124,7 @@ MAILGUN_DOMAIN = os.environ.get('MAILGUN_DOMAIN')
 AUTH_USER_MODEL = 'wallingford_castle.User'
 LOGIN_REDIRECT_URL = reverse_lazy('membership:overview')
 SESSION_COOKIE_AGE = 60 * 60 * 24 * 365  # Expire sessions only once a year
-PASSWORD_RESET_TIMEOUT_DAYS = 14  # Also used for welcome email
+PASSWORD_RESET_TIMEOUT = 60 * 60 * 24 * 14  # 14 days for password reset emails and register emails.
 
 SOURCE_VERSION = os.environ.get('SOURCE_VERSION', 'dev')
 
