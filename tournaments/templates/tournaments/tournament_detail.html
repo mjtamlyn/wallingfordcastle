@@ -13,7 +13,7 @@
         <p>This event is a part of <strong><a href="{{ tournament.series.get_absolute_url }}">{{ tournament.series }}</a></strong>. Enter all events for a discount!</p>
         {% endif %}
 
-        {% for t in tournament.tournament_set.all %}
+        {% for t in tournament.ordered_events %}
         <dt class="inline">{{ t.date|date:"jS F" }}</dt>
         <dd class="inline"><a href="{{ t.get_absolute_url }}">{{ t }}</a></dd><br>
         {% endfor %}

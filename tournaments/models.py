@@ -106,6 +106,9 @@ class Series(TournamentDetailsBase):
     def get_absolute_url(self):
         return reverse('tournaments:series-detail', kwargs={'series_slug': self.slug})
 
+    def ordered_events(self):
+        return self.tournament_set.order_by('date')
+
     class Meta:
         verbose_name_plural = 'series'
 
