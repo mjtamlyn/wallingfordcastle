@@ -248,12 +248,12 @@ class TrialQuerySet(models.QuerySet):
     def filter_ongoing_and_future(self, on_date=None):
         if not on_date:
             on_date = timezone.now().date()
-        return self.filter(session_4__gte=on_date)
+        return self.filter(session_4__date__gte=on_date)
 
     def filter_ongoing(self, on_date=None):
         if not on_date:
             on_date = timezone.now().date()
-        return self.filter(session_1__lte=on_date, session_4__gte=on_date)
+        return self.filter(session_1__date__lte=on_date, session_4__date__gte=on_date)
 
     def filter_completed(self):
         return self.filter(
