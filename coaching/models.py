@@ -152,10 +152,15 @@ class GroupSession(models.Model):
     def get_register(self):
         event = self._get_or_create_event()
         participants = self.group.participants.all()
+        trials = [
+            trial.archer for trial in self.group.trial_set.filter_ongoing(
+                on_date=self.start.date(),
+            ).select_related('archer')
+        ]
         recorded_attendees = [a.archer for a in event.attendee_set.select_related('archer')]
         absences = {absence.archer: absence for absence in self.absence_set.select_related('archer')}
         register = []
-        for participant in participants:
+        for participant in list(participants) + trials:
             if participant in recorded_attendees:
                 register.append((participant, True, None))
             else:
@@ -240,8 +245,15 @@ class OneToOne(models.Model):
 
 
 class TrialQuerySet(models.QuerySet):
-    def filter_ongoing(self):
-        return self.filter(session_4__gte=timezone.now().date())
+    def filter_ongoing_and_future(self, on_date=None):
+        if not on_date:
+            on_date = timezone.now().date()
+        return self.filter(session_4__gte=on_date)
+
+    def filter_ongoing(self, on_date=None):
+        if not on_date:
+            on_date = timezone.now().date()
+        return self.filter(session_1__lte=on_date, session_4__gte=on_date)
 
     def filter_completed(self):
         return self.filter(

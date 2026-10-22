@@ -157,7 +157,7 @@ class GroupReport(CoachRequiredMixin, GroupMixin, DetailView):
         context = super().get_context_data(**kwargs)
         group = self.object
         context['archers'] = group.participants.order_by('name').select_related('user')
-        context['current_trials'] = group.trial_set.filter_ongoing().order_by(
+        context['current_trials'] = group.trial_set.filter_ongoing_and_future().order_by(
             'archer__name',
         ).select_related('archer__user')
         for archer in context['archers']:

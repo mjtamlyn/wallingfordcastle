@@ -92,7 +92,7 @@ class TrainingGroupAdmin(DjangoObjectActions, admin.ModelAdmin):
         return instance.participants.count()
 
     def current_trials(self, instance):
-        return instance.trial_set.filter_ongoing().count()
+        return instance.trial_set.filter_ongoing_and_future().count()
 
     def get_urls(self):
         urls = super().get_urls()
