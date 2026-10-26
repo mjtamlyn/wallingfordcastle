@@ -36,7 +36,7 @@ class Overview(FullMemberRequired, TemplateView):
                 status__in=[STATUS_ON_COURSE, STATUS_FAST_TRACK],
             )
         )
-        context['trials'] = Trial.objects.filter_ongoing().filter(
+        context['trials'] = Trial.objects.filter_ongoing_and_future().filter(
             archer__user=self.request.user,
         ).select_related('archer', 'group')
         context['trials_to_pay'] = sum(
