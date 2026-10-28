@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Coaching - {{ date }} | {% endblock %}
+
+{% block content %}
+<a href="{% url 'coaching:overview' %}">< Back to list of groups</a>
+
+<h2>1:1 sessions for {{ archer }}</h2>
+
+<div class="members">
+    <div class="members__member">
+        <h3 class="members__heading members__heading--main">1:1 sessions</h3>
+        <div class="members__sections">
+            {% for session in object_list %}
+            <div class="members__section">
+                <h4 class="members__heading">{{ session.start.date }} {{ session.start|date:"H:i" }}</h4>
+                <div class="members__section__content">
+                    <h4>Session notes</h4>
+                    {% if session.session_notes %}
+                        {{ session.session_notes|linebreaksbr }}
+                    {% else %}
+                        No notes yet
+                    {% endif %}
+                </div>
+                <div class="members__section__actions">
+                    <a class="members__action members__action--primary" href="{% url 'admin:coaching_onetoone_change' session.pk %}">Edit in admin</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

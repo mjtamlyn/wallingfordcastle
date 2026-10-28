@@ -196,6 +196,22 @@ class UpcomingGroupSchedule(GroupSchedule):
         return self.get_upcoming_season()
 
 
+class OneToOneReport(CoachRequiredMixin, ListView):
+    model = OneToOne
+    template_name = 'coaching/one_to_one_report.html'
+
+    def get_queryset(self):
+        today = timezone.now().date()
+        self.archer = get_object_or_404(Archer, pk=self.kwargs['archer_pk'])
+        return super().get_queryset().coached_by(self.request.user).filter(
+            start__date__lte=today,
+            archer=self.archer,
+        ).order_by('-start')
+
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(archer=self.archer, **kwargs)
+
+
 class OneToOneCalendar(CoachRequiredMixin, CurrentSeasonMixin, ListView):
     model = OneToOne
     template_name = 'coaching/one_to_one_schedule.html'

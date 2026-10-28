@@ -25,6 +25,7 @@ urlpatterns = [
         name='upcoming-group-schedule',
     ),
     path('1:1s/', views.OneToOneCalendar.as_view(), name='one-to-one-calendar'),
+    path('1:1s/<int:archer_pk>/', views.OneToOneReport.as_view(), name='one-to-one-report'),
 
     path('pay/', views.TrialPayment.as_view(), name='trial-payment'),
 
