@@ -159,7 +159,6 @@ class PaymentDetails(MessageMixin, View):
                 customer=customer_id,
                 customer_creation=None if customer_id else 'always',
                 mode='subscription',
-                payment_method_types=['card'],
                 success_url=self.request.build_absolute_uri(membership_overview_url),
                 cancel_url=self.request.build_absolute_uri(membership_overview_url),
             )
@@ -168,7 +167,6 @@ class PaymentDetails(MessageMixin, View):
             session = stripe.checkout.Session.create(
                 mode='setup',
                 customer=customer_id,
-                payment_method_types=['card'],
                 success_url=self.request.build_absolute_uri(membership_overview_url),
                 cancel_url=self.request.build_absolute_uri(membership_overview_url),
             )
