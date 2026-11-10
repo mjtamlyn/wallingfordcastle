@@ -28,7 +28,9 @@ class TournamentList(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data()
         now = timezone.now()
-        context['upcoming_tournaments'] = Tournament.objects.filter(series__isnull=True, date__gt=now).order_by('date')
+        non_series_upcoming = Tournament.objects.filter(series__isnull=True, date__gt=now)
+        series_upcoming = Tournament.objects.filter(series__isnull=False, date__gt=now, series__date__lt=now)
+        context['upcoming_tournaments'] = (non_series_upcoming | series_upcoming).order_by('date')
         context['upcoming_series'] = Series.objects.filter(date__gt=now).order_by('date')
         context['past_tournaments'] = Tournament.objects.filter(date__lte=now).order_by('-date')
         context['bookable_events'] = Event.objects.filter(bookable=True, date__gt=now).order_by('date')
